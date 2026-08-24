@@ -20,7 +20,7 @@ CardFit(미래지출 카드설계 서비스) PRD를 소프트웨어 요구사항
 
 ### 2. 예외 규칙: PRD가 예시 포맷의 범위를 벗어나는 경우에만 표준 구조로 확장
 
-CardFit PRD(`PRD_CardFit_v0.1.md`)에는 위 7개 섹션만으로는 담기지 않는 내용이 이미 존재한다(예: 실험·롤아웃·측정 설계, 리스크·가정·의존성, 근거/Proof 출처, Use Case Diagram 기반 시나리오 흐름, Guardrail 모니터링·알림 SLA 등). **이런 내용은 임의로 생략하거나 억지로 위 7개 섹션에 욱여넣지 않는다.** 대신 ISO/IEC/IEEE 29148:2018 표준이 제공하는 해당 구조(예: 3.4 Interaction Sequences, 1.4 References, Assumptions & Constraints 등)를 **그 초과분에 한해서만** 가져와 확장한다.
+CardFit PRD(`PRD_CardFit_v1.0.md`)에는 위 7개 섹션만으로는 담기지 않는 내용이 이미 존재한다(예: 실험·롤아웃·측정 설계, 리스크·가정·의존성, 근거/Proof 출처, Use Case Diagram 기반 시나리오 흐름, Guardrail 모니터링·알림 SLA 등). **이런 내용은 임의로 생략하거나 억지로 위 7개 섹션에 욱여넣지 않는다.** 대신 ISO/IEC/IEEE 29148:2018 표준이 제공하는 해당 구조(예: 3.4 Interaction Sequences, 1.4 References, Assumptions & Constraints 등)를 **그 초과분에 한해서만** 가져와 확장한다.
 
 즉:
 - 기본값 = AD-Core-Platform 예시와 같은 7섹션 포맷
@@ -36,7 +36,7 @@ CardFit PRD(`PRD_CardFit_v0.1.md`)에는 위 7개 섹션만으로는 담기지 �
 
 | 파일/폴더 | 내용 |
 | --- | --- |
-| `PRD_CardFit_v0.1.md` | CardFit 제품 요구사항 문서(PRD) 본문 |
+| `PRD_CardFit_v1.0.md` | CardFit 제품 요구사항 문서(PRD) 본문 — 완성도 검토 6개 항목 통과 후 확정된 v1.0 |
 | `PRD_CardFit_v0.1_품질검토.md` | PRD의 측정 가능성·검증 가능성 품질 검토 및 보완 결과 |
 | `diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png` | Use Case Diagram (벡터 원본 / 이미지) |
 | `p26-29_PRD.md` | master-deck 원본 PRD 발표 원고(참고용 출처 자료) |
@@ -44,7 +44,7 @@ CardFit PRD(`PRD_CardFit_v0.1.md`)에는 위 7개 섹션만으로는 담기지 �
 
 ## 진행 상태
 
-- [x] PRD 작성 (`PRD_CardFit_v0.1.md`)
+- [x] PRD 작성 (`PRD_CardFit_v1.0.md`)
 - [x] PRD 품질 검토 — 측정 가능성/검증 가능성 (`PRD_CardFit_v0.1_품질검토.md`)
 - [x] Use Case Diagram 작성 (`diagrams/`)
 - [ ] SRS 초안 작성 — 위 변환 목표(7섹션 기본 포맷 + 초과분만 표준 확장)에 따라 진행 예정
