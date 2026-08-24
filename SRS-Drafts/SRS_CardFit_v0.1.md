@@ -13,7 +13,7 @@
 
 CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD_CardFit_v1.0.md`를 유일한 정보 원천으로 삼아, 예시 SRS 문서(AD-Core-Platform)가 취한 7섹션 포맷을 기본 구조로 채택하고, 그 포맷으로 담기지 않는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 3개 챕터를 추가해 확장했다.
 
-- **기능 요구사항**: REQ-FUNC 11건(Must 7·Should 2·Could 2), 각 항목 Given/When/Then 기반 인수기준과 실패 케이스 포함
+- **기능 요구사항**: REQ-FUNC 13건(Must 8·Should 3·Could 2) — PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리했으며, 문항별 출처는 [PRD]/[Derived]/[Design Decision]/[TBD]로 구분한다(4.1 서두 참조)
 - **비기능 요구사항**: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)
 - **미해결 선결 조건**: 마이데이터 인가·제휴 확정(A5), Net Benefit 임계값(D2) 확정 — 8장 참조
 - **검증 경로**: E0~E7b 실험 로드맵과 중단 조건 — 9장 참조
@@ -226,57 +226,72 @@ sequenceDiagram
 
 ### 4.1 기능 요구사항
 
+> **출처 유형 표기 원칙**: 각 인수기준은 원칙적으로 PRD 원문(3·4장)에서 그대로 가져온다. PRD 문장을 그대로 옮기지 않고 SRS 작성 과정에서 구체화한 항목은 **[Derived]**(PRD 사실로부터 논리적으로 도출), **[Design Decision]**(PRD에 없는 구현 설계를 SRS 저자가 추가), **[TBD]**(이해관계자 승인이 아직 없어 확정 요구사항으로 볼 수 없음)로 표시한다. 태그가 없는 항목은 PRD 원문 그대로다.
+>
+> 하나의 요구사항은 하나의 우선순위·하나의 PRD 출처 기능에 대응하도록 원자 단위로 분리한다. 서로 다른 우선순위가 섞여 있던 REQ-FUNC-001·003은 아래와 같이 분리했다.
+
 | ID | 제목 | 출처 | 우선순위 | 유형 | 검증 방식 | 인수 기준 | 상태 | 담당자 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **REQ-FUNC-001** | 미래지출 입력(카테고리·금액·시점, 이벤트 비종속) | US-A, US-F / F-01, F-08 | Must | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 이벤트 종류 필수 선택 단계 0개 ② 증가·감소 양방향 처리 오류율 0% ③ 자유 카테고리 계산 반영률 100% ④(실패) 음수·비숫자·상한 초과 입력 시 오류 표시, 계산 반영 0건 ⑤(실패) 특수문자·이모지 등 비정형 텍스트는 크래시 없이 "기타"로 정규화 처리(처리 실패율 0%) | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-002** | 마이데이터 연동(카드 내역·과거소비 수집) | US-A / F-02 | Must | Functional | 1) 연동 통합테스트 2) 동의 상태전이 테스트 3) QA 검증 | 연동 완료 시 HeldCard·PastSpend가 수집된다. 동의 만료·철회 시 계산 요청은 400을 반환하며, 철회 시 수집 데이터는 파기된다 | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-003** | 제약조건·범위 입력(최대 카드 수·연회비 상한·신규발급 허용·금액 범위) | US-D / F-02, F-09 | Must(F-02) / Could(F-09) | Functional | 1) 입력검증 테스트 2) 경계값 테스트 3) QA 검증 | ① 범위(최소·최대) 입력 처리 성공률 100% ②(실패) 최소값이 최대값보다 큰 등 잘못된 범위 입력 시 오류 표시, 계산 반영 0건 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-001A** | 미래지출 입력(카테고리·금액·시점) | US-A / F-01 | Must | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 카테고리·금액·시점 입력이 계산에 정상 반영된다 ②(실패) 음수·비숫자·상한 초과 입력 시 오류 표시, 계산 반영 0건 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-001B** | 이벤트 비종속 입력(자유 카테고리·양방향) | US-F / F-08 | Should | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 이벤트 종류 필수 선택 단계 0개 ② 증가·감소 양방향 처리 오류율 0% ③ 자유 카테고리 계산 반영률 100% ④(실패)**[Design Decision]** 특수문자·이모지 등 비정형 텍스트는 크래시 없이 "기타"로 정규화 처리(처리 실패율 0%) — PRD는 자유 입력을 허용한다고만 명시하며, 비정형 텍스트 처리 방식은 PRD에 없어 SRS 작성 시 도출했다 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-002** | 마이데이터 연동(카드 내역·과거소비 수집) | US-A / F-02 | Must | Functional | 1) 연동 통합테스트 2) 동의 상태전이 테스트 3) QA 검증 | ① 연동 완료 시 HeldCard·PastSpend가 수집된다 ②(실패) 동의 만료·철회 시 계산 요청은 400을 반환하며, 철회 시 수집 데이터는 즉시 파기된다 ③(실패)**[Derived]** 최초 연동 시 마이데이터 인증(전송요구) 자체가 실패하면 상태는 `미동의`로 유지되고, 사용자에게 재시도 안내가 표시된다(6.2.4 상태전이 근거) | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-003A** | 제약조건 입력(최대 카드 수·연회비 상한·신규발급 허용) | US-D / F-02 | Must | Functional | 1) 입력검증 테스트 2) QA 검증 | 제약조건이 계산 요청에 정상 반영되며, 상한을 벗어난 값은 저장 전 거부된다 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-003B** | 소득·지출 금액 범위 입력 | US-D / F-09 | Could | Functional | 1) 입력검증 테스트 2) 경계값 테스트 | ① 범위(최소·최대) 입력 처리 성공률 100% ②(실패) 최소값이 최대값보다 큰 등 잘못된 범위 입력 시 오류 표시, 계산 반영 0건 | Proposed | 개발 엔지니어 |
 | **REQ-FUNC-004** | 시나리오 계산(실적구간·한도·연회비 반영) | US-A / F-03 | Must | Functional | 1) 부하테스트 2) 회귀테스트 3) QA 검증 | ① `POST /calculate` p95 응답 ≤ 5초 ②(실패) 미래지출 입력 0건이면 400 반환, 과거만으로 계산한 결과를 노출하지 않음 ③(실패) 마이데이터 응답 지연·장애 시 "최근 확인된 데이터 기준" 경고와 기준일을 표시하며 계산을 지속함 | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-005** | 조합 최적화 + Net Benefit 게이팅 | US-A / F-04 | Must | Functional | 1) 게이팅 로직 테스트 2) 임계값 회귀테스트 3) QA 검증 | ① 유지 시 예상혜택과 추천 조합 예상혜택의 차액이 원 단위로 표시됨(누락률 0%) ②(실패) Net Benefit 임계 미달 시 "현재 조합 유지" 반환률 100%이며, 임계 미달인데 변경을 제안한 건수는 0건(1건 발생 시 롤아웃 중단) | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-006** | 결제수단 배분(계산·배분까지) | F-05 | Must | Functional | 1) 배분 로직 테스트 2) QA 검증 | 조합안 확정 시 카테고리별 배분 금액(Allocation)이 산출된다. 실행 대행은 포함하지 않는다 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-005** | 조합 최적화 + Net Benefit 게이팅 | US-A / F-04 | Must | Functional | 1) 게이팅 로직 테스트 2) 임계값 회귀테스트 3) QA 검증 | ① 유지 시 예상혜택과 추천 조합 예상혜택의 차액이 원 단위로 표시됨(누락률 0%) ②(실패) Net Benefit 임계 미달 시 "현재 조합 유지" 반환률 100%이며, 임계 미달인데 변경을 제안한 건수는 0건(1건 발생 시 롤아웃 중단). **계산식 세부 규칙 9개 항목이 미확정(8.5 체크리스트 참조)** | Proposed — 핵심 로직 미확정(8.5 참조) | 개발 엔지니어 |
+| **REQ-FUNC-006** | 결제수단 배분(계산·배분까지) | F-05 | Must | Functional | 1) 배분 로직 테스트 2) 정합성 검증 테스트 3) QA 검증 | ① 조합안 확정 시 카테고리별 배분 금액(Allocation)이 산출된다. 실행 대행은 포함하지 않는다 ②(실패)**[Derived]** 배분 금액의 카테고리별 합계가 원본 `FutureSpendPlan` 금액 합계와 불일치하면 오류로 처리하고 결과를 노출하지 않는다(불일치 건수 0건 유지) | Proposed | 개발 엔지니어 |
 | **REQ-FUNC-007** | 근거 공개(적용 규칙 + 제외조건·기준일) | US-B / F-06 | Must | Functional | 1) 근거항목 카운트 테스트 2) 거부 로직 테스트 3) QA 검증 | ① "근거 보기" 클릭 시 근거 항목 ≥ 6개 펼쳐짐 ② 미반영 비용은 "이 계산에는 포함되지 않았습니다" 문구로 누락률 0% 표시 ③(실패) 근거 항목 6개 미만 시 응답 거부(GR3 위반 0건) ④(실패) 마이데이터 응답 지연 시 기준일 미표시 건수 0건 | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-008** | 과거 패턴 기반 초기값 자동 제안 | US-D / F-11 | Must | Functional | 1) A/B 테스트(n=500, 250/250) 2) QA 검증 | ① 제안 커버리지 100% ② 온보딩 완료율이 대조군 대비 +15%p 이상 개선 ③(실패) 과거 소비 이력 3개월 미만·부재 신규 사용자는 업계 평균 기반 기본값과 "과거 데이터 기반 제안이 아닙니다" 안내를 제공(대체 제안 커버리지 100%, 무제안 노출 0건) | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-009** | 스코프 경계 고지 + 금지어 자동 검수 | US-C / F-12 | Should | Functional | 1) 금지어 스캐너 테스트 2) 사용자 인지도 설문 | 온보딩·결과 화면 노출 후 "해지·전환 대행을 제공하지 않는다"에 대한 사용자 범위 인지율 ≥ 90%, GR4(오인 문구 노출) 0건 | Proposed | 제품(PM) |
+| **REQ-FUNC-008** | 과거 패턴 기반 초기값 자동 제안 | US-D / F-11 | Must | Functional | 1) A/B 테스트(n=500, 250/250) 2) QA 검증 | ① 제안 커버리지 100% ② 온보딩 완료율이 대조군 대비 +15%p 이상 개선 ③(실패)**[TBD — 미승인]** 과거 소비 이력 3개월 미만·부재 신규 사용자는 업계 평균 기반 기본값과 "과거 데이터 기반 제안이 아닙니다" 안내를 제공(대체 제안 커버리지 100%, 무제안 노출 0건). **업계 평균값의 데이터 출처·최신성·편향 검토가 아직 승인되지 않았으므로, AC③은 승인 전까지 Must 확정 요구사항이 아니라 제안 상태로 취급한다** | Proposed — ①·② 확정, ③ TBD | 개발 엔지니어 |
+| **REQ-FUNC-009** | 스코프 경계 고지 + 금지어 자동 검수 | US-C / F-12 | Should | Functional | 1) 금지어 스캐너 테스트 2) 사용자 인지도 설문 | ① 온보딩·결과 화면 노출 후 "해지·전환 대행을 제공하지 않는다"에 대한 사용자 범위 인지율 ≥ 90% ②(실패)**[Derived]** 금지어 스캐너가 실행 대행을 암시하는 사전 정의 문구(UI·푸시·FAQ·CS)를 탐지하면 게시 전 자동 차단되며, GR4(오인 문구 노출) 위반 0건을 유지한다 | Proposed | 제품(PM) |
 | **REQ-FUNC-010** | 실행 완주율 계측(측정 전용) | US-C / F-13 | Should | Functional | 1) 계측 로직 테스트 2) 멱등성 테스트 3) QA 검증 | ① 조합안 선택 +30일 시점 완주 여부 1회 집계(재발송 0회) ② 완주율·북극성 지표 격차 20%p 이상 시 경보 ③(실패) 30일 내 무응답 시 무응답으로 자동 집계, 무응답률 별도 노출(집계 누락률 0%) ④(실패) 동일 `selection_id` 중복 제출 시 최초 1건만 유효 처리(중복 집계 0건) | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-011** | 단계적 전환 제안(효과 큰 카드부터) | F-07 | Could | Functional | 1) 정렬 로직 테스트 | 카드 다량 보유 사용자 대상으로 REQ-FUNC-005/007 결과를 재정렬해 표시한다(신규 계산 로직 없음, 1 스프린트 내 구현 가능) | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-011** | 단계적 전환 제안(효과 큰 카드부터) | F-07 | Could | Functional | 1) 정렬 로직 테스트 2) 동률 케이스 테스트 | 카드 다량 보유 사용자 대상으로 REQ-FUNC-005/007 결과를 재정렬해 표시한다. 정렬 기준:**[Design Decision — 확정 필요]** 카드별 기여 순혜택(Allocation 기준) 내림차순. 동률 처리 규칙은 **[TBD]**(PRD·SRS 어디에도 정의되지 않음) | Proposed | 개발 엔지니어 |
+
+> REQ-FUNC-011은 신규 계산 로직 없이 REQ-FUNC-005/007 결과의 표시 순서만 바꾸는 경량 확장이라 구현 규모가 작다(PRD 4장 근거). 이는 우선순위 산정의 참고 근거일 뿐 합격 판정 기준이 아니므로 인수 기준에서 제외했다.
 
 ### 4.2 비기능 요구사항
 
 | ID | 제목 | 출처 | 우선순위 | 유형 | 검증 방식 | 인수 기준 | 상태 | 담당자 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **REQ-NF-001** | 계산 응답시간 | PRD §5 성능 | Must | Performance | 부하 테스트(대량 요청) | `POST /calculate` p95 ≤ 5초 | Proposed | 시스템 운영자 |
-| **REQ-NF-002** | 근거 조회 응답 | PRD §5 성능 | Must | Performance | 통합 테스트 | `GET /evidence`는 근거 6항목 미달 시 지연 없이 즉시 거부 | Proposed | 개발 엔지니어 |
+| **REQ-NF-002** | 근거 조회 응답 | PRD §5 성능 | Must | Performance | 통합 테스트 | `GET /evidence`의 6항목 미달 거부 응답은**[Design Decision]** p95 ≤ 500ms 이내에 반환된다(계산 경로 5초 SLA와 분리된 경량 검증이므로 그보다 짧게 설정 — PRD에 없는 수치라 Derived가 아닌 Design Decision으로 표기) | Proposed | 개발 엔지니어 |
 | **REQ-NF-003** | 계산 오류율(GR1) | PRD §5 신뢰성 | Must | Reliability | `rule_version` 변경 시마다 경계값 회귀 테스트(≥200건) | 계산 오류율 ≤ 0.1%, 재계산 불일치 0건 | Proposed | 계산 품질 담당 |
 | **REQ-NF-004** | 월 가용성 | PRD §5 신뢰성 | Must | Reliability | 업타임 모니터링(1분 주기 헬스체크) | 월 가용성 ≥ 99.5%. 다운타임 정의: 5xx 응답 또는 10초 초과 타임아웃 연속 3회 이상 | Proposed | 시스템 운영자 |
 | **REQ-NF-005** | 마이데이터 오조회 방지 | PRD §5 보안 | Must | Security | 실시간 접근 로그 규칙 감사 | 오조회 0건. 발생 시 서비스 중단 + 감독당국 신고 | Proposed | 컴플라이언스·보안 |
 | **REQ-NF-006** | 데이터 최신성(GR5) | PRD §5 | Must | Reliability | 약관 수집 배치 결과 대조 | 갱신 지연 7일 초과 시 최신성 경고 + 데이터 운영 일간 알림, 30일 초과 시 해당 카드 계산 대상 자동 제외 | Proposed | 데이터 운영 담당 |
-| **REQ-NF-007** | 비용 관리(호출당 과금) | PRD §5 비용 | Should | Cost | 비용 대시보드 모니터링 | 마이데이터 계산 요청 건수를 성과 지표가 아닌 비용으로 관리 | Proposed | 제품(PM) |
-| **REQ-NF-008** | 감사 로그 보존 | PRD §5 보안 | Must | Security | 로그 보존 정책 점검 | 계산 요청·응답, 적용 `rule_version`, 입력 스냅샷, 마이데이터 응답 코드를 전건 로그 보존 | Proposed | 컴플라이언스·보안 |
+| **REQ-NF-007** | 비용 관리(호출당 과금) | PRD §5 비용 | Should | Cost | 비용 대시보드 모니터링 | 마이데이터 API 호출 비용을 일별·월별로 대시보드에 기록하고 성과 지표와 분리 관리한다. 월 예산 상한 및 초과 알림 임계치는**[TBD — 사업팀 확정 필요]**(PRD에 금액 미기재) | Proposed — 예산 임계치 TBD | 제품(PM) |
+| **REQ-NF-008** | 감사 로그 보존 | PRD §5 보안 | Must | Security | 로그 보존 정책 점검 | 계산 요청·응답, 적용 `rule_version`, 입력 스냅샷, 마이데이터 응답 코드를 로그로 남긴다. 보존 기간·접근 권한·마스킹·삭제 방식은**[TBD]**(8.3 리스크·6.2.3 참조, 개발 착수 전 확정 필요) | Proposed — 로깅 항목 확정, 보존정책 TBD | 컴플라이언스·보안 |
 | **REQ-NF-009** | Guardrail 모니터링·알림 | PRD §5 모니터링 | Must | Observability | 알림 테스트 | GR1~GR5·오조회 각각에 대해 정의된 탐지 방법과 알림 지연 SLA(5분~24시간)를 충족 | Proposed | 계산 품질/데이터 운영/PM/컴플라이언스 |
 
 ---
 
 ## 5. 추적성 매트릭스
 
-| 요구사항 ID | 모듈 | 논리 구성요소(3.3 참조) | 테스트 케이스 ID |
-| --- | --- | --- | --- |
-| REQ-FUNC-001 | 입력 모듈 | FutureSpendInputHandler | TC-FUNC-001 |
-| REQ-FUNC-002 | 마이데이터 연동 모듈 | MyDataConnector | TC-FUNC-002 |
-| REQ-FUNC-003 | 입력 모듈 | ConstraintInputHandler | TC-FUNC-003 |
-| REQ-FUNC-004 | 규칙 엔진 | CalculationEngine | TC-FUNC-004 |
-| REQ-FUNC-005 | Net Benefit 게이팅 | NetBenefitGate | TC-FUNC-005 |
-| REQ-FUNC-006 | 배분 엔진 | AllocationEngine | TC-FUNC-006 |
-| REQ-FUNC-007 | 근거 공개 서비스 | EvidenceDisclosureService | TC-FUNC-007 |
-| REQ-FUNC-008 | 초기값 제안 모듈 | DefaultSuggestionEngine | TC-FUNC-008 |
-| REQ-FUNC-009 | 스코프 고지 모듈 | ScopeNoticeGuard | TC-FUNC-009 |
-| REQ-FUNC-010 | 완주 계측 모듈 | OutcomeTracker | TC-FUNC-010 |
-| REQ-FUNC-011 | 배분 엔진 | TieredTransitionRanker | TC-FUNC-011 |
-| REQ-NF-001 | API Gateway | PerformanceMonitor | TC-NF-001 |
-| REQ-NF-003 | 규칙 엔진 | RegressionTestRunner | TC-NF-003 |
-| REQ-NF-004 | 인프라 | UptimeMonitor | TC-NF-004 |
-| REQ-NF-005 | 접근 감사 | AccessAuditLogger | TC-NF-005 |
-| REQ-NF-006 | 데이터 운영 | RuleFreshnessMonitor | TC-NF-006 |
-| REQ-NF-009 | 모니터링 | GuardrailAlertDispatcher | TC-NF-009 |
+> GPT 검토에서 REQ-NF-002·007·008이 매트릭스에서 누락된 것을 확인해 추가했다. 또한 PRD 출처와 검증 상태 열을 더해 "PRD 출처 → 요구사항 → 설계 구성요소 → 테스트 케이스 → 검증 상태"의 양방향 추적이 가능하도록 확장했다. 아직 테스트가 실행되지 않았으므로 검증 상태는 전 항목 "미실시"이며, 이는 상태 열의 "Proposed"(4장)와 일관된다.
+
+| PRD 출처 | 요구사항 ID | 설계 구성요소(3.3 참조) | 테스트 케이스 ID | 검증 상태 |
+| --- | --- | --- | --- | :---: |
+| US-A / F-01 | REQ-FUNC-001A | FutureSpendInputHandler | TC-FUNC-001A | 미실시 |
+| US-F / F-08 | REQ-FUNC-001B | FreeCategoryNormalizer | TC-FUNC-001B | 미실시 |
+| US-A / F-02 | REQ-FUNC-002 | MyDataConnector | TC-FUNC-002 | 미실시 |
+| US-D / F-02 | REQ-FUNC-003A | ConstraintInputHandler | TC-FUNC-003A | 미실시 |
+| US-D / F-09 | REQ-FUNC-003B | SpendRangeInputHandler | TC-FUNC-003B | 미실시 |
+| US-A / F-03 | REQ-FUNC-004 | CalculationEngine | TC-FUNC-004 | 미실시 |
+| US-A / F-04 | REQ-FUNC-005 | NetBenefitGate | TC-FUNC-005 | 미실시 |
+| F-05 | REQ-FUNC-006 | AllocationEngine | TC-FUNC-006 | 미실시 |
+| US-B / F-06 | REQ-FUNC-007 | EvidenceDisclosureService | TC-FUNC-007 | 미실시 |
+| US-D / F-11 | REQ-FUNC-008 | DefaultSuggestionEngine | TC-FUNC-008 | 미실시(③은 TBD, 4.1 참조) |
+| US-C / F-12 | REQ-FUNC-009 | ScopeNoticeGuard | TC-FUNC-009 | 미실시 |
+| US-C / F-13 | REQ-FUNC-010 | OutcomeTracker | TC-FUNC-010 | 미실시 |
+| F-07 | REQ-FUNC-011 | TieredTransitionRanker | TC-FUNC-011 | 미실시 |
+| PRD §5 성능 | REQ-NF-001 | PerformanceMonitor | TC-NF-001 | 미실시 |
+| PRD §5 성능 | REQ-NF-002 | ValidationResponseMonitor | TC-NF-002 | 미실시 |
+| PRD §5 신뢰성 | REQ-NF-003 | RegressionTestRunner | TC-NF-003 | 미실시 |
+| PRD §5 신뢰성 | REQ-NF-004 | UptimeMonitor | TC-NF-004 | 미실시 |
+| PRD §5 보안 | REQ-NF-005 | AccessAuditLogger | TC-NF-005 | 미실시 |
+| PRD §5 | REQ-NF-006 | RuleFreshnessMonitor | TC-NF-006 | 미실시 |
+| PRD §5 비용 | REQ-NF-007 | CostDashboard | TC-NF-007 | 미실시(예산 임계치 TBD) |
+| PRD §5 보안 | REQ-NF-008 | AuditLogStore | TC-NF-008 | 미실시(보존정책 TBD) |
+| PRD §5 모니터링 | REQ-NF-009 | GuardrailAlertDispatcher | TC-NF-009 | 미실시 |
 
 ---
 
@@ -298,8 +313,8 @@ erDiagram
     User ||--o{ PastSpend : "마이데이터 수집"
     User ||--o{ FutureSpendPlan : "직접 입력"
     User ||--|| Constraint : "제약 설정"
-    FutureSpendPlan ||--|| Calculation : "입력"
-    PastSpend ||--|| Calculation : "입력"
+    FutureSpendPlan }o--|| Calculation : "다건 입력 → 1건 계산"
+    PastSpend }o--|| Calculation : "다건 입력 → 1건 계산"
     BenefitRule ||--o{ Calculation : "규칙 적용"
     Calculation ||--o{ PlanCandidate : "후보 생성"
     PlanCandidate ||--o{ Allocation : "배분 산출"
@@ -331,6 +346,7 @@ erDiagram
 - `OutcomeLog.selection_id`는 유일해야 하며, 동일 값으로 중복 제출되면 최초 1건만 유효 처리된다(REQ-FUNC-010 AC4).
 - `User.mydata_consent_status`가 `만료` 또는 `철회`인 동안에는 신규 `Calculation` 생성이 거부된다(400).
 - `GET /evidence` 응답은 근거 항목이 6개 미만인 `Calculation`에 대해 생성되지 않는다(REQ-FUNC-007).
+- `Calculation.input_snapshot`은 계산 시점의 `FutureSpendPlan`·`PastSpend` 값을 복사한 스냅샷이며 라이브 참조가 아니다. 따라서 동일한 `FutureSpendPlan`·`PastSpend` 레코드가 이후 재계산에서 다시 읽혀 다른 `Calculation`의 스냅샷에 포함될 수 있다(ERD의 `}o--||`는 "다건 입력이 1건 계산에 반영됨"을 뜻하며, 동일 입력의 재사용을 배제하지 않는다).
 
 #### 6.2.3 보안 및 보존 (Security & Retention)
 
@@ -358,6 +374,18 @@ stateDiagram-v2
 | 계산(Calculation) | 요청 → (성공/실패/부분) | 부분 = 필수 데이터 누락 → 결과로 취급하지 않고 추천 중단 |
 | 조합안(PlanCandidate) | 제시 → (선택/미선택) → 만료 | `rule_version` 변경 또는 기준일 +30일 경과 시 만료 — 재계산 없이 실행 대상 아님 |
 | 완주 응답(OutcomeLog) | 미발송 → 발송 → (응답/무응답) | 발송은 선택 +30일 1회만. 무응답은 미완주로 집계, 재발송 없음 |
+
+#### 6.2.5 계산 가용성 조건 구분
+
+GPT 검토는 "마이데이터 장애 시 계산 지속"·"부분 계산은 결과 미노출"·"동의 만료 시 400 거부"가 서로 모순돼 보인다고 지적했다. 세 규칙은 서로 다른 조건에 적용되므로 아래와 같이 구분한다.
+
+| 조건 | 트리거 | 처리 | 근거 |
+| --- | --- | --- | --- |
+| ① 동의 상태 문제 | `User.mydata_consent_status = 만료 \| 철회` (인가 자체가 없음) | 계산 요청을 즉시 400으로 거부. 캐시 유무와 무관 | REQ-FUNC-002, 6.2.2 |
+| ② 마이데이터 API 일시 장애 | 동의는 `유효`(동의 상태)이나 API 호출이 타임아웃·5xx (직전 확인된 캐시 데이터는 존재) | 캐시된 최신 데이터로 계산을 계속하고 "최근 확인된 데이터 기준" 경고 + 기준일 표시 | REQ-FUNC-004 AC3 |
+| ③ 필수 데이터 자체 부재 | 동의는 유효하나 최초 연동 실패 등으로 캐시조차 없어 계산에 필요한 최소 데이터가 없음 | `Calculation.status = 부분`으로 처리하고 결과로 노출하지 않음(추천 중단) | 6.2.2, PRD §6 상태전이 |
+
+②와 ③을 구분하는 기준은 **"직전에 확인된 캐시 데이터가 존재하는가"**다. 캐시가 있으면 ②(경고와 함께 계속), 캐시조차 없으면 ③(결과 미노출)이다.
 
 ### 6.3 비즈니스 규칙 요약
 
@@ -411,7 +439,7 @@ outcome_logs              -- 선택·완주 응답 계측
 | A5 | 마이데이터 인가·제휴를 확보할 수 있다 | 0순위 — 착수 전 선결 | 계산 성립 자체 | 착수 전 선결 |
 | A1 | 미래 지출 입력의 수고가 혜택 최적화 보상으로 정당화된다 | 1순위 — 서비스 성립 전제 | 서비스 전체 — 온보딩이 성립하지 않음 | E2 |
 | A4 | 계산상 유리하면 사용자가 선택한다 | 1순위 — 북극성 전제 | 북극성 지표 자체 | E2 |
-| A2 | 사용자가 미래 지출을 숫자로 표현할 수 있다 | 2순위 | REQ-FUNC-001 입력 설계(REQ-FUNC-008로 완화) | E1·E3 |
+| A2 | 사용자가 미래 지출을 숫자로 표현할 수 있다 | 2순위 | REQ-FUNC-001A 입력 설계(REQ-FUNC-008로 완화) | E1·E3 |
 | A3 | 근거 공개가 신뢰를 만든다 | 2순위 | 차별점 ③ | E2(2군 비교) |
 | A6 | 실행 완주율이 낮다 | 3순위 — 참고 가설 | REQ-FUNC-010의 존재 이유 | E7 |
 
@@ -441,6 +469,24 @@ outcome_logs              -- 선택·완주 응답 계측
 - 마이데이터 카드 업권 API 인가·제휴(선결 조건, 미확정 시 베타 진입 불가)
 - 카드사 8곳 약관 데이터 수집·`rule_version` 관리 체계
 - Net Benefit 임계값(D2) 확정 → 이후 수익모델(D3) 결정 순서 준수
+
+### 8.5 Net Benefit 계산 규칙 — 확정 필요 항목 (TBD 체크리스트)
+
+REQ-FUNC-005(조합 최적화 + Net Benefit 게이팅)는 PRD가 "핵심 기능 1개"로 지목한 요구사항이지만, 임계값(D2) 외에도 계산식 자체의 세부 규칙이 PRD·SRS 어디에도 확정되어 있지 않다. 이 상태로 개발에 들어가면 개발자마다 다른 계산 결과를 구현할 위험이 있으므로, 임의로 값을 정하지 않고 **개발 착수 전 확정이 필요한 항목**으로 명시한다.
+
+| # | 미확정 항목 | 확정 필요 시점 |
+| :---: | --- | :---: |
+| 1 | Net Benefit 임계값(D2) 자체 | 착수 전(8.3 리스크) |
+| 2 | Gross Benefit 계산 기간(월/분기/연 단위 중 무엇을 기준으로 산출하는지) | 착수 전 |
+| 3 | 연회비의 월할·연할 처리 방식 | 착수 전 |
+| 4 | 실적 재적립 손실의 계산식 | 착수 전 |
+| 5 | 발급 대기 비용의 금액 환산 방식 | 착수 전 |
+| 6 | Net Benefit이 동일한 조합안 간 정렬·선택 규칙 | 착수 전 |
+| 7 | 범위로 입력된 미래지출 금액 중 최소·최대·기대값 중 무엇을 계산에 사용하는지 | 착수 전 |
+| 8 | 부가서비스·프로모션·가족카드 등 특수 혜택의 처리 방식 | 착수 전 |
+| 9 | 반올림 규칙 및 통화 정밀도(원 단위 절사/반올림 등) | 착수 전 |
+
+> 위 9개 항목이 모두 확정되기 전까지 REQ-FUNC-005는 "Proposed — 핵심 로직 미확정" 상태로 유지하며, 확정 즉시 본 SRS와 4.1 표를 갱신한다.
 
 ---
 
@@ -493,7 +539,9 @@ outcome_logs              -- 선택·완주 응답 계측
 
 ## 10. 결론
 
-CardFit MVP의 요구사항은 기능(REQ-FUNC 11건)·비기능(REQ-NF 9건) 모두 Given/When/Then 수준의 검증 가능한 인수기준을 갖췄으며, 4.1의 각 항목은 3.5의 Use Case Diagram과 5장 추적성 매트릭스를 통해 액터·테스트 케이스까지 연결된다. 다만 베타 착수를 위해서는 두 가지가 선결되어야 한다 — ① 마이데이터 인가·제휴 확정(가정 A5, 8.4 의존성), ② Net Benefit 임계값(D2) 확정(8.3 리스크, ADR-003). 이 두 조건이 충족되면 9장의 실험 로드맵(E0→E2)을 순서대로 진행해 북극성 KPI(조합안 선택률 ≥ 40%)를 검증하고, 이후 정식 개발에 착수한다.
+CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건) 모두 PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리해 갖췄으며, 4.1의 각 항목은 3.5의 Use Case Diagram과 5장 추적성 매트릭스(PRD 출처 → 요구사항 → 설계 구성요소 → 테스트 케이스 → 검증 상태)를 통해 양방향으로 연결된다. 서로 다른 우선순위가 섞여 있던 요구사항(舊 REQ-FUNC-001·003)은 원자 단위로 분리했고, PRD에 없는 내용을 SRS 작성 과정에서 도출·설계한 항목은 [Derived]/[Design Decision]/[TBD]로 출처를 구분해 표시했다.
+
+다만 베타 착수를 위해서는 세 가지가 선결되어야 한다 — ① 마이데이터 인가·제휴 확정(가정 A5, 8.4 의존성), ② Net Benefit 임계값(D2)과 계산식 세부 규칙 9개 항목 확정(8.5 체크리스트, ADR-003), ③ 감사 로그 보존정책·비용 예산 임계치 등 TBD로 표시된 항목의 승인(REQ-NF-007·008, REQ-FUNC-008 AC③). 이 조건이 충족되면 9장의 실험 로드맵(E0→E2)을 순서대로 진행해 북극성 KPI(조합안 선택률 ≥ 40%)를 검증하고, 이후 정식 개발에 착수한다.
 
 본 SRS는 예시 SRS 문서(AD-Core-Platform)의 7섹션 포맷을 그대로 따르되, 그 포맷이 담지 못하는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 8·9·11장에 한정 추가했다 — 표준 전체를 기계적으로 채운 완전판이 아니라, PRD 원문의 범위에 정확히 대응하는 확장이다.
 
