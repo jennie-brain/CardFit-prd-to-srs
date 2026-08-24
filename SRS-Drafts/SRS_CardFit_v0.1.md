@@ -17,6 +17,7 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 - **비기능 요구사항**: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)
 - **미해결 선결 조건**: 마이데이터 인가·제휴 확정(A5), Net Benefit 임계값(D2) 확정 — 8장 참조
 - **검증 경로**: E0~E7b 실험 로드맵과 중단 조건 — 9장 참조
+- **설계 다이어그램**: Use Case(3.5) · Sequence 5개(3.6) · Component(3.7) · 전체 흐름 Flow Chart(3.8) · 핵심 의사결정 Flow Chart(4.3) · Class Diagram(5.1) · ERD·상태전이(6.2) — 배경지식이 없어도 각 다이어그램 앞의 "읽는 법" 설명만으로 이해할 수 있도록 배치했다
 
 ### 목차
 
@@ -220,6 +221,133 @@ sequenceDiagram
     end
 ```
 
+**3.6.4 마이데이터 연동 및 동의 관리 (REQ-FUNC-002)**
+
+> 읽는 법: 화살표는 "누가 누구에게 무엇을 요청/응답하는지"를 시간 순서(위→아래)로 보여준다. `alt`/`else` 박스는 조건 분기(if/else)다.
+
+```mermaid
+sequenceDiagram
+    actor 사용자
+    participant 클라이언트
+    participant 마이데이터모듈 as 마이데이터 연동 모듈
+    participant 마이데이터API as 마이데이터 API(외부)
+
+    사용자->>클라이언트: 마이데이터 연동 시작(전송요구 동의)
+    클라이언트->>마이데이터모듈: 연동 요청
+    마이데이터모듈->>마이데이터API: 전송요구 인증 요청
+    alt 인증 성공
+        마이데이터API-->>마이데이터모듈: 동의 완료, HeldCard·PastSpend 최초 수집
+        마이데이터모듈-->>클라이언트: 상태=동의(REQ-FUNC-002 AC1)
+    else 인증 실패(실패 케이스)
+        마이데이터API-->>마이데이터모듈: 인증 실패
+        마이데이터모듈-->>클라이언트: 상태=미동의 유지, 재시도 안내(REQ-FUNC-002 AC3)
+    end
+    Note over 마이데이터모듈: 이후 동의 유효기간 경과(만료) 또는 사용자 철회 발생 가능
+    alt 만료 또는 철회
+        마이데이터모듈->>마이데이터모듈: 상태=만료/철회로 전이
+        사용자->>클라이언트: 계산 요청 시도
+        클라이언트->>마이데이터모듈: POST /calculate
+        마이데이터모듈-->>클라이언트: 400 반환(REQ-FUNC-002 AC2). 철회 시 데이터 즉시 파기
+    end
+```
+
+**3.6.5 과거 패턴 기반 초기값 자동 제안 (REQ-FUNC-008)**
+
+```mermaid
+sequenceDiagram
+    actor 사용자
+    participant 클라이언트
+    participant 초기값모듈 as 초기값 제안 모듈
+    participant 마이데이터모듈 as 마이데이터 연동 모듈
+
+    사용자->>클라이언트: 미래지출 입력 화면 진입
+    클라이언트->>초기값모듈: 초기값 제안 요청
+    초기값모듈->>마이데이터모듈: 과거 소비 이력 조회
+    alt 과거 이력 3개월 이상 보유
+        마이데이터모듈-->>초기값모듈: PastSpend 반환
+        초기값모듈-->>클라이언트: 개인화 초기값 제안(REQ-FUNC-008 AC1)
+    else 이력 3개월 미만 또는 부재(신규 사용자, TBD 항목)
+        마이데이터모듈-->>초기값모듈: 이력 부족
+        초기값모듈-->>클라이언트: 업계 평균 기반 기본값 + "과거 데이터 기반 제안이 아닙니다" 안내(REQ-FUNC-008 AC3, [TBD-미승인])
+    end
+    사용자->>클라이언트: 제안값 확인·수정
+```
+
+### 3.7 컴포넌트 다이어그램 (Component Diagram)
+
+> 읽는 법: 큰 상자는 클라이언트·CardFit 시스템·외부 시스템의 경계를, 작은 상자는 시스템 내부 컴포넌트(3.3의 논리 구성요소)를 나타낸다. 화살표는 "어느 컴포넌트가 어느 컴포넌트를 호출/의존하는지"를 뜻한다. 코드가 아니라 "부품이 어떻게 나뉘어 있고 서로 무엇을 주고받는지"를 보는 그림이다.
+
+```mermaid
+flowchart TB
+    User(["사용자"])
+
+    subgraph Client["클라이언트 앱"]
+        UI["입력·결과·근거 UI"]
+    end
+
+    subgraph System["CardFit 시스템"]
+        direction TB
+        InputMod["입력 처리 모듈<br/>(F-01·F-08·F-09)"]
+        MyDataMod["마이데이터 연동 모듈<br/>(F-02)"]
+        CalcEngine["규칙 엔진<br/>(F-03)"]
+        Gate["Net Benefit 게이팅<br/>(F-04)"]
+        AllocEngine["배분 엔진<br/>(F-05)"]
+        EvidenceSvc["근거 공개 서비스<br/>(F-06)"]
+        SuggestEngine["초기값 제안 모듈<br/>(F-11)"]
+        ScopeGuard["스코프 고지 모듈<br/>(F-12)"]
+        OutcomeMod["완주 계측 모듈<br/>(F-13)"]
+        DB[("데이터 저장소<br/>(6.2 엔터티)")]
+    end
+
+    subgraph External["외부 시스템"]
+        MyDataAPI["마이데이터 API"]
+        CardCo["카드사 시스템(8개사)"]
+    end
+
+    User --> UI
+    UI --> InputMod
+    UI --> ScopeGuard
+    InputMod --> CalcEngine
+    MyDataMod --> CalcEngine
+    MyDataMod --> SuggestEngine
+    CalcEngine --> Gate
+    Gate --> AllocEngine
+    Gate --> EvidenceSvc
+    AllocEngine --> DB
+    EvidenceSvc --> DB
+    CalcEngine --> DB
+    OutcomeMod --> DB
+    MyDataMod <--> MyDataAPI
+    UI --> CardCo
+    UI --> OutcomeMod
+```
+
+### 3.8 전체 서비스 논리 흐름 개요 (Flow Chart)
+
+배경지식이 없는 독자를 위해, 3.5~3.7의 세부 다이어그램에 앞서 사용자 한 명이 서비스를 이용하는 전체 흐름을 한 장으로 요약한다. 각 단계는 4장의 REQ-FUNC ID로 연결된다.
+
+```mermaid
+flowchart TD
+    A["① 마이데이터 연동<br/>(REQ-FUNC-002)"] --> B["② 제약조건·미래지출 입력<br/>(REQ-FUNC-001A/B, 003A/B)"]
+    B --> C{"과거 이력 있음?"}
+    C -- 있음 --> D["초기값 자동 제안<br/>(REQ-FUNC-008)"]
+    C -- "없음(TBD)" --> E["업계 평균 기본값 제안<br/>(REQ-FUNC-008 AC③, TBD)"]
+    D --> F["③ 시나리오 계산<br/>(REQ-FUNC-004)"]
+    E --> F
+    F --> G["④ Net Benefit 게이팅<br/>(REQ-FUNC-005, 8.5 TBD)"]
+    G -- 임계 미달 --> H["'현재 조합 유지' 결론"]
+    G -- 임계 통과 --> I["⑤ 결제수단 배분<br/>(REQ-FUNC-006)"]
+    I --> J["⑥ 근거 공개<br/>(REQ-FUNC-007)"]
+    H --> J
+    J --> K["⑦ 스코프 고지 후 실행<br/>(REQ-FUNC-009, 카드사 이동)"]
+    K --> L["⑧ 완주 여부 계측<br/>(REQ-FUNC-010)"]
+
+    style G fill:#fff3cd,stroke:#997404
+    style E fill:#fff3cd,stroke:#997404
+```
+
+> 노란색 상자(④·과거이력없음 분기)는 8.5·4.1에서 아직 확정되지 않은 규칙(TBD)이 걸린 단계임을 표시한다.
+
 ---
 
 ## 4. 구체적 요구사항
@@ -262,9 +390,109 @@ sequenceDiagram
 | **REQ-NF-008** | 감사 로그 보존 | PRD §5 보안 | Must | Security | 로그 보존 정책 점검 | 계산 요청·응답, 적용 `rule_version`, 입력 스냅샷, 마이데이터 응답 코드를 로그로 남긴다. 보존 기간·접근 권한·마스킹·삭제 방식은**[TBD]**(8.3 리스크·6.2.3 참조, 개발 착수 전 확정 필요) | Proposed — 로깅 항목 확정, 보존정책 TBD | 컴플라이언스·보안 |
 | **REQ-NF-009** | Guardrail 모니터링·알림 | PRD §5 모니터링 | Must | Observability | 알림 테스트 | GR1~GR5·오조회 각각에 대해 정의된 탐지 방법과 알림 지연 SLA(5분~24시간)를 충족 | Proposed | 계산 품질/데이터 운영/PM/컴플라이언스 |
 
+### 4.3 핵심 의사결정 흐름 — Net Benefit 게이팅 (Flow Chart)
+
+REQ-FUNC-005(Net Benefit 게이팅)는 PRD가 "핵심 기능 1개"로 지목한 요구사항이자 8.5에서 계산식 세부가 아직 TBD로 남아있는 항목이다. 코드나 표보다 그림이 이해하기 쉬우므로, **결정되어 있는 부분(회색)**과 **아직 정해지지 않은 부분(노란색)**을 구분해 흐름도로 나타낸다.
+
+```mermaid
+flowchart TD
+    Start(["계산 요청 접수"]) --> Gross["Gross Benefit 산출<br/>(계산 기간: TBD #2)"]
+    Gross --> Cost["전환비용 3항목 차감<br/>연회비(월/연할: TBD #3)<br/>실적 재적립 손실(산식: TBD #4)<br/>발급 대기 비용(환산: TBD #5)"]
+    Cost --> Net["Net Benefit = Gross − 전환비용"]
+    Net --> Compare{"Net Benefit ≥ 임계값 D2?<br/>(D2 값: TBD #1)"}
+    Compare -- 아니오 --> Keep["'현재 조합 유지' 반환<br/>(REQ-FUNC-005 AC②, 100% 보장)"]
+    Compare -- 예 --> Tie{"동일 Net Benefit 조합안<br/>복수 존재?(동률 규칙: TBD #6)"}
+    Tie -- 예 --> TieBreak["동률 처리 후 1건 확정<br/>(규칙 미정)"]
+    Tie -- 아니오 --> Confirm["추천 조합안 확정"]
+    TieBreak --> Confirm
+    Confirm --> Evidence["근거 공개(REQ-FUNC-007)"]
+    Keep --> Evidence
+
+    style Gross fill:#fff3cd,stroke:#997404
+    style Cost fill:#fff3cd,stroke:#997404
+    style Compare fill:#fff3cd,stroke:#997404
+    style Tie fill:#fff3cd,stroke:#997404
+    style TieBreak fill:#fff3cd,stroke:#997404
+```
+
+> 노란색 상자의 "TBD #1~#6"은 8.5 체크리스트의 항목 번호와 같다. 이 흐름도는 로직의 **순서**만 확정하며, 노란 상자 안의 **계산식 자체는 아직 정의되지 않았다** — 임의로 공식을 만들지 않고 도형으로만 그 존재와 위치를 표시했다.
+
 ---
 
 ## 5. 추적성 매트릭스
+
+### 5.1 클래스 다이어그램 (Class Diagram)
+
+> 읽는 법: 각 상자는 하나의 "부품"(클래스)이다. 위 칸은 이름, 가운데 칸은 그 부품이 들고 있는 데이터(속성), 아래 칸은 그 부품이 할 수 있는 동작(메서드)이다. 실선 화살표는 "이 부품이 저 부품을 사용한다"는 뜻이다. 왼쪽은 3.3의 로직 컴포넌트를, 오른쪽은 6.2.1의 데이터 엔터티를 클래스 형태로 표현한 것이다 — 즉 5.2 추적성 매트릭스의 "설계 구성요소" 열을 그림으로 풀어쓴 것이다.
+
+```mermaid
+classDiagram
+    class CalculationEngine {
+        +calculate(FutureSpendPlan[], Constraint, BenefitRule[]) Calculation
+    }
+    class NetBenefitGate {
+        +evaluate(PlanCandidate) boolean
+        +computeNetBenefit(PlanCandidate) decimal
+    }
+    class AllocationEngine {
+        +allocate(PlanCandidate) Allocation[]
+    }
+    class EvidenceDisclosureService {
+        +getEvidence(calculationId) EvidenceItem[]
+    }
+    class MyDataConnector {
+        +fetchHeldCards(userId) HeldCard[]
+        +fetchPastSpend(userId) PastSpend[]
+        +checkConsentStatus(userId) ConsentStatus
+    }
+    class DefaultSuggestionEngine {
+        +suggestDefaults(userId) FutureSpendPlan[]
+    }
+    class OutcomeTracker {
+        +sendCompletionRequest(planId) void
+        +recordCompletion(selectionId, response) void
+    }
+    class ScopeNoticeGuard {
+        +scanText(text) boolean
+    }
+    class TieredTransitionRanker {
+        +rank(PlanCandidate) RankedCard[]
+    }
+
+    class Calculation {
+        +calculation_id string
+        +as_of_date date
+        +status enum
+    }
+    class PlanCandidate {
+        +plan_id string
+        +net_benefit decimal
+        +status enum
+    }
+    class Allocation {
+        +plan_id string
+        +category string
+        +amount decimal
+    }
+    class OutcomeLog {
+        +selection_id string
+        +completion_status enum
+    }
+
+    CalculationEngine --> MyDataConnector : 데이터 조회
+    CalculationEngine ..> Calculation : 생성
+    NetBenefitGate ..> PlanCandidate : 평가·생성
+    CalculationEngine --> NetBenefitGate : 위임
+    AllocationEngine ..> Allocation : 생성
+    NetBenefitGate --> AllocationEngine : 확정 시 호출
+    EvidenceDisclosureService --> Calculation : 조회
+    DefaultSuggestionEngine --> MyDataConnector : 과거이력 조회
+    OutcomeTracker ..> OutcomeLog : 관리
+    TieredTransitionRanker --> PlanCandidate : 조회
+    TieredTransitionRanker --> Allocation : 조회
+```
+
+### 5.2 추적성 매트릭스
 
 > GPT 검토에서 REQ-NF-002·007·008이 매트릭스에서 누락된 것을 확인해 추가했다. 또한 PRD 출처와 검증 상태 열을 더해 "PRD 출처 → 요구사항 → 설계 구성요소 → 테스트 케이스 → 검증 상태"의 양방향 추적이 가능하도록 확장했다. 아직 테스트가 실행되지 않았으므로 검증 상태는 전 항목 "미실시"이며, 이는 상태 열의 "Proposed"(4장)와 일관된다.
 
@@ -305,7 +533,9 @@ sequenceDiagram
 | GET | `/calculations/{id}/evidence` | calculation_id | 근거 항목 목록(≥6개) | 6항목 미달 시 응답 거부 |
 | POST | `/outcomes/{id}/completion` | selection_id, 완주 여부 자기신고 | 집계 확인 | 측정 전용, 중복 제출은 멱등 처리 |
 
-### 6.2 데이터 모델 정의
+### 6.2 데이터 모델 정의 (ERD)
+
+> 읽는 법: 상자는 하나의 데이터 묶음(엔터티)이고, 상자 사이 선은 관계다. 선 끝의 기호(`||`, `o{` 등)는 "몇 개씩 연결되는지"를 뜻한다 — 예를 들어 `User ||--o{ HeldCard`는 "사용자 1명은 보유카드를 0개 이상 가질 수 있다"는 뜻이다.
 
 ```mermaid
 erDiagram
@@ -356,6 +586,8 @@ erDiagram
 - **미해결 항목**: 위 감사 로그의 구체적 보존 기간(예: N개월/N년)이 PRD에 명시되어 있지 않다. 임의로 정하지 않고 8.3 리스크에 확정 필요 항목으로 별도 등재할 것을 권고한다.
 
 #### 6.2.4 엔터티 상태 전이 — 4개 객체
+
+> 읽는 법: 동그라미/상자는 "상태"(예: 미동의, 동의)이고, 화살표는 "무엇을 하면 다음 상태로 바뀌는지"를 뜻한다. 아래는 마이데이터 동의 상태가 시간에 따라 어떻게 바뀌는지를 보여준다.
 
 ```mermaid
 stateDiagram-v2
