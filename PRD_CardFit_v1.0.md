@@ -120,9 +120,10 @@ journey
       서비스 인지: 3: 이서연
     section 입력·계산
       온보딩·입력 (F-01·F-02): 2: 이서연
-      계산 결과·근거 확인 (F-03·F-06): 4: 이서연
+      3개 시나리오 동시 계산 (F-03): 4: 이서연
     section 결정·실행
-      신규카드 포함안 비교 (F-04): 3: 이서연
+      예상대로 기본·보조 탭 비교 (F-04): 3: 이서연
+      시나리오별 근거 확인 (F-06): 4: 이서연
       실행 - 스코프 경계: 3: 이서연
     section 이후
       다음 달 실제 혜택 확인: 5: 이서연
@@ -145,7 +146,7 @@ journey
 
 ### Use Case Diagram
 
-아래 4장(기능 요구사항)의 F-01~F-13과 3장 사용자 스토리(US-A~US-F)를 액터·유스케이스 관계로 정리한 다이어그램이다. 실선은 액터-유스케이스 연관, 점선 화살표는 `<<include>>`/`<<extend>>` 관계를 의미한다.
+아래 4장(기능 요구사항)의 F-01~F-13과 3장 사용자 스토리(US-A~US-F)를 액터·유스케이스 관계로 정리한 다이어그램이다. UC4는 3개 지출 시나리오의 동시 계산, UC5는 시나리오별 독립 카드 조합·유지 결론과 탭 확인을 나타낸다. 실선은 액터-유스케이스 연관, 점선 화살표는 `<<include>>`/`<<extend>>` 관계를 의미한다.
 
 ![CardFit Use Case Diagram](diagrams/usecase_diagram_cardfit_v0.1.png)
 
@@ -268,6 +269,80 @@ journey
 
 ```mermaid
 erDiagram
+    User {
+        string user_id PK
+        string mydata_consent_status
+        string mydata_consent_scope
+        datetime consented_at
+    }
+    HeldCard {
+        string card_id PK
+        string issuer
+        string card_name
+        decimal annual_fee
+        date issued_at
+        int billing_cycle_month
+    }
+    PastSpend {
+        string spend_id PK
+        string merchant
+        string mcc_code
+        decimal amount
+        date paid_at
+    }
+    FutureSpendPlan {
+        string plan_id PK
+        string category
+        decimal amount_min
+        decimal amount_max
+        date planned_at
+        string confidence
+    }
+    Constraint {
+        string constraint_id PK
+        int max_card_count
+        decimal annual_fee_cap
+        boolean allow_new_issuance
+    }
+    BenefitRule {
+        string rule_id PK
+        decimal performance_threshold
+        decimal benefit_cap
+        string excluded_items
+        date effective_from
+        date effective_to
+        string rule_version
+    }
+    Calculation {
+        string calculation_id PK
+        string scenario
+        decimal expected_total_spend
+        string calculation_period
+        string input_snapshot
+        string rule_versions
+        date data_as_of
+        string status
+    }
+    PlanCandidate {
+        string candidate_id PK
+        string card_combination
+        decimal gross_benefit
+        decimal transition_cost
+        decimal net_benefit
+        boolean threshold_passed
+    }
+    Allocation {
+        string allocation_id PK
+        string category
+        decimal allocated_amount
+    }
+    OutcomeLog {
+        string outcome_id PK
+        string selected_scenario
+        datetime selected_at
+        string completion_status
+        datetime responded_at
+    }
     User ||--o{ HeldCard : "마이데이터 수집"
     User ||--o{ PastSpend : "마이데이터 수집"
     User ||--o{ FutureSpendPlan : "직접 입력"
@@ -279,6 +354,8 @@ erDiagram
     PlanCandidate ||--o{ Allocation : "배분 산출"
     PlanCandidate ||--o| OutcomeLog : "선택·완주 계측"
 ```
+
+> ERD 상자에는 구현·검증에 필요한 주요 필드를 함께 표시한다. `Calculation.scenario`는 `LOW`·`EXPECTED`·`HIGH` 중 하나이며, `calculation_period`와 시나리오별 증감 산식은 D5 확정 후 구체 타입·제약조건을 고정한다.
 
 | 엔터티 | 주요 필드 | 출처 |
 | --- | --- | --- |
