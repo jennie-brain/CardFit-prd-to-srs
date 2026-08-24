@@ -20,7 +20,7 @@ CardFit(미래지출 카드설계 서비스) PRD를 소프트웨어 요구사항
 
 ### 2. 예외 규칙: PRD가 예시 포맷의 범위를 벗어나는 경우에만 표준 구조로 확장
 
-CardFit PRD(`PRD_CardFit_v1.1.md`)에는 위 7개 섹션만으로는 담기지 않는 내용이 이미 존재한다(예: 실험·롤아웃·측정 설계, 리스크·가정·의존성, 근거/Proof 출처, Use Case Diagram 기반 시나리오 흐름, Guardrail 모니터링·알림 SLA 등). **이런 내용은 임의로 생략하거나 억지로 위 7개 섹션에 욱여넣지 않는다.** 대신 ISO/IEC/IEEE 29148:2018 표준이 제공하는 해당 구조(예: Interaction Sequences, References, Assumptions & Constraints 등)를 **그 초과분에 한해서만** 가져와 확장한다.
+CardFit PRD(`PRD_CardFit_v1.2.md`)에는 위 7개 섹션만으로는 담기지 않는 내용이 이미 존재한다(예: 실험·롤아웃·측정 설계, 리스크·가정·의존성, 근거/Proof 출처, Use Case Diagram 기반 시나리오 흐름, Guardrail 모니터링·알림 SLA 등). **이런 내용은 임의로 생략하거나 억지로 위 7개 섹션에 욱여넣지 않는다.** 대신 ISO/IEC/IEEE 29148:2018 표준이 제공하는 해당 구조(예: Interaction Sequences, References, Assumptions & Constraints 등)를 **그 초과분에 한해서만** 가져와 확장한다.
 
 즉:
 - 기본값 = AD-Core-Platform 예시와 같은 7섹션 포맷
@@ -37,9 +37,10 @@ CardFit PRD(`PRD_CardFit_v1.1.md`)에는 위 7개 섹션만으로는 담기지 �
 | 파일/폴더 | 내용 |
 | --- | --- |
 | `PRD_CardFit_v1.0.md` | CardFit 제품 요구사항 문서(PRD) 본문 — 완성도 검토 6개 항목 통과 후 확정된 v1.0 |
-| `PRD_CardFit_v1.1.md` / `.html` | CardFit PRD 최신 기준선 — 사용자 친화적 3개 예상 시나리오, 확정 계산 정책, 추천안 이행 검증, 최종 품질검토 반영 |
+| `PRD_CardFit_v1.1.md` / `.html` | CardFit PRD v1.1 — 사용자 친화적 3개 예상 시나리오와 추천안 이행 검증 도입본 |
+| `PRD_CardFit_v1.2.md` | CardFit PRD 최신 기준선 — 입력 모델·항목별 자기보고·BASE KPI 분모·정책 버전·정책 승인 상태 보완 |
 | `PRD_CardFit_v0.1_품질검토.md` | PRD의 측정 가능성·검증 가능성 품질 검토 및 보완 결과 |
-| `diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png` | Use Case Diagram (벡터 원본 / 이미지) |
+| `diagrams/usecase_diagram_cardfit_v1.2.svg` / `.png` | PRD v1.2 Use Case Diagram (벡터 원본 / 이미지) |
 | `p26-29_PRD.md` | master-deck 원본 PRD 발표 원고(참고용 출처 자료) |
 | `SRS-Drafts/` | (예정) SRS 변환 산출물이 저장될 위치 |
 
@@ -47,6 +48,7 @@ CardFit PRD(`PRD_CardFit_v1.1.md`)에는 위 7개 섹션만으로는 담기지 �
 
 - [x] PRD 작성 (`PRD_CardFit_v1.0.md`)
 - [x] PRD v1.1 작성·최종검토 (`PRD_CardFit_v1.1.md`, `.html`) — 3개 예상 시나리오와 추천안 이행 검증 반영, 6개 품질 요건 통과
+- [x] PRD v1.2 보완본 작성 (`PRD_CardFit_v1.2.md`) — 계산 정책 승인 상태, 입력·이행 데이터 모델, KPI 분모와 정책 버전 보완
 - [x] PRD 품질 검토 — 측정 가능성/검증 가능성 (`PRD_CardFit_v0.1_품질검토.md`)
 - [x] Use Case Diagram 작성 (`diagrams/`)
 - [x] SRS 확정본 작성 (`SRS-Drafts/SRS_CardFit_v1.0.md`, `.html`) — 기본 7섹션과 가정·제약·의존성, 검증, 참고자료 포함
