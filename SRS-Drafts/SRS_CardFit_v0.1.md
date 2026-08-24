@@ -222,20 +222,40 @@ erDiagram
     PlanCandidate ||--o| OutcomeLog : "선택·완주 계측"
 ```
 
-| 엔터티 | 주요 필드 | 출처 |
-| --- | --- | --- |
-| User | user_id, 마이데이터 동의 상태·범위·일시 | 자체 |
-| HeldCard | 카드사, 카드명, 연회비, 발급일, 실적 기준월 | 마이데이터 API |
-| PastSpend | 가맹점, 업종코드, 금액, 결제일 | 마이데이터 API |
-| FutureSpendPlan | 카테고리(자유 입력 허용), 금액(단일 또는 범위), 시점, 확실도 | 사용자(F-01) |
-| Constraint | 최대 카드 수, 연회비 상한, 신규 발급 허용 여부 | 사용자(F-02) |
-| BenefitRule | 전월실적 구간, 통합할인한도, 제외 항목, 적용 시작·종료일, rule_version | 카드사 약관(수집·버전관리) |
-| Calculation | 입력 스냅샷, 적용 rule_version 목록, 기준일, 미반영 항목 | 규칙 엔진 |
-| PlanCandidate | 조합 구성, Gross Benefit, 전환비용 3항목, Net Benefit, 임계 통과 여부 | 규칙 엔진 |
-| Allocation | 배정 카테고리, 배분 금액 | 규칙 엔진 |
-| OutcomeLog | 선택 여부·일시, 30일 후 완주 응답 | 자체(F-13) |
+> 아래 6.2.1~6.2.4는 ISO/IEC/IEEE 29148:2018 §9.6.15(Logical database requirements — 정보 유형, 엔터티·관계, 무결성 제약, 보안, 보존 요건)의 항목 구성을 따라 6장(부록) 안에서 확장했다. 필드 타입은 PRD에 명시된 값에서 직접 추론했으며, PRD가 값을 정하지 않은 항목은 창작하지 않고 "미정"으로 표시했다.
 
-**엔터티 상태 전이 — 4개 객체**
+#### 6.2.1 엔터티 및 필드 정의 (필드:타입)
+
+| 엔터티 | 필드(명:타입) | 출처 |
+| --- | --- | --- |
+| User | user_id:string(PK), mydata_consent_status:enum(미동의\|동의\|만료\|철회), mydata_consent_scope:string, mydata_consent_at:datetime | 자체 |
+| HeldCard | card_id:string(PK), issuer:string, card_name:string, annual_fee:decimal, issued_at:date, billing_cycle_month:int | 마이데이터 API |
+| PastSpend | merchant:string, mcc_code:string, amount:decimal, paid_at:date | 마이데이터 API |
+| FutureSpendPlan | category:string(자유 입력), amount_min:decimal, amount_max:decimal(단일값이면 min=max), planned_at:date, confidence:enum(**값 미정 — PRD 미명시**) | 사용자(F-01) |
+| Constraint | max_card_count:int, annual_fee_cap:decimal, allow_new_card_issuance:boolean | 사용자(F-02) |
+| BenefitRule | card_id:string(FK), tier_threshold:decimal, combined_discount_cap:decimal, excluded_items:array\<string\>, effective_from:date, effective_to:date, rule_version:string | 카드사 약관(수집·버전관리) |
+| Calculation | calculation_id:string(PK), input_snapshot:json, applied_rule_versions:array\<string\>, as_of_date:date, unreflected_items:array\<string\>, status:enum(성공\|실패\|부분) | 규칙 엔진 |
+| PlanCandidate | plan_id:string(PK), calculation_id:string(FK), composition:json, gross_benefit:decimal, conversion_cost_annual_fee:decimal, conversion_cost_reenrollment_loss:decimal, conversion_cost_issuance_wait:decimal, net_benefit:decimal, threshold_passed:boolean, status:enum(제시\|선택\|미선택\|만료) | 규칙 엔진 |
+| Allocation | plan_id:string(FK), category:string, amount:decimal | 규칙 엔진 |
+| OutcomeLog | plan_id:string(FK), selection_id:string(중복 방지 키), selected_at:datetime, completion_sent_at:datetime, completion_status:enum(미발송\|발송\|응답\|무응답) | 자체(F-13) |
+
+#### 6.2.2 무결성 제약 (Integrity Constraints)
+
+- `BenefitRule.rule_version`이 변경되면, 이를 참조하는 모든 `PlanCandidate`는 자동으로 `상태=만료`가 된다(재계산 전까지 유효하지 않음).
+- `PlanCandidate.status=만료`인 레코드는 실행(선택) 대상이 될 수 없다.
+- `Calculation.status=부분`(필수 데이터 누락)인 레코드는 결과로 노출되지 않으며 `result_viewed` 집계에서 제외된다.
+- `OutcomeLog.selection_id`는 유일해야 하며, 동일 값으로 중복 제출되면 최초 1건만 유효 처리된다(REQ-FUNC-010 AC4).
+- `User.mydata_consent_status`가 `만료` 또는 `철회`인 동안에는 신규 `Calculation` 생성이 거부된다(400).
+- `GET /evidence` 응답은 근거 항목이 6개 미만인 `Calculation`에 대해 생성되지 않는다(REQ-FUNC-007).
+
+#### 6.2.3 보안 및 보존 (Security & Retention)
+
+- `HeldCard`·`PastSpend`는 마이데이터 API로 수집되는 개인신용정보로 분류되며, 접근 범위는 `User.mydata_consent_scope`를 벗어날 수 없다(REQ-NF-005, 오조회 방지).
+- `User.mydata_consent_status=철회` 시 `HeldCard`·`PastSpend`는 즉시 파기된다.
+- `Calculation`의 입력 스냅샷·적용 `rule_version`·마이데이터 응답 코드는 감사 목적으로 전건 로그 보존된다(REQ-NF-008).
+- **미해결 항목**: 위 감사 로그의 구체적 보존 기간(예: N개월/N년)이 PRD에 명시되어 있지 않다. 임의로 정하지 않고 8.3 리스크에 확정 필요 항목으로 별도 등재할 것을 권고한다.
+
+#### 6.2.4 엔터티 상태 전이 — 4개 객체
 
 ```mermaid
 stateDiagram-v2
@@ -330,6 +350,7 @@ outcome_logs              -- 선택·완주 응답 계측
 | 인센티브 | 수익모델 미정 — 발급 연계 수수료 모델이면 "유지" 결론은 수익 0원 | Net Benefit 임계값(D2)을 먼저 확정 후 정합한 수익모델을 선정(ADR-003) | 결정 필요 — D2 확정 직후 |
 | 데이터 | 카드 약관 통합 API 부재 — 수집 실패 시 계산 신뢰도 붕괴 | rule_version 관리 + 최신성 경고(REQ-NF-006) + 초기 범위 축소 | 관리 중 |
 | 운영 | 마이데이터 호출당 과금 — 사용자 증가가 곧 비용 증가 | 계산 요청 건수를 비용으로 관리(REQ-NF-007) | 관리 중 |
+| 데이터 | 감사 로그(계산 요청·응답, rule_version, 마이데이터 응답코드)의 보존 기간이 PRD에 미정(6.2.3 참조) | 개인정보보호법·마이데이터 가이드라인 기준으로 보존 기간을 확정 | 결정 필요 — 개발 착수 전 |
 
 ### 8.4 의존성
 
