@@ -1,0 +1,1771 @@
+<title>CardFit PRD v1.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FBFAF6;
+  --surface: #FFFFFF;
+  --surface-2: #F4F1E9;
+  --ink: #1E232C;
+  --muted: #5B6472;
+  --border: #E1DACB;
+  --accent: #2C5F6F;
+  --accent-soft: #E4EEF0;
+  --accent-ink: #17414D;
+  --accent-2: #9C6118;
+  --accent-2-soft: #F7ECDA;
+  --link: #1F5A6B;
+  --code-bg: #F1EEE4;
+  --shadow: rgba(30,35,44,0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14181D;
+    --surface: #1B2027;
+    --surface-2: #20262E;
+    --ink: #E7E4DA;
+    --muted: #939BA6;
+    --border: #2B323C;
+    --accent: #74BAC9;
+    --accent-soft: #1E3238;
+    --accent-ink: #CDEBF1;
+    --accent-2: #E3AD5B;
+    --accent-2-soft: #3A2E1C;
+    --link: #8FCBD8;
+    --code-bg: #171B21;
+    --shadow: rgba(0,0,0,0.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14181D;
+  --surface: #1B2027;
+  --surface-2: #20262E;
+  --ink: #E7E4DA;
+  --muted: #939BA6;
+  --border: #2B323C;
+  --accent: #74BAC9;
+  --accent-soft: #1E3238;
+  --accent-ink: #CDEBF1;
+  --accent-2: #E3AD5B;
+  --accent-2-soft: #3A2E1C;
+  --link: #8FCBD8;
+  --code-bg: #171B21;
+  --shadow: rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Sans KR", "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.layout { display: grid; grid-template-columns: 260px minmax(0,1fr); min-height: 100vh; }
+
+.sidebar {
+  position: sticky; top: 0; align-self: start; height: 100vh;
+  overflow-y: auto; padding: 28px 20px 40px;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+}
+.sidebar .brand {
+  font-family: "IBM Plex Serif", serif; font-weight: 700; font-size: 1.05rem;
+  color: var(--accent-ink); margin: 0 0 2px;
+}
+.sidebar .brand-sub {
+  font-size: 0.78rem; color: var(--muted); margin: 0 0 22px; letter-spacing: .02em;
+}
+.sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar nav a {
+  color: var(--muted); text-decoration: none; font-size: 0.88rem;
+  padding: 7px 10px; border-radius: 6px; line-height: 1.35;
+}
+.sidebar nav a:hover { background: var(--accent-soft); color: var(--accent-ink); }
+.sidebar .meta {
+  margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);
+  font-size: 0.74rem; color: var(--muted);
+}
+
+main { padding: 48px clamp(20px, 5vw, 72px) 100px; min-width: 0; }
+.doc { max-width: 800px; margin: 0 auto; }
+
+h1, h2, h3, h4 {
+  font-family: "IBM Plex Serif", serif; color: var(--ink);
+  text-wrap: balance; line-height: 1.3;
+}
+h1 { font-size: 1.9rem; margin: 0 0 6px; }
+h2 {
+  font-size: 1.5rem; margin: 3em 0 0.7em; padding-top: 0.4em;
+  border-top: 1px solid var(--border); scroll-margin-top: 20px;
+}
+h2:first-of-type { border-top: none; margin-top: 0; }
+h3 { font-size: 1.18rem; margin: 2em 0 0.6em; color: var(--accent-ink); scroll-margin-top: 20px; }
+h4 { font-size: 1.02rem; margin: 1.6em 0 0.5em; color: var(--muted); scroll-margin-top: 20px; }
+
+p { margin: 0.9em 0; max-width: 68ch; }
+ul, ol { padding-left: 1.4em; }
+li { margin: 0.35em 0; max-width: 66ch; }
+strong { font-weight: 600; }
+
+a { color: var(--link); }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2.5em 0; }
+
+blockquote {
+  margin: 1.1em 0; padding: 0.8em 1.1em; background: var(--surface-2);
+  border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+  color: var(--muted); font-size: 0.94rem; max-width: 68ch;
+}
+blockquote p { margin: 0.3em 0; }
+
+code {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.87em;
+  background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px;
+}
+pre:not(.mermaid) {
+  background: var(--code-bg); padding: 1em; border-radius: 8px;
+  overflow-x: auto; font-family: "IBM Plex Mono", monospace; font-size: 0.85rem;
+}
+pre:not(.mermaid) code { background: none; padding: 0; }
+
+.table-wrap { overflow-x: auto; margin: 1.4em 0; border: 1px solid var(--border); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.87rem; background: var(--surface); }
+th, td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+th {
+  background: var(--surface-2); font-family: "IBM Plex Sans", sans-serif; font-weight: 600;
+  font-size: 0.78rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--muted);
+  position: sticky; top: 0;
+}
+tr:last-child td { border-bottom: none; }
+td code { font-size: 0.85em; }
+
+/* 4.1/4.2 요구사항 표 — 9개 칸을 스크롤 없이 한 화면에 담기 위해
+   고정 레이아웃 + 칸별 폭 배분 + 줄바꿈으로 처리한다 */
+.req-table { table-layout: fixed; font-size: 0.78rem; line-height: 1.5; }
+.req-table th, .req-table td {
+  padding: 8px 10px; white-space: normal; overflow-wrap: break-word; word-break: keep-all;
+}
+.req-table th:nth-child(1), .req-table td:nth-child(1) { width: 7%; }
+.req-table th:nth-child(2), .req-table td:nth-child(2) { width: 11%; }
+.req-table th:nth-child(3), .req-table td:nth-child(3) { width: 7%; }
+.req-table th:nth-child(4), .req-table td:nth-child(4) { width: 7%; }
+.req-table th:nth-child(5), .req-table td:nth-child(5) { width: 11%; }
+.req-table th:nth-child(6), .req-table td:nth-child(6) { width: 8%; }
+.req-table th:nth-child(7), .req-table td:nth-child(7) { width: 30%; }
+.req-table th:nth-child(8), .req-table td:nth-child(8) { width: 10%; }
+.req-table th:nth-child(9), .req-table td:nth-child(9) { width: 9%; }
+.req-table .tag { font-size: 0.68rem; }
+
+pre.mermaid {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px; overflow-x: auto; margin: 1.6em 0; text-align: center;
+}
+/* 시퀀스 다이어그램 autonumber 숫자를 흰색으로 — 배경 원과 대비되어 더 잘 보이도록 */
+.mermaid .sequenceNumber { fill: #ffffff !important; font-weight: 700 !important; }
+
+/* 4.3 Net Benefit 게이팅 흐름도 — 세로로 긴 다이어그램을 한 화면 안에 맞춘다 */
+#mermaid-flow-netbenefit svg { max-height: 76vh; width: auto; height: auto; }
+
+/* 5.1 클래스 다이어그램 — 원래 작게 줄어드는 것을 막고 실제 크기로 키운 뒤
+   상자 안에서만 스크롤되게 한다(페이지 전체 폭에는 영향 없음) */
+#mermaid-class-diagram { overflow: auto; max-height: 82vh; }
+#mermaid-class-diagram svg { max-width: none !important; width: 1200px !important; height: auto !important; }
+
+img { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--border); display: block; margin: 1.2em 0; }
+
+.tag {
+  display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 0.72rem;
+  font-weight: 500; padding: 0.1em 0.5em; border-radius: 5px; letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.tag-prd { background: var(--accent-soft); color: var(--accent-ink); }
+.tag-derived { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+.tag-design { background: var(--accent-soft); color: var(--accent-ink); }
+.tag-tbd { background: var(--accent-2-soft); color: var(--accent-2); font-weight: 600; }
+
+.doc > p:first-of-type { margin-top: 0; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  main { padding: 32px 20px 80px; }
+}
+</style>
+
+<div class="layout">
+  <aside class="sidebar">
+    <p class="brand">CardFit PRD</p>
+    <p class="brand-sub">v1.1 · 제품 요구사항 기준선</p>
+    <nav>
+<a href="#1">1. 개요·목표</a>
+<a href="#2">2. 사용자와 페르소나</a>
+<a href="#3-ac-acceptance-criteria">3. 스토리·AC</a>
+<a href="#4-functional">4. 기능 요구사항</a>
+<a href="#5-nfr-non-functional-requirement">5. 비기능 요구사항</a>
+<a href="#6">6. 데이터·인터페이스</a>
+<a href="#7-inout-adr">7. 범위·리스크·ADR</a>
+<a href="#8">8. 실험·측정</a>
+<a href="#9-proof">9. 근거</a>
+<a href="#10-prd">10. 최종 품질검토</a>
+<a href="#11">11. 결론</a>
+<a href="#12">12. 출처</a>
+    </nav>
+    <p class="meta">원본: PRD_CardFit_v1.1.md<br>CardFit 제품 요구사항 기준선</p>
+  </aside>
+  <main>
+    <div class="doc">
+<h1 id="cardfit-v11">[CardFit 미래지출 카드설계 서비스] v1.1</h1>
+<ul>
+<li>Owner 팀: 진정가</li>
+<li>최종 업데이트: 2026-08-24</li>
+<li>변경 이력:</li>
+<li>v0.1 → v0.2: 팀 결정사항을 기준선으로 정리하고 측정 경로·실패 케이스·의존성·ADR을 보강</li>
+<li>v0.2 → v1.0 — 완성도 검토 6개 항목(목표·지표/스토리·AC/기능요구/비기능/리스크·가정/범위) 전항 통과 확인 후 확정 배포</li>
+<li>v1.0 정합성 보정: Requirement Trace와 decision log의 3개 시나리오별 독립 카드 조합 추천 요구사항을 복원</li>
+<li>v1.0 → v1.1: 사용자 시나리오를 <strong>예상보다 적게 쓸 때·예상한 만큼 쓸 때·예상보다 많이 쓸 때</strong>로 변경하고 계산 정책을 확정. 추천안 이행을 자기보고·마이데이터 관측으로 검증하는 제품 요구사항과 최종 품질검토를 추가</li>
+</ul>
+<blockquote>
+<p>출처: <code>master-deck/p01~p32</code> 발표 원고, 정본 <code>효진/0820/final/01_서비스_역기획서.md</code> 및 <code>09_PRD_Requirement_Trace_v0.1.md</code>
+본 문서에 명시된 목표·임계값·기능 범위·판정 규칙은 v1.1의 제품 결정사항이다. 아직 운영 이력이 없는 지표는 목표의 효력을 낮추지 않으며, 8장의 실험을 통해 기준선을 최초 확보하고 목표 대비 차이를 측정한다.</p>
+</blockquote>
+<h2 id="_1">문서 요약</h2>
+<p>CardFit은 사용자가 입력한 예상 미래지출을 기준으로 카드 조합을 계산하고, 지출 변동에도 추천 결론이 유지되는지 함께 보여주는 서비스다. 사용자는 예상금액을 한 번만 입력하며 시스템은 <code>예상보다 적게 쓸 때(80%)</code>, <code>예상한 만큼 쓸 때(100%)</code>, <code>예상보다 많이 쓸 때(120%)</code>를 자동 계산한다. 추천 이후에는 자기보고와 동의 범위 안의 마이데이터 후속 관측을 독립적으로 수집해 행동 완주·유지 준수·조합안 이행을 구분한다.</p>
+<p>본 PRD는 제품 목표와 사용자 요구를 정의한다. 후속 SRS는 AD-Core-Platform 예시의 7개 섹션을 기본으로 사용하며, PRD 내용이 그 범위를 벗어날 때만 ISO/IEC/IEEE 29148:2018의 제한·가정과 의존성·검증·논리 데이터 요구사항·품질 속성 등 관련 항목을 확장한다. 표준 전체 항목을 채우는 풀 버전 SRS는 이번 변환 목표가 아니다.</p>
+<h3 id="_2">목차</h3>
+<ol>
+<li>개요·목표</li>
+<li>사용자와 페르소나</li>
+<li>사용자 스토리와 수용 기준</li>
+<li>기능 요구사항</li>
+<li>비기능 요구사항</li>
+<li>데이터·인터페이스 개요</li>
+<li>범위·리스크·ADR·가정·의존성</li>
+<li>실험·롤아웃·측정</li>
+<li>근거</li>
+<li>PRD 최종 품질검토</li>
+<li>결론 및 제품 인사이트</li>
+<li>출처</li>
+</ol>
+<hr>
+<h2 id="1">1. 개요·목표</h2>
+<h3 id="pain">문제 정의 (Pain 지표 포함)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>Pain</th>
+<th>실패 KPI (수치화)</th>
+<th>측정 경로</th>
+<th>연결된 Needs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">P1</td>
+<td>전월실적 구간·혜택한도·연회비가 얽혀 사용자가 스스로 카드 조합을 계산할 수 없다</td>
+<td>수기 판단 소요시간 <strong>240분</strong> — 목표(p95 ≤ 5분) 대비 <strong>48배</strong> 이상 소요</td>
+<td><strong>E0 베이스라인 실험</strong>(8장): 실사용자 n=15~20 스톱워치 실측·자기보고, 베타 착수 전 확정</td>
+<td>N1 계산 대행</td>
+</tr>
+<tr>
+<td style="text-align: center;">P2</td>
+<td>기존 카드 추천 서비스는 과거 소비만 기준으로 삼는다</td>
+<td>경쟁 6곳(뱅크샐러드·카드고릴라·더쎈카드·토스·Credit Karma·NerdWallet) 중 미래소비 반영 서비스 <strong>0/6 = 0%</strong></td>
+<td>경쟁사 UI·PDF 실측 조사(<code>윤정/0818</code> 자료), 반기 1회 재조사</td>
+<td>N2 미래지출 기준 계산</td>
+</tr>
+<tr>
+<td style="text-align: center;">P3</td>
+<td>계산이 맞아도 해지·전환 실행 단계에서 마찰이 크다</td>
+<td>카드 해지 관련 민원 <strong>6,720건(2022) → 12,661건(2025), +88.4%</strong>(금감원) — 발급매수 증가율(+8.5%) 대비 <strong>약 10.4배</strong></td>
+<td>금감원 민원 통계 공시자료, 연 1회 갱신 확인</td>
+<td>N3 추천안 이행 가시화</td>
+</tr>
+<tr>
+<td style="text-align: center;">P4 (결과)</td>
+<td>위 세 가지가 겹쳐 사용자가 근거 없는 카드사 자동대체에 결제 포트폴리오를 위임한다</td>
+<td>자동대체 시 공개되는 계산 근거 항목 수 <strong>0개</strong></td>
+<td>카드사 자동대체 안내 UI 정성 조사, 반기 1회</td>
+<td>N4 근거 공개</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Needs (실패 KPI 대비 목표 임계치)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Needs</th>
+<th>목표 임계치</th>
+<th>현재 상태(기준선)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N1 계산 대행</td>
+<td>결론 도달 소요시간 p95 <strong>≤ 5분</strong></td>
+<td>수기 240분 — E0 실험으로 베타 착수 전 확정</td>
+</tr>
+<tr>
+<td>N2 미래지출 기준 계산</td>
+<td>계산 시 미래 입력 반영률 <strong>100%</strong></td>
+<td>0%(경쟁사 전부 과거 1년 기준)</td>
+</tr>
+<tr>
+<td>N3 추천안 이행 가시화</td>
+<td>선택된 추천안의 자기보고 대상 생성률 <strong>100%</strong>, 마이데이터 검증 가능·판정 불가·불일치 상태 분리율 <strong>100%</strong></td>
+<td>기존 측정 경로 없음(도입 기준선 0%)</td>
+</tr>
+<tr>
+<td>N4 근거 공개</td>
+<td>결과 1건당 공개 근거 항목 <strong>≥ 6개</strong></td>
+<td>0개(경쟁사는 결과 금액만 노출)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="desired-outcome">목표 (Desired Outcome 수치화)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>목표</th>
+<th>수치화된 정의</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G1 계산을 대신한다</td>
+<td>수기 240분 판단을 <strong>p95 5분 이내</strong> 결론 하나로 압축</td>
+</tr>
+<tr>
+<td>G2 미래를 기준으로 삼는다</td>
+<td>계산에 <strong>미래 입력 반영률 100%</strong> — 미래 입력 없는 산출물은 결과로 취급하지 않음(400 반환)</td>
+</tr>
+<tr>
+<td>G3 바꿀 가치가 있을 때만 권한다</td>
+<td>Net Benefit 임계 미달 시 <strong>"유지" 반환률 100%</strong></td>
+</tr>
+<tr>
+<td>G4 검증 가능하게 만든다</td>
+<td>결과 1건당 <strong>공개 근거 항목 ≥ 6개</strong></td>
+</tr>
+<tr>
+<td>G5 이행을 정확히 측정한다</td>
+<td>자기보고와 마이데이터 관측을 독립 저장하고 행동 완주·유지 준수·조합안 이행·판정 불가를 <strong>24시간 이내</strong> 대시보드에 반영한다</td>
+</tr>
+<tr>
+<td>G6 예상이 달라져도 조건을 보여준다</td>
+<td>지출 시나리오 <strong>3개(예상보다 적게 쓸 때·예상한 만큼 쓸 때·예상보다 많이 쓸 때)</strong>를 모두 계산한다. 첫 화면은 <strong>예상한 만큼 쓸 때</strong>의 결론을 기본 노출한다</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="kpi-kpi">성공 지표 (북극성 KPI / 보조 KPI)</h3>
+<p><strong>북극성 KPI</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>지표</th>
+<th>정의(분자/분모)</th>
+<th style="text-align: center;">기준선</th>
+<th style="text-align: center;">목표값</th>
+<th>측정 경로</th>
+<th style="text-align: center;">측정 주기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>조합안 선택률</strong></td>
+<td>결과 화면 도달자 중 조합안을 저장·확정한 인원 수 ÷ 결과 화면 도달 인원 수(사람 단위, 결과 열람 후 7일 이내 선택 인정, "유지" 결론 대상자는 분모 제외)</td>
+<td style="text-align: center;">운영 이력 없음, E2 Concierge Test에서 최초 기준선 확보</td>
+<td style="text-align: center;"><strong>≥ 40%</strong>(중단선 20%)</td>
+<td><code>result_viewed</code>·<code>plan_selected</code> 이벤트 로그 집계</td>
+<td style="text-align: center;">주간</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>보조 KPI</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">계열</th>
+<th>지표</th>
+<th>정의(분자/분모)</th>
+<th style="text-align: center;">기준선</th>
+<th style="text-align: center;">목표값</th>
+<th>측정 경로</th>
+<th style="text-align: center;">주기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">전환</td>
+<td>결론 도달 소요시간 p95</td>
+<td>온보딩 진입 ~ 결과 화면 표시까지 소요시간 분포의 p95</td>
+<td style="text-align: center;">E0로 확정</td>
+<td style="text-align: center;">≤ 5분</td>
+<td><code>onboarding_started</code>~<code>result_viewed</code> 타임스탬프 차</td>
+<td style="text-align: center;">주간</td>
+</tr>
+<tr>
+<td style="text-align: center;">전환</td>
+<td>온보딩 완료율</td>
+<td>마이데이터 연동+미래지출 1건 이상 입력+제약조건 저장을 모두 마친 인원 수 ÷ 온보딩(F-02 화면) 진입 인원 수</td>
+<td style="text-align: center;">베타 1주차 실측으로 확정</td>
+<td style="text-align: center;">≥ 60%</td>
+<td><code>onboarding_started</code>/<code>onboarding_completed</code> 이벤트 로그</td>
+<td style="text-align: center;">주간</td>
+</tr>
+<tr>
+<td style="text-align: center;">전환</td>
+<td>근거 열람률</td>
+<td>근거 패널을 1회 이상 연 인원 수 ÷ 결과 화면 도달 인원 수</td>
+<td style="text-align: center;">베타 1주차 실측으로 확정</td>
+<td style="text-align: center;">≥ 50%</td>
+<td><code>evidence_panel_opened</code> 클릭 로그</td>
+<td style="text-align: center;">주간</td>
+</tr>
+<tr>
+<td style="text-align: center;">유지</td>
+<td>자기보고 이행률</td>
+<td>완료 자기보고 항목 수 ÷ 유효 응답 항목 수. 무응답 제외</td>
+<td style="text-align: center;">기존 측정 경로 없음(0%)</td>
+<td style="text-align: center;">기준선 측정</td>
+<td><code>POST /outcomes/{id}/self-report</code> 응답 로그</td>
+<td style="text-align: center;">월간</td>
+</tr>
+<tr>
+<td style="text-align: center;">유지</td>
+<td>관측 검증 행동 완주율</td>
+<td>High 신뢰도로 판정 가능한 발급·해지 항목 중 완료 항목 비율</td>
+<td style="text-align: center;">기존 측정 경로 없음(0%)</td>
+<td style="text-align: center;">기준선 측정</td>
+<td><code>OutcomeItem.verification_status</code></td>
+<td style="text-align: center;">월간</td>
+</tr>
+<tr>
+<td style="text-align: center;">유지</td>
+<td>유지 준수율</td>
+<td>High 신뢰도로 판정 가능한 유지 항목 중 관측 종료 시 계속 보유한 항목 비율</td>
+<td style="text-align: center;">기존 측정 경로 없음(0%)</td>
+<td style="text-align: center;">기준선 측정, 행동 완주율과 분리</td>
+<td><code>OutcomeItem=MAINTAIN_CARD</code></td>
+<td style="text-align: center;">월간</td>
+</tr>
+<tr>
+<td style="text-align: center;">유지</td>
+<td>조합안 이행률</td>
+<td>모든 필수 항목을 High 신뢰도로 판정 가능한 조합안 중 완전 이행 조합안 비율</td>
+<td style="text-align: center;">기존 측정 경로 없음(0%)</td>
+<td style="text-align: center;">기준선 측정</td>
+<td><code>OutcomeLog.adherence_status</code></td>
+<td style="text-align: center;">월간</td>
+</tr>
+<tr>
+<td style="text-align: center;">데이터 품질</td>
+<td>검증 가능률·판정 불가율·불일치율</td>
+<td>검증 가능/전체, 판정 불가/전체, 자기보고-관측 불일치/양쪽 증거 보유 대상을 각각 집계</td>
+<td style="text-align: center;">기존 측정 경로 없음(0%)</td>
+<td style="text-align: center;">세 지표 분리율 100%</td>
+<td><code>OutcomeObservation</code>·사유코드</td>
+<td style="text-align: center;">주간</td>
+</tr>
+<tr>
+<td style="text-align: center;">유지</td>
+<td>이벤트 비종속 진입률</td>
+<td>사전 정의 이벤트명 미선택·자유 카테고리로 온보딩을 완료한 인원 수 ÷ 전체 온보딩 완료 인원 수</td>
+<td style="text-align: center;">베타 1개월차 실측으로 확정</td>
+<td style="text-align: center;">≥ 20%</td>
+<td><code>FutureSpendPlan.category</code> 자유입력 플래그 집계</td>
+<td style="text-align: center;">월간</td>
+</tr>
+<tr>
+<td style="text-align: center;">탐색</td>
+<td>다른 예상 탭 열람률</td>
+<td>결과 화면 도달자 중 <code>예상보다 적게 쓸 때</code> 또는 <code>예상보다 많이 쓸 때</code> 탭을 1회 이상 연 인원 수 ÷ 결과 화면 도달 인원 수</td>
+<td style="text-align: center;">신규 도입 기준선 0%</td>
+<td style="text-align: center;">기준선 측정</td>
+<td><code>scenario_tab_viewed</code> 이벤트 로그</td>
+<td style="text-align: center;">주간</td>
+</tr>
+<tr>
+<td style="text-align: center;">유지</td>
+<td>D+90 재방문율</td>
+<td>결과 확정일 기준 D+90 재방문 인원 수 ÷ 결과 확정 인원 수</td>
+<td style="text-align: center;">정식 서비스 전환 후 확정</td>
+<td style="text-align: center;">베타 검증 기간(12주)에는 측정 대상에서 제외 — 정식 전환 후 D+90 코호트로 측정 이관</td>
+<td>앱 방문 로그(D+90 코호트)</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Guardrail (하나라도 초과 시 롤아웃 즉시 중단)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>지표</th>
+<th style="text-align: center;">임계</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">GR1</td>
+<td>계산 오류율</td>
+<td style="text-align: center;">≤ 0.1%</td>
+<td>규칙 엔진은 결정론적 — 오류는 곧 버그</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR2</td>
+<td>불필요 신규카드 추천</td>
+<td style="text-align: center;">0%(12개월 Net Benefit이 <strong>50,000원 미만</strong>인데 변경을 추천한 건수 0건)</td>
+<td>G3 위반 = 차별점 붕괴</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR3</td>
+<td>근거 미공개 결과 노출</td>
+<td style="text-align: center;">0건</td>
+<td>차별점 ③(검증 가능한 계산)의 전제</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR4</td>
+<td>실행 지원 오인 문구 노출</td>
+<td style="text-align: center;">0건</td>
+<td>스코프 위반 = 규제 리스크</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR5</td>
+<td>데이터 최신성 경고 미표시</td>
+<td style="text-align: center;">0%(세부 임계치는 5장 참고)</td>
+<td>Table Stakes</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="differential-value">차별 가치 (Differential Value)</h3>
+<p>기존 대안(수기 계산, 뱅크샐러드형 서비스) 대비 5개 지표를 수치로 비교한다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>지표</th>
+<th style="text-align: center;">기존 대안</th>
+<th style="text-align: center;">CardFit</th>
+<th style="text-align: center;">개선폭</th>
+<th>검증 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>판단 소요시간(성능)</td>
+<td style="text-align: center;">수기 240분</td>
+<td style="text-align: center;">p95 <strong>5분</strong></td>
+<td style="text-align: center;"><strong>약 48배 단축</strong></td>
+<td>E0 베이스라인 실험</td>
+</tr>
+<tr>
+<td>비교 계산 단위(범위)</td>
+<td style="text-align: center;">후보 카드 <strong>1장</strong>에 재적용(뱅크샐러드 PDF 실측)</td>
+<td style="text-align: center;">Constraint(F-02) 설정 상한 이내 <strong>전 조합 계산</strong>(예: 최대 5장 설정 시 2⁵−1=31개 조합까지 전수 계산하며 p95 5초 SLA 유지)</td>
+<td style="text-align: center;">1장 → 최대 31개 조합(설정값 기준)</td>
+<td>NFR(5장) p95 SLA와 결합 검증</td>
+</tr>
+<tr>
+<td><strong>계산 정확도(순혜택 우위 비율)</strong></td>
+<td style="text-align: center;">조합 계산 자체가 없어 비교 불가</td>
+<td style="text-align: center;">동일 스냅샷 비교에서 <strong>순혜택 차액 &gt; 0 케이스 ≥ 70%</strong></td>
+<td style="text-align: center;">0% → 70%(목표)</td>
+<td><strong>E5 벤치마크</strong>(n=20, 뱅크샐러드 vs CardFit)</td>
+</tr>
+<tr>
+<td>계산 근거 공개 항목(신뢰)</td>
+<td style="text-align: center;"><strong>0개</strong>(결과 금액만 노출)</td>
+<td style="text-align: center;"><strong>6개 이상</strong>(실적구간·한도·연회비·제외조건·기준일·rule_version)</td>
+<td style="text-align: center;">0 → 6개</td>
+<td>US-B AC1, GR3</td>
+</tr>
+<tr>
+<td>전환비용 반영 항목(비용)</td>
+<td style="text-align: center;"><strong>1개</strong>(연회비만 반영)</td>
+<td style="text-align: center;"><strong>3개</strong>(연회비·실적 재적립 손실·발급 대기)</td>
+<td style="text-align: center;">1 → 3개</td>
+<td>F-04 Net Benefit 산식</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>성능(판단 소요시간)·정확도(순혜택 우위 비율)·비용(전환비용 반영 항목) 3개 축 모두 수치와 검증 실험을 갖춘다. 동일 스냅샷 n=20 벤치마크(E5)로 "3축 전부 우위·순혜택 차액 &gt; 0인 케이스 ≥ 70%"를 검증한다 — 8장 실험표 참고.</p>
+</blockquote>
+<hr>
+<h2 id="2">2. 사용자와 페르소나</h2>
+<h3 id="12-4">페르소나 스펙트럼 (12명, 4계층)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>유형</th>
+<th style="text-align: center;">인원</th>
+<th>대표 인물</th>
+<th>이 계층의 역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>핵심(Core)</td>
+<td style="text-align: center;">5</td>
+<td>이서연(혼인)·김도윤(결혼+이사)·박서준(자동대체 불신)·한지민(프리랜서·이사)·최유리(발령·회계전문가)</td>
+<td>기준 수요 — Job A·B 원천</td>
+</tr>
+<tr>
+<td>확장(Adjacent)</td>
+<td style="text-align: center;">3</td>
+<td>정하늘(기존 서비스 이용자)·오세훈(이직)·강민재(자녀 독립·지출 감소)</td>
+<td>Job F — 이벤트명에 안 걸리는 수요</td>
+</tr>
+<tr>
+<td>극단(Extreme)</td>
+<td style="text-align: center;">2</td>
+<td>윤태호(카드 20장+, 관리 포기)·신은서(해지 3회 시도·0회 성공, 인터뷰 1건 기반 사례)</td>
+<td>실패의 두 원인 — 내부 과부하 vs 외부 마찰</td>
+</tr>
+<tr>
+<td>비활성(Non-user)</td>
+<td style="text-align: center;">2</td>
+<td>배정호(디지털 비친화)·조민아(예측 자체를 불신)</td>
+<td>v0.1 명시적 제외 대상</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>대표 4인과 Pain·Needs 연결</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>인물</th>
+<th>Pain</th>
+<th>Needs</th>
+<th>서비스 대응</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이서연(Core)</td>
+<td>P1 스스로 계산 불가, P4 근거 없는 위임</td>
+<td>N1·N2·N4</td>
+<td>F-01~F-04, F-06</td>
+</tr>
+<tr>
+<td>박서준(Core)</td>
+<td>P3 실행 마찰, 카드사 설명 불신</td>
+<td>N3·N4</td>
+<td>F-06(근거), F-13(추천안 이행 측정)</td>
+</tr>
+<tr>
+<td>신은서(Extreme, 인터뷰 1건 기반 사례)</td>
+<td>P3 실행 실패(상담사 만류, 3회 시도 0회 성공)</td>
+<td>N3</td>
+<td>F-13 측정만 — 대행 권한 없음</td>
+</tr>
+<tr>
+<td>조민아(Non-user)</td>
+<td>예측 입력 자체 불신 → 온보딩 이탈</td>
+<td>N1 완화 필요</td>
+<td>F-11 과거 패턴 기반 초기값 자동 제안</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>신은서와 조민아는 이 프로젝트의 두 반증 사례다. 신은서는 추천안 이행 지표 설계를, 조민아는 온보딩 설계(F-11)를 바꿨다.</p>
+</blockquote>
+<h3 id="core-7">고객 여정 — 이서연(Core) 기준, 7단계</h3>
+<pre class="mermaid">
+journey
+    title 이서연(Core)의 여정과 이탈 지점
+    section 발견
+      트리거 - 웨딩홀 계약: 2: 이서연
+      서비스 인지: 3: 이서연
+    section 입력·계산
+      온보딩·입력 (F-01·F-02): 2: 이서연
+      3개 시나리오 동시 계산 (F-03): 4: 이서연
+    section 결정·실행
+      예상한 만큼 기본·다른 예상 탭 비교 (F-04): 3: 이서연
+      시나리오별 근거 확인 (F-06): 4: 이서연
+      실행 - 스코프 경계: 3: 이서연
+    section 이후
+      다음 달 실제 혜택 확인: 5: 이서연
+</pre>
+<p><strong>12명 중 4명이 여정을 끝까지 이어가지 못한다: 이탈 지점과 대응</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>인물</th>
+<th style="text-align: center;">단절 지점</th>
+<th>원인</th>
+<th>대응</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>배정호</td>
+<td style="text-align: center;">인지</td>
+<td>디지털 채널 자체 거부</td>
+<td>❌ 앱으로 해결 불가 — v0.1 제외</td>
+</tr>
+<tr>
+<td>조민아</td>
+<td style="text-align: center;">온보딩</td>
+<td>미래 예측 입력 자체 불신</td>
+<td>✅ F-11 초기값 자동 제안</td>
+</tr>
+<tr>
+<td>윤태호</td>
+<td style="text-align: center;">조합 비교~실행</td>
+<td>카드 20장+ 정보 과부하</td>
+<td>🔶 F-07 단계적 제시(Could)</td>
+</tr>
+<tr>
+<td>신은서</td>
+<td style="text-align: center;">실행</td>
+<td>상담사 만류(인터뷰 1건 기반)</td>
+<td>📊 F-13 측정만 — 대행 권한 없음</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>가장 취약한 전환점은 온보딩과 실행 두 곳이다. 온보딩은 제품이 개입(F-11)하고, 실행은 개입하지 않고 측정만 한다(F-13) — 이 원칙이 스코프 경계 전체를 요약한다.</p>
+</blockquote>
+<hr>
+<h2 id="3-ac-acceptance-criteria">3. 사용자 스토리와 수용 기준(AC, Acceptance Criteria)</h2>
+<h3 id="use-case-diagram">Use Case Diagram</h3>
+<p>아래 4장(기능 요구사항)의 F-01~F-13과 3장 사용자 스토리(US-A~US-F)를 액터·유스케이스 관계로 정리한 다이어그램이다. UC4는 3개 지출 시나리오의 동시 계산, UC5는 시나리오별 독립 카드 조합·유지 결론과 탭 확인을 나타낸다. 실선은 액터-유스케이스 연관, 점선 화살표는 <code>&lt;&lt;include&gt;&gt;</code>/<code>&lt;&lt;extend&gt;&gt;</code> 관계를 의미한다.</p>
+<p><img alt="CardFit Use Case Diagram" src="diagrams/usecase_diagram_cardfit_v0.1.png"></p>
+<blockquote>
+<p>이미지 파일: <code>diagrams/usecase_diagram_cardfit_v0.1.png</code> (수정용 벡터 원본: <code>diagrams/usecase_diagram_cardfit_v0.1.svg</code>)</p>
+</blockquote>
+<h3 id="us-a-1">US-A (우선순위 1) — 미래지출 기반 계산</h3>
+<p><strong>Story</strong>: As a 소비 구조가 곧 바뀔 사용자(이서연·김도윤·한지민·최유리·정하늘), I want 미래 지출을 카드 혜택과 미리 연결해 계산받기, so that 스스로 카드 조합 변경 여부를 판단할 수 있다.</p>
+<ul>
+<li><strong>AC1</strong>: Given 마이데이터 연동을 완료하고 보유카드가 1장 이상이며 미래지출을 1건 이상 입력한 사용자가, When <code>POST /calculate</code>를 요청하면, Then <strong>p95 응답시간 ≤ 5초</strong> 이내에 <code>예상보다 적게 쓸 때</code>·<code>예상한 만큼 쓸 때</code>·<code>예상보다 많이 쓸 때</code> 3개 시나리오가 모두 산출되고 <strong>예상한 만큼 쓸 때 탭의 결론이 기본 노출</strong>된다.</li>
+<li><strong>AC2 (실패 케이스)</strong>: Given 미래지출 입력이 0건인 상태에서, When 계산을 요청하면, Then 시스템은 <strong>400을 반환</strong>하고 과거 데이터만으로 산출한 결과를 노출하지 않는다(거부율 100%).</li>
+<li><strong>AC3</strong>: Given 계산이 완료된 상태에서, When 결과 화면에 진입하면, Then 유지 시 예상혜택과 추천 조합 예상혜택의 <strong>차액이 원 단위로 표시</strong>된다(표시 누락률 0%).</li>
+<li><strong>AC4 (실패 케이스)</strong>: Given Net Benefit이 임계값 미만인 조합인 경우, When 계산 결과가 반환되면, Then <strong>"현재 조합 유지" 반환률 100%</strong>이며 임계 미달인데 변경을 제안한 건수는 <strong>0건</strong>이다(1건이라도 발생 시 롤아웃 중단).</li>
+<li><strong>AC5</strong>: Given 3개 시나리오 계산이 성공한 경우, When 사용자가 3개 예상 탭을 전환하면, Then <strong>추가 서버 재계산 없이</strong> 사전 산출된 각 시나리오의 독립 카드 조합 또는 유지 결론과 실제 적용 금액이 표시되고, 가정 표시 누락은 0건이다.</li>
+<li><strong>AC7</strong>: Given 사용자가 카테고리별 예상금액만 입력한 경우, When 시나리오를 생성하면, Then 시스템은 사용자 수정값이 없는 항목에 <code>LOW=예상금액×80%</code>, <code>BASE=예상금액×100%</code>, <code>HIGH=예상금액×120%</code>를 적용하고 원 단위로 반올림한다. 사용자가 최소·최대 범위를 입력한 항목은 해당 값을 LOW·HIGH에 우선 적용한다.</li>
+<li><strong>AC8 (실패 케이스)</strong>: Given 생성된 LOW 또는 HIGH 금액이 0원 미만이거나 사용자 입력 상한을 벗어난 경우, When 계산을 시작하면, Then 유효성 오류를 표시하고 계산 요청을 거부한다(잘못된 시나리오 계산 0건).</li>
+<li><strong>AC6 (실패 케이스)</strong>: Given 3개 시나리오 중 하나라도 필수 데이터 누락 또는 계산 실패가 발생한 경우, When 결과를 반환하려 하면, Then 전체 계산을 <code>부분</code> 상태로 처리하고 <strong>어느 탭의 추천 결과도 노출하지 않는다</strong>.</li>
+</ul>
+<h3 id="us-b-4">US-B (우선순위 4) — 근거 검증</h3>
+<p><strong>Story</strong>: As a 계산 결과를 받은 사용자(이서연·박서준·최유리·정하늘), I want 계산 근거를 직접 검증하기, so that 카드사의 권유가 아니라 내가 확인한 숫자로 결정할 수 있다.</p>
+<ul>
+<li><strong>AC1</strong>: Given 계산 결과 화면에서 "근거 보기"를 클릭하면, When 근거 패널이 열리면, Then 실적구간·통합할인한도·연회비·제외조건·기준일·rule_version 등 근거 항목이 <strong>≥ 6개</strong> 펼쳐진다.</li>
+<li><strong>AC2</strong>: Given 계산에 포함되지 않은 비용(포인트 소멸·자동납부 승계 등)이 있는 경우, When 근거 패널을 열람하면, Then "이 계산에는 포함되지 않았습니다" 문구가 <strong>누락률 0%</strong>로 표시된다.</li>
+<li><strong>AC3 (실패 케이스)</strong>: Given 근거 항목이 6개 미만으로 산출되는 경우, When 결과를 반환하려 하면, Then 시스템은 <strong>응답을 거부</strong>한다(GR3 위반 <strong>0건</strong> 유지).</li>
+<li><strong>AC4 (실패 케이스)</strong>: Given 마이데이터 응답 지연·장애로 최신 데이터를 확보하지 못한 경우, When 근거 패널을 열람하면, Then <strong>"최근 확인된 데이터 기준"</strong> 경고와 데이터 기준일이 함께 표시되며, 기준일 미표시 건수는 <strong>0건</strong>이다.</li>
+</ul>
+<h3 id="us-c-1">US-C (우선순위 1) — 추천안 이행 측정 (스코프 경계 스토리)</h3>
+<p><strong>Story</strong>: As a 계산 결과대로 카드를 정리하려는 사용자(이서연·박서준, 극단 사례 신은서), I want 자기보고와 마이데이터 관측으로 추천안 이행 여부가 구분되기를, so that 서비스가 대행 권한 없이도 행동 완료·유지·판정 불가를 정확히 측정할 수 있다.</p>
+<ul>
+<li><strong>AC1</strong>: Given 사용자가 조합안을 선택하면, When 선택 이벤트를 저장할 때, Then 당시 보유카드·대상 상품·동의 범위·데이터 기준일을 기준 스냅샷으로 저장한다(누락 0건).</li>
+<li><strong>AC2</strong>: Given 선택 후 30일이 지난 사용자가 재방문하면, When 이행 질문을 표시할 때, Then 항목별 자기보고를 <strong>1회만</strong> 수집하고 자기보고와 마이데이터 검증 상태를 독립 저장한다(상호 덮어쓰기 0건).</li>
+<li><strong>AC3</strong>: Given 유효한 동의와 완전한 마이데이터 응답이 있는 경우, When 발급·해지·유지 항목을 검증하면, Then 카드 식별 정확도와 연속 관측 규칙에 따라 행동 완주·유지 준수·미이행을 구분한다.</li>
+<li><strong>AC4 (실패 케이스)</strong>: Given 사용자가 완료했다고 응답했으나 마이데이터 동의 만료·부분 응답·오래된 데이터·식별 충돌 때문에 확인할 수 없는 경우, When 결과를 집계하면, Then <code>자기보고 완료 / INCONCLUSIVE 또는 UNAVAILABLE</code>로 유지하고 미완료로 변경하지 않는다(오분류 0건).</li>
+<li><strong>AC5 (실패 케이스)</strong>: Given 정상 조회에서 목표 카드가 한 번 보이지 않는 경우, When 해지 완료 여부를 판정하면, Then 명시적 해지 상태가 없는 한 24시간 이상 간격의 정상·완전 동기화 2회가 충족될 때까지 <code>PENDING</code>으로 유지한다(단일 미관측 해지 확정 0건).</li>
+<li><strong>AC6</strong>: Given 유지 추천을 선택한 사용자가 관측 종료 시 해당 카드를 계속 보유한 경우, When 이행 결과를 집계하면, Then <code>VERIFIED_MAINTAINED</code>로 기록하되 행동 완주율에는 포함하지 않는다.</li>
+<li><strong>AC7 (실패 케이스)</strong>: Given 동일 <code>selection_id</code>로 자기보고가 중복 제출되는 경우, When 저장 요청을 처리하면, Then 최초 1건만 유효 처리하며 중복 집계는 0건이다.</li>
+<li><strong>AC8</strong>: Given 온보딩 및 결과 화면을 거친 사용자에게, When 스코프 고지 문구를 노출하면, Then "해지·전환 대행을 제공하지 않는다"에 대한 <strong>사용자 범위 인지율 ≥ 90%</strong>로 측정된다.</li>
+</ul>
+<h3 id="us-f-3">US-F (우선순위 3) — 이벤트 비종속 입력</h3>
+<p><strong>Story</strong>: As a 이벤트명과 무관하게 소비가 변하는 사용자(오세훈·강민재), I want 특정 이벤트 유형을 고르지 않고도 지출 변화를 입력하기, so that 내 소비 변화가 그대로 인정받는다.</p>
+<ul>
+<li><strong>AC1</strong>: Given 미래지출 입력 화면에서, When 카테고리를 선택하면, Then <strong>이벤트 종류 필수 선택 단계는 0개</strong>다.</li>
+<li><strong>AC2</strong>: Given 지출 증가 또는 감소 방향을 입력할 때, When 시스템이 값을 처리하면, Then <strong>양방향 입력 처리 오류율 0%</strong>다.</li>
+<li><strong>AC3</strong>: Given 사전 정의되지 않은 자유 입력 카테고리를 사용할 때, When 계산을 수행하면, Then 해당 카테고리가 계산 결과에 <strong>반영률 100%</strong>로 포함된다.</li>
+<li><strong>AC4 (실패 케이스)</strong>: Given 지출 금액에 <strong>음수·비숫자·정의된 상한 초과</strong> 값이 입력되는 경우, When 시스템이 입력을 검증하면, Then 저장 전 <strong>오류 메시지가 표시</strong>되고 해당 입력이 계산에 반영되는 건수는 <strong>0건</strong>이다.</li>
+<li><strong>AC5 (실패 케이스)</strong>: Given 자유 입력 카테고리에 특수문자·이모지 등 비정형 텍스트가 포함된 경우, When 계산 엔진이 처리하면, Then 시스템은 <strong>크래시 없이</strong> 해당 텍스트를 "기타" 카테고리로 정규화하여 처리한다(처리 실패율 0%).</li>
+</ul>
+<h3 id="us-d-5">US-D (우선순위 5) — 유연한 입력</h3>
+<p><strong>Story</strong>: As a 정확한 지출 금액을 모르는 사용자(김도윤·한지민·정하늘·강민재), I want 부담 없이 유연하게 입력하기, so that 온보딩에서 이탈하지 않는다.</p>
+<ul>
+<li><strong>AC1</strong>: Given 과거 마이데이터 소비 패턴이 존재하는 사용자에게, When 미래지출 입력 화면에 진입하면, Then <strong>F-11 초기값이 자동 제안</strong>되어 노출된다(제안 커버리지 100%).</li>
+<li><strong>AC2</strong>: Given 초기값이 제안된 상태에서, When A/B 실험(n=500, 250/250)을 수행하면, Then 온보딩 완료율이 대조군 대비 <strong>+15%p 이상</strong> 개선된다.</li>
+<li><strong>AC3</strong>: Given 금액을 단일값이 아닌 범위(최소·최대)로 입력할 때, When 계산 엔진이 처리하면, Then <strong>범위 입력 처리 성공률 100%</strong>로 계산에 반영된다.</li>
+<li><strong>AC4 (실패 케이스)</strong>: Given 마이데이터 과거 소비 이력이 <strong>3개월 미만이거나 존재하지 않는 신규 사용자</strong>에게, When 미래지출 입력 화면에 진입하면, Then F-11 개인화 제안 대신 <strong>카테고리별 업계 평균 기반 기본값</strong>이 제시되고 화면에 "과거 데이터 기반 제안이 아닙니다"가 명시된다(대체 제안 커버리지 100%, 무제안 상태 노출 0건).</li>
+<li><strong>AC5 (실패 케이스)</strong>: Given 범위 입력 시 최소값이 최대값보다 큰 등 잘못된 범위가 입력되는 경우, When 시스템이 값을 검증하면, Then 저장 전 오류 메시지가 표시되고 잘못된 범위가 계산에 반영되는 건수는 <strong>0건</strong>이다.</li>
+</ul>
+<blockquote>
+<p>US-E(지속 사용 동기, Job E)는 우선순위 5·비MVP로 본 v0.1 범위에서 제외한다(4장 F-10 참고).</p>
+</blockquote>
+<hr>
+<h2 id="4-functional">4. 기능 요구사항(Functional)</h2>
+<p><strong>MoSCoW 우선순위·근거(대안 대비 가치)·의존성</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">ID</th>
+<th>기능</th>
+<th style="text-align: center;">Job</th>
+<th style="text-align: center;">MoSCoW</th>
+<th>우선순위 근거(대안 대비 가치)</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>F-01</strong></td>
+<td>미래지출 입력(카테고리·금액·시점)</td>
+<td style="text-align: center;">A·F</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>경쟁 6곳 중 이 단계를 가진 곳 0곳 — 유일한 차별 진입점</td>
+<td>없음(최초 입력 화면)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>F-02</strong></td>
+<td>마이데이터 연동 + 제약조건 입력</td>
+<td style="text-align: center;">A·D</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>Table Stakes — 카드 내역은 마이데이터 API로만 확보 가능, 없으면 계산 불성립</td>
+<td>마이데이터 인가·제휴(7장 리스크 선결 조건)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>F-03</strong></td>
+<td>3개 지출 시나리오 동시 계산: <code>예상보다 적게 쓸 때(LOW)</code>·<code>예상한 만큼 쓸 때(BASE)</code>·<code>예상보다 많이 쓸 때(HIGH)</code></td>
+<td style="text-align: center;">A</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>대안은 후보 카드 1장과 비교한다. 자동 80%·100%·120% 시나리오는 추가 입력 없이 미래지출 오차를 탐색한다</td>
+<td>F-01, F-02, BenefitRule 수집·버전관리 체계</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>F-04</strong></td>
+<td>시나리오별 독립 조합 최적화 + Net Benefit 게이팅: <code>예상한 만큼 쓸 때</code> 기본 노출</td>
+<td style="text-align: center;">A·B</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>각 지출 수준에서 변경 가치가 작으면 "유지"를 정답으로 반환한다</td>
+<td>F-03, 12개월 Net Benefit 임계값 50,000원</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>F-05</strong></td>
+<td>결제수단 배분(계산·배분까지만)</td>
+<td style="text-align: center;">B·C</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>경쟁자 체인에 없는 두 번째 단계. 실행 대행 아님</td>
+<td>F-04</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>F-06</strong></td>
+<td>근거 공개(적용 규칙 + 제외조건·기준일)</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>대안은 결과 금액만 노출 → 산출 과정·제외조건까지 6항목 이상</td>
+<td>F-03, F-04(계산 스냅샷·rule_version)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>F-11</strong></td>
+<td>과거 패턴 기반 초기값 자동 제안</td>
+<td style="text-align: center;">D·A</td>
+<td style="text-align: center;"><strong>Must</strong></td>
+<td>가장 큰 가정(A1)의 완화 장치 — 온보딩 이탈이 실패 경로, MVP 성립 조건</td>
+<td>F-02 과거 소비 데이터(마이데이터)</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-08</td>
+<td>이벤트 비종속 입력(자유 카테고리·양방향)</td>
+<td style="text-align: center;">F</td>
+<td style="text-align: center;">Should</td>
+<td>이벤트 선택 단계를 두지 않는 것만으로 대부분 충족</td>
+<td>F-01</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-12</td>
+<td>스코프 경계 고지 + 금지어 자동 검수</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">Should</td>
+<td>구현 난이도 낮음 대비 규제 리스크 차단 효과 큼</td>
+<td>없음(문구 자산)</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-13</td>
+<td>추천안 이행 계측(자기보고 + 마이데이터 관측, 측정 전용)</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">Should</td>
+<td>선택률 이후의 행동 완주·유지 준수·판정 불가를 구분한다. 실행 대행은 하지 않는다</td>
+<td>F-04 선택 이벤트, F-02 유효 동의, 마이데이터 호출 예산·동의 목적 승인</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-07</td>
+<td>단계적 전환 제안(효과 큰 카드부터)</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">Could</td>
+<td>카드 다량 보유자(윤태호형) 과부하 완화. <strong>구현 규모</strong>: F-04/F-06 결과를 재정렬하는 표시 로직만 추가, 신규 계산 로직 없음 → <strong>1 스프린트(2주) 내 구현 가능</strong></td>
+<td>F-04, F-06</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-09</td>
+<td>소득·지출 범위 입력</td>
+<td style="text-align: center;">D</td>
+<td style="text-align: center;">Could</td>
+<td>이탈 방지(한지민형). <strong>구현 규모</strong>: F-02 입력 폼에 범위 필드 추가 + 기존 검증 로직 재사용 → <strong>1 스프린트(2주) 내 구현 가능</strong></td>
+<td>F-01</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-10</td>
+<td>정기 재진단 알림</td>
+<td style="text-align: center;">E</td>
+<td style="text-align: center;"><strong>Won't v1</strong></td>
+<td>Job E 후순위 — 지속 사용 동기는 비MVP</td>
+<td>해당 없음(v1 범위 밖)</td>
+</tr>
+<tr>
+<td style="text-align: center;">F-14</td>
+<td>카드 20장+ 대량 처리 최적화</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>Won't v1</strong></td>
+<td>대상 세그먼트 우선순위 최저</td>
+<td>해당 없음(v1 범위 밖)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>핵심 기능 1개는 <strong>F-04 조합 최적화(Net Benefit 게이팅)</strong>다. 나머지는 이 계산이 성립하기 위한 전후 단계이며, 보조 기능은 F-06(근거 공개)·F-11(초기값 제안)이다. 실측 데이터가 없어 RICE의 Reach·Confidence를 채울 수 없으므로 범위 합의를 우선하는 MoSCoW를 채택했다. Could 등급 2건(F-07·F-09)은 각각 1 스프린트 내 구현 가능한 경량 확장으로 한정해 우선순위와 구현 규모를 일치시켰다.</p>
+</blockquote>
+<hr>
+<h2 id="5-nfr-non-functional-requirement">5. 비기능 요구사항(NFR, Non-Functional Requirement)</h2>
+<ul>
+<li><strong>성능</strong>:</li>
+<li><code>POST /calculate</code>로 3개 시나리오를 모두 산출하는 응답시간 p95 ≤ <strong>5초</strong></li>
+<li>탭 전환은 사전 계산된 결과를 사용하며 추가 계산 API 호출을 발생시키지 않음</li>
+<li><code>GET /calculations/{id}/evidence</code> 근거 검증 응답 p95 ≤ <strong>500ms</strong>. 근거 6항목 미달 시 같은 SLO 안에서 거부</li>
+<li>선택 후 30일 이행 대상 생성과 관측 결과 집계는 예정 시각부터 <strong>24시간 이내</strong> 완료</li>
+<li><strong>신뢰성</strong>:</li>
+<li>계산 오류율 ≤ <strong>0.1%</strong>(GR1)</li>
+<li>월 가용성 목표 ≥ <strong>99.5%</strong>(내부 SLO) — <strong>측정 도구</strong>: 헬스체크 1분 주기 업타임 모니터링 / <strong>다운타임 정의</strong>: <code>POST /calculate</code> 5xx 응답 또는 10초 초과 타임아웃이 연속 3회 이상 발생한 구간</li>
+<li>규칙 엔진 결정론성 — <code>rule_version</code> 변경 시마다 회귀 테스트 재실행</li>
+<li><strong>보안/비용</strong>:</li>
+<li>마이데이터 전송요구 범위 초과 조회(오조회) <strong>0건</strong> — <strong>탐지 방법</strong>: 요청 스코프와 응답 데이터 범위를 대조하는 실시간 접근 로그 규칙(동의 범위 외 필드 조회 시 자동 플래그) — 발생 시 서비스 중단 + 감독당국 신고</li>
+<li>마이데이터 API는 <strong>호출당 과금</strong>(단일 채널, 대체 공급자 없음) — 계산 요청 건수를 성과 지표가 아닌 <strong>비용</strong>으로 관리</li>
+<li>계산 요청·응답, 적용 <code>rule_version</code>, 입력 스냅샷, 마이데이터 응답 코드 전건 로그 보존(사후 감사 대응)</li>
+<li>후속 이행 관측은 고지·승인된 목적·범위·기간 안에서만 활성화하고, 동의 만료·철회 시 신규 관측 요청 <strong>0건</strong>을 유지</li>
+<li><code>OutcomeObservation</code>에는 판정 최소 필드와 증거 해시만 저장하고 마이데이터 원본 응답은 저장하지 않음. 항목별 관측 레코드는 판정 종료 후 <strong>90일</strong>에 삭제하고 익명 집계만 유지</li>
+<li>일별 후속 관측 호출량은 PM이 승인한 월 예산 상한을 일 단위로 환산한 한도를 초과하지 않으며, 한도 도달 건은 실패가 아닌 <code>PENDING</code>으로 다음 실행 창에 이월</li>
+<li><strong>데이터 최신성(GR5 세부 임계치)</strong>:</li>
+<li>카드사 약관 갱신 지연 <strong>7일 초과</strong> → 최신성 경고 표시 + 데이터 운영에 <strong>일간 알림</strong></li>
+<li>갱신 지연 <strong>30일 초과</strong> → 해당 카드는 <strong>계산 대상에서 자동 제외</strong></li>
+<li><strong>모니터링 항목</strong>: 로그·대시보드·알림 기준</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">지표</th>
+<th style="text-align: center;">발의</th>
+<th style="text-align: center;">결정</th>
+<th>조치</th>
+<th>탐지 방법</th>
+<th style="text-align: center;">알림 지연 SLA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">GR1 계산 오류율</td>
+<td style="text-align: center;">계산 품질</td>
+<td style="text-align: center;">PM</td>
+<td>즉시 롤아웃 중단</td>
+<td>회귀 테스트 자동 집계(rule_version 변경 시마다)</td>
+<td style="text-align: center;">≤ 15분</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR2 불필요 추천</td>
+<td style="text-align: center;">계산 품질</td>
+<td style="text-align: center;">PM</td>
+<td>즉시 중단 + 임계값(D2) 재검토</td>
+<td>US-A AC4 위반 건수 실시간 카운트</td>
+<td style="text-align: center;">≤ 15분</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR3 근거 미공개</td>
+<td style="text-align: center;">계산 품질</td>
+<td style="text-align: center;">PM</td>
+<td>즉시 중단</td>
+<td><code>GET /evidence</code> 거부 응답 로그</td>
+<td style="text-align: center;">≤ 15분</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR4 오인 문구</td>
+<td style="text-align: center;">제품</td>
+<td style="text-align: center;">PM</td>
+<td>문구 회수 + 금지어 스캐너 패턴 추가</td>
+<td>금지어 자동 스캐너(UI·푸시·FAQ·CS 문구 전수 스캔)</td>
+<td style="text-align: center;">≤ 24시간</td>
+</tr>
+<tr>
+<td style="text-align: center;">GR5 최신성 경고</td>
+<td style="text-align: center;">데이터 운영</td>
+<td style="text-align: center;">데이터 운영</td>
+<td>경고 표시 복구(7일)/계산 대상 제외(30일)</td>
+<td>약관 수집 배치 결과 대조</td>
+<td style="text-align: center;">≤ 24시간(일간 배치)</td>
+</tr>
+<tr>
+<td style="text-align: center;">오조회</td>
+<td style="text-align: center;">컴플라이언스</td>
+<td style="text-align: center;"><strong>컴플라이언스(PM 우회)</strong></td>
+<td>서비스 중단 + 감독당국 신고</td>
+<td>실시간 접근 로그 규칙</td>
+<td style="text-align: center;">≤ 5분(실시간)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>운영 역할 4개(데이터 운영/계산 품질/제품(PM)/컴플라이언스·보안)로 나누어 각 Guardrail의 발의·결정·조치 주체를 분리했다. 오조회만 PM을 우회해 컴플라이언스가 단독 중단할 수 있다 — 타인 데이터 노출은 사업 판단이 아니라 즉시 신고 의무이기 때문이다.</p>
+</blockquote>
+<hr>
+<h2 id="6">6. 데이터·인터페이스 개요</h2>
+<h3 id="_3">핵심 엔터티</h3>
+<pre class="mermaid">
+erDiagram
+    User {
+        string user_id PK
+        string mydata_consent_status
+        string mydata_consent_scope
+        datetime consented_at
+    }
+    HeldCard {
+        string card_id PK
+        string issuer
+        string card_name
+        decimal annual_fee
+        date issued_at
+        int billing_cycle_month
+    }
+    PastSpend {
+        string spend_id PK
+        string merchant
+        string mcc_code
+        decimal amount
+        date paid_at
+    }
+    FutureSpendPlan {
+        string plan_id PK
+        string category
+        decimal amount_min
+        decimal amount_max
+        date planned_at
+        string confidence
+    }
+    Constraint {
+        string constraint_id PK
+        int max_card_count
+        decimal annual_fee_cap
+        boolean allow_new_issuance
+    }
+    BenefitRule {
+        string rule_id PK
+        decimal performance_threshold
+        decimal benefit_cap
+        string excluded_items
+        date effective_from
+        date effective_to
+        string rule_version
+    }
+    Calculation {
+        string calculation_id PK
+        string scenario
+        decimal expected_total_spend
+        string calculation_period
+        string input_snapshot
+        string rule_versions
+        date data_as_of
+        string status
+    }
+    PlanCandidate {
+        string candidate_id PK
+        string card_combination
+        decimal gross_benefit
+        decimal transition_cost
+        decimal net_benefit
+        boolean threshold_passed
+    }
+    Allocation {
+        string allocation_id PK
+        string category
+        decimal allocated_amount
+    }
+    OutcomeLog {
+        string outcome_id PK
+        string selection_id UK
+        datetime selected_at
+        string self_report_status
+        string verification_status
+        string verification_confidence
+        string adherence_status
+    }
+    SelectionBaseline {
+        string baseline_id PK
+        datetime captured_at
+        datetime provider_data_as_of
+        string completeness_status
+    }
+    OutcomeItem {
+        string outcome_item_id PK
+        string action_type
+        string target_card_product_id
+        string verification_status
+        string confidence
+    }
+    OutcomeObservation {
+        string observation_id PK
+        datetime observed_at
+        string sync_status
+        string target_match_status
+        boolean card_presence
+        string evidence_hash
+    }
+    User ||--o{ HeldCard : "마이데이터 수집"
+    User ||--o{ PastSpend : "마이데이터 수집"
+    User ||--o{ FutureSpendPlan : "직접 입력"
+    User ||--|| Constraint : "제약 설정"
+    FutureSpendPlan ||--o{ Calculation : "3개 시나리오 입력"
+    PastSpend ||--o{ Calculation : "공통 기준 입력"
+    BenefitRule ||--o{ Calculation : "규칙 적용"
+    Calculation ||--o{ PlanCandidate : "후보 생성"
+    PlanCandidate ||--o{ Allocation : "배분 산출"
+    PlanCandidate ||--o| OutcomeLog : "추천안 이행 계측"
+    OutcomeLog ||--|| SelectionBaseline : "선택 시 기준선"
+    OutcomeLog ||--o{ OutcomeItem : "필수 항목"
+    OutcomeItem ||--o{ OutcomeObservation : "후속 관측"
+</pre>
+<blockquote>
+<p>ERD 상자에는 구현·검증에 필요한 주요 필드를 함께 표시한다. <code>Calculation.scenario</code>는 내부적으로 <code>LOW</code>·<code>BASE</code>·<code>HIGH</code>를 사용하고 사용자 화면에서는 각각 <code>예상보다 적게 쓸 때</code>·<code>예상한 만큼 쓸 때</code>·<code>예상보다 많이 쓸 때</code>로 표시한다. 계산 기간은 계산일로부터 12개월이며 계획 지출은 <code>planned_at</code>이 속한 결제주기에 반영한다.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>엔터티</th>
+<th>주요 필드</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User</td>
+<td>user_id, 마이데이터 동의 상태·범위·일시</td>
+<td>자체</td>
+</tr>
+<tr>
+<td>HeldCard</td>
+<td>카드사, 카드명, 연회비, 발급일, 실적 기준월</td>
+<td>마이데이터 API</td>
+</tr>
+<tr>
+<td>PastSpend</td>
+<td>가맹점, 업종코드, 금액, 결제일</td>
+<td>마이데이터 API</td>
+</tr>
+<tr>
+<td>FutureSpendPlan</td>
+<td>카테고리(자유 입력 허용), 금액(단일 또는 범위), 시점, 확실도</td>
+<td>사용자(F-01)</td>
+</tr>
+<tr>
+<td>Constraint</td>
+<td>최대 카드 수, 연회비 상한, 신규 발급 허용 여부</td>
+<td>사용자(F-02)</td>
+</tr>
+<tr>
+<td>BenefitRule</td>
+<td>전월실적 구간, 통합할인한도, 제외 항목, 적용 시작·종료일, rule_version</td>
+<td>카드사 약관(수집·버전관리)</td>
+</tr>
+<tr>
+<td>Calculation</td>
+<td>입력 스냅샷, <code>scenario</code>(<code>LOW</code>·<code>BASE</code>·<code>HIGH</code>), 예상 총지출액, 12개월 계산 기간, 적용 rule_version 목록, 기준일, 미반영 항목</td>
+<td>규칙 엔진</td>
+</tr>
+<tr>
+<td>PlanCandidate</td>
+<td>조합 구성, Gross Benefit, 전환비용 3항목, Net Benefit, 임계 통과 여부</td>
+<td>규칙 엔진</td>
+</tr>
+<tr>
+<td>Allocation</td>
+<td>배정 카테고리, 배분 금액</td>
+<td>규칙 엔진</td>
+</tr>
+<tr>
+<td>OutcomeLog</td>
+<td>선택 ID·일시, 자기보고, 검증 상태·신뢰도, 조합안 이행 상태</td>
+<td>자체(F-13)</td>
+</tr>
+<tr>
+<td>SelectionBaseline</td>
+<td>선택 당시 보유카드·동의 범위·데이터 기준일·완전성</td>
+<td>자체+마이데이터(F-13)</td>
+</tr>
+<tr>
+<td>OutcomeItem</td>
+<td>발급·해지·유지 항목과 항목별 자기보고·검증 결과</td>
+<td>자체(F-13)</td>
+</tr>
+<tr>
+<td>OutcomeObservation</td>
+<td>관측 시각·데이터 기준일·동기화 상태·식별 방식·카드 존재 여부·증거 해시</td>
+<td>자체+마이데이터(F-13)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="api">외부/내부 API 개요</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>인터페이스</th>
+<th>입출력·제약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>마이데이터 카드 업권 API</td>
+<td>단일 채널, 대체 공급자 없음. 장애 시 우회 경로 없음. 호출당 과금</td>
+</tr>
+<tr>
+<td>카드 혜택 Rule 데이터</td>
+<td>공식 통합 API 없음 — 8개 카드사·겸영은행 파편화. 자체 수집·버전관리 필수</td>
+</tr>
+<tr>
+<td><code>POST /calculate</code></td>
+<td>입력: 미래지출·제약조건 / 출력: 3개 시나리오와 시나리오별 조합안 또는 유지 결론. 3개를 함께 반환하며 p95 ≤ 5s. 미래 입력 0건이면 400</td>
+</tr>
+<tr>
+<td><code>GET /calculations/{id}/evidence</code></td>
+<td>출력: 근거 항목 목록. 6항목 미달 시 응답 거부</td>
+</tr>
+<tr>
+<td><code>POST /outcomes/{id}/self-report</code></td>
+<td>입력: 항목별 이행 여부 자기보고. 최초 제출만 유효하며 실행 개입 없음</td>
+</tr>
+<tr>
+<td><code>POST /internal/outcomes/observe</code></td>
+<td>Vercel Cron이 호출하는 후속 관측 배치. 유효 동의·조회량 한도·멱등성 검증 후 마이데이터 관측 상태 갱신</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="6_1">상태 전이 — 6개 객체</h3>
+<pre class="mermaid">
+stateDiagram-v2
+    [*] --> 미동의
+    미동의 --> 동의: 전송요구 완료
+    동의 --> 만료: 유효기간 경과
+    동의 --> 철회: 사용자 철회
+    만료 --> 동의: 재동의
+    철회 --> [*]: 데이터 파기
+    note right of 만료 : 만료·철회 상태에서 계산 요청은 400
+</pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>객체</th>
+<th>상태값</th>
+<th>전이 규칙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>마이데이터 동의</td>
+<td>미동의 → 동의 → (만료/철회)</td>
+<td>만료·철회 시 계산 요청 400. 철회 시 데이터 파기</td>
+</tr>
+<tr>
+<td>계산(Calculation)</td>
+<td>요청 → (성공/실패/부분)</td>
+<td><code>LOW</code>·<code>BASE</code>·<code>HIGH</code> 중 하나라도 필수 데이터 누락 또는 계산 실패이면 전체를 부분으로 처리하고 세 탭 모두 추천 노출 중단</td>
+</tr>
+<tr>
+<td>조합안(PlanCandidate)</td>
+<td>제시 → (선택/미선택) → 만료</td>
+<td><code>rule_version</code> 변경 또는 기준일 +30일 경과 시 만료 — 재계산 없이 실행 대상 아님</td>
+</tr>
+<tr>
+<td>자기보고(OutcomeLog)</td>
+<td>NOT_ASKED → (COMPLETED/NOT_COMPLETED/NO_RESPONSE)</td>
+<td>재방문 시 1회 노출. 무응답을 미완료로 바꾸지 않음</td>
+</tr>
+<tr>
+<td>관측 검증(OutcomeItem)</td>
+<td>PENDING → (VERIFIED_COMPLETED/VERIFIED_MAINTAINED/VERIFIED_NOT_COMPLETED/INCONCLUSIVE/UNAVAILABLE)</td>
+<td>자기보고와 독립 전이. 데이터 부재만으로 미완료 확정 금지</td>
+</tr>
+<tr>
+<td>조합안 이행(OutcomeLog)</td>
+<td>PENDING → (FULLY_ADHERED/PARTIALLY_ADHERED/NOT_ADHERED/INCONCLUSIVE)</td>
+<td>필수 항목을 종합하되 유지 준수는 행동 완주와 분리</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>관측 검증 제품 규칙</strong></p>
+<ol>
+<li>발급 추천은 기준 스냅샷에 없던 대상 카드가 Exact 또는 Strong 식별로 확인되고, 24시간 이상 간격의 정상·완전 동기화 2회에서 연속 관측될 때 <code>VERIFIED_COMPLETED</code>로 확정한다.</li>
+<li>해지 추천은 기준 스냅샷에 있던 대상 카드가 같은 카드사의 정상·완전 동기화 2회에서 연속 미관측될 때 <code>VERIFIED_COMPLETED</code>로 확정한다.</li>
+<li>마이데이터가 명시적인 발급·해지 상태를 제공하면 정상 관측 1회로 확정할 수 있다.</li>
+<li>유지 추천은 관측 종료 시 대상 카드 보유가 확인되면 <code>VERIFIED_MAINTAINED</code>로 판정한다. 이는 추천안 이행에는 포함하지만 행동 완주율에는 포함하지 않는다.</li>
+<li>동의 만료·철회, 범위 부족, 조회 실패, 부분 응답, 오래된 데이터, 약한 식별, 상품 전환, 증거 충돌, 관측 횟수 부족은 미완료가 아니라 <code>INCONCLUSIVE</code> 또는 <code>UNAVAILABLE</code>로 기록한다.</li>
+<li>자기보고와 관측 결과는 서로 덮어쓰지 않는다. <code>자기보고 완료 / 검증 불가</code>와 <code>자기보고 완료 / 관측 불일치</code>를 모두 허용한다.</li>
+<li>판정 불가 사유는 <code>CONSENT_EXPIRED</code>, <code>CONSENT_WITHDRAWN</code>, <code>SCOPE_INSUFFICIENT</code>, <code>PROVIDER_TIMEOUT</code>, <code>PARTIAL_RESPONSE</code>, <code>STALE_DATA</code>, <code>IDENTITY_WEAK</code>, <code>CARD_REPLACED</code>, <code>PRODUCT_CONVERTED</code>, <code>CONFLICTING_EVIDENCE</code>, <code>OBSERVATION_INSUFFICIENT</code>, <code>WINDOW_EXPIRED</code>, <code>BASELINE_MISSING</code>, <code>ALREADY_HELD</code>, <code>MULTIPLE_MATCHES</code>로 구분한다.</li>
+</ol>
+<hr>
+<h2 id="7-inout-adr">7. 범위(In/Out), 리스크·주요 설계 결정(ADR)·가정·의존성</h2>
+<h3 id="_4">범위</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>In</th>
+<th>Out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-01 미래지출 입력 · F-02 마이데이터 연동 · <strong>F-03 사용자 입력 1회 기반 3개 예상 시나리오 동시 계산</strong> · <strong>F-04 시나리오별 독립 조합 최적화와 탭 제공</strong> · F-05 결제수단 배분 · F-06 근거 공개 · F-07 단계적 전환 제안 · F-08 이벤트 비종속 입력 · F-09 소득·지출 범위 입력 · F-11 초기값 제안 · F-12 스코프 고지 · F-13 자기보고·마이데이터 관측 기반 추천안 이행 계측</td>
+<td>F-10 정기 재진단 알림 · F-14 카드 20장+ 대량 처리 최적화 · 해지·전환 실행 대행·상담·만류 대응 안내 · 신규카드 자동 발급 · 자동결제 · 대출·BNPL · 리텐션 전용 기능 · 외부 이메일·SMS·Push 독려</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>4장 MoSCoW의 Must·Should·Could 등급(F-01~F-09, F-11~F-13)은 전부 In-Scope다. Won't v1(F-10, F-14)만 Out으로 분류해 우선순위 등급과 범위 표기의 충돌을 없앴다.</p>
+</blockquote>
+<h3 id="3">리스크 (최소 3개)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>축</th>
+<th>리스크</th>
+<th>대응</th>
+<th style="text-align: center;">상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>인가</td>
+<td>마이데이터 인가·제휴가 없으면 핵심 계산과 후속 관측이 성립하지 않음</td>
+<td>기존 마이데이터 사업자 제휴를 베타 진입 게이트로 운영하고 미체결 시 베타를 시작하지 않음</td>
+<td style="text-align: center;">베타 진입 게이트</td>
+</tr>
+<tr>
+<td>업역</td>
+<td>카드사 신청 페이지 연결이나 실행 독려가 모집·대행으로 해석될 수 있음</td>
+<td>공식 링크 이동만 제공하고 신청서 작성·제출·해지 대행·외부 독려를 금지. 베타 전 컴플라이언스 검수</td>
+<td style="text-align: center;">통제 적용</td>
+</tr>
+<tr>
+<td>인센티브</td>
+<td>발급 연계 수익이 "유지" 결론과 충돌할 수 있음</td>
+<td>12개월 Net Benefit 50,000원 게이트를 수익모델보다 우선하고 유지 결론 비율을 독립 보고</td>
+<td style="text-align: center;">통제 적용</td>
+</tr>
+<tr>
+<td>데이터</td>
+<td>카드 약관 통합 API 부재 — 수집 실패 시 계산 신뢰도 붕괴</td>
+<td>rule_version 관리 + 최신성 경고(GR5) + 초기 범위 축소(ADR-004)</td>
+<td style="text-align: center;">관리 중 — 운영 절차로 상시 대응</td>
+</tr>
+<tr>
+<td>운영</td>
+<td>마이데이터 호출당 과금 — 사용자 증가가 곧 비용 증가</td>
+<td>계산 요청 건수를 비용으로 관리, 성과 지표로 사용하지 않음</td>
+<td style="text-align: center;">관리 중 — 비용 모니터링으로 상시 대응</td>
+</tr>
+<tr>
+<td>관측</td>
+<td>마이데이터 데이터 지연·부분 응답으로 해지나 미이행을 잘못 확정할 수 있음</td>
+<td>기준 스냅샷, High 신뢰도, 연속 정상 관측 2회, 판정 불가 사유코드를 강제하고 단일 미관측 확정을 금지</td>
+<td style="text-align: center;">통제 적용</td>
+</tr>
+<tr>
+<td>편향</td>
+<td>마이데이터 동의를 유지한 사용자만 자동 검증되어 이행률이 과대 추정될 수 있음</td>
+<td>관측 검증 이행률과 함께 검증 가능률·판정 불가율을 동일 화면에 병렬 보고</td>
+<td style="text-align: center;">통제 적용</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="adr-architecture-decision-record">주요 설계 결정 (ADR, Architecture Decision Record)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">ID</th>
+<th>결정</th>
+<th>배경/이유</th>
+<th style="text-align: center;">상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">ADR-001</td>
+<td>계산 로직은 결정론적 규칙 엔진으로 구현하고, AI는 근거 설명에만 사용한다</td>
+<td>"AI가 혜택을 보장한다"는 오해를 방지해 재무자문·투자권유 분류 리스크(업역 리스크)를 차단한다</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-002</td>
+<td>카드 해지·전환 실행은 시스템 범위에서 제외하고 측정(F-13)으로만 대응한다</td>
+<td>카드 해지 절차에 대한 직권·대행 권한이 없으며, 대행 시 모집인 등록 등 업역 리스크가 발생한다(리스크: 업역)</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-003</td>
+<td>Net Benefit 게이팅에서 "유지"를 정상 결과로 반환하며, 무조건적 신규카드 추천을 하지 않는다</td>
+<td>무조건 신규카드를 추천하면 차별점 ③(검증 가능한 계산)이 무너지고, 발급 연계 수익모델과 충돌한다(리스크: 인센티브)</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-004</td>
+<td>마이데이터 API를 카드 데이터의 유일한 채널로 사용하고 자체 크롤링·스크래핑은 하지 않는다</td>
+<td>카드 약관 통합 API가 없고(리스크: 데이터), 개인신용정보 수집은 마이데이터 표준 인가 체계를 통해서만 한다</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-005</td>
+<td>자기보고는 재방문 시 1회만 노출하고 외부 발송·재노출·독려하지 않는다</td>
+<td>반복 독려는 실행 개입으로 해석될 수 있고 GR4 위험을 높인다</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-006</td>
+<td>한 번의 <code>POST /calculate</code> 요청에서 동일한 스냅샷으로 LOW 80%·BASE 100%·HIGH 120%를 계산하고 <code>예상한 만큼 쓸 때</code>를 기본 노출한다</td>
+<td>사용자 입력을 세 번 요구하지 않으면서 예상 오차를 비교한다</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-007</td>
+<td>사용자 화면에는 LOW/BASE/HIGH 대신 <code>예상보다 적게 쓸 때</code>·<code>예상한 만큼 쓸 때</code>·<code>예상보다 많이 쓸 때</code>를 표시한다</td>
+<td>분석 용어보다 사용자가 자신의 지출 상황을 바로 이해할 수 있는 문장을 사용한다</td>
+<td style="text-align: center;">확정</td>
+</tr>
+<tr>
+<td style="text-align: center;">ADR-008</td>
+<td>자기보고와 마이데이터 관측을 독립 증거로 저장하고 유지 추천은 행동 완주와 분리한다</td>
+<td>확인 불가를 실패로 오분류하거나 유지 결론으로 전체 완주율을 부풀리는 것을 방지한다</td>
+<td style="text-align: center;">확정</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_5">제품 전제와 검증 우선순위</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">#</th>
+<th>가정</th>
+<th>검증 우선순위</th>
+<th>반증되면 무엇이 무너지나</th>
+<th style="text-align: center;">검증</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">A5</td>
+<td>마이데이터 인가·제휴를 확보할 수 있다</td>
+<td>0순위 — 착수 전 선결</td>
+<td>계산 성립 자체</td>
+<td style="text-align: center;">착수 전 선결</td>
+</tr>
+<tr>
+<td style="text-align: center;">A1</td>
+<td>미래 지출 입력의 수고가 혜택 최적화 보상으로 정당화된다</td>
+<td>1순위 — 서비스 성립 전제</td>
+<td>서비스 전체 — 온보딩이 성립하지 않음</td>
+<td style="text-align: center;">E2</td>
+</tr>
+<tr>
+<td style="text-align: center;">A4</td>
+<td>계산상 유리하면 사용자가 선택한다</td>
+<td>1순위 — 북극성 전제</td>
+<td>북극성 지표 자체</td>
+<td style="text-align: center;">E2</td>
+</tr>
+<tr>
+<td style="text-align: center;">A2</td>
+<td>사용자가 미래 지출을 숫자로 표현할 수 있다</td>
+<td>2순위</td>
+<td>F-01 입력 설계(F-11로 완화)</td>
+<td style="text-align: center;">E1·E3</td>
+</tr>
+<tr>
+<td style="text-align: center;">A3</td>
+<td>근거 공개가 신뢰를 만든다</td>
+<td>2순위</td>
+<td>차별점 ③</td>
+<td style="text-align: center;">E2(2군 비교)</td>
+</tr>
+<tr>
+<td style="text-align: center;">A6</td>
+<td>선택과 실제 추천안 이행 사이에는 측정할 가치가 있는 격차가 존재한다</td>
+<td>3순위</td>
+<td>F-13 보조 지표의 운영 가치</td>
+<td style="text-align: center;">E7</td>
+</tr>
+<tr>
+<td style="text-align: center;">A7</td>
+<td>다른 예상 시나리오가 미래지출 오차를 이해하고 조건부 결정을 내리는 데 도움을 준다</td>
+<td>2순위</td>
+<td>F-03·F-04의 3개 시나리오 UX</td>
+<td style="text-align: center;">다른 예상 탭 열람률·E2 인터뷰</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="_6">의존성</h3>
+<ul>
+<li>마이데이터 카드 업권 API 인가·제휴(베타 진입 게이트이며 체결 전에는 베타를 시작하지 않음)</li>
+<li>카드사 8곳 약관 데이터 수집·<code>rule_version</code> 관리 체계</li>
+<li>12개월 Net Benefit 50,000원 임계값 적용 → 이후 수익모델 결정 순서 준수</li>
+<li>후속 관측 목적·범위에 대한 사용자 고지와 컴플라이언스 승인</li>
+</ul>
+<h3 id="_7">확정된 계산 정책</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">ID</th>
+<th>결정 항목</th>
+<th>v1.1 정책</th>
+<th style="text-align: center;">변경 통제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">D2</td>
+<td>Net Benefit 게이팅 임계값</td>
+<td>계산일 이후 12개월 Net Benefit <strong>50,000원 이상</strong>일 때만 변경 추천. 미만이면 유지</td>
+<td style="text-align: center;"><code>rule_version</code>과 별도 <code>decision_policy_version</code>으로 버전 관리</td>
+</tr>
+<tr>
+<td style="text-align: center;">D5</td>
+<td>3개 시나리오 산식</td>
+<td>사용자 예상금액의 LOW 80%·BASE 100%·HIGH 120%. 사용자가 최소·최대값을 입력하면 LOW·HIGH에 우선 적용. 원 단위 반올림, 음수 금지</td>
+<td style="text-align: center;">시나리오 정책 변경 시 E4·E6 회귀 테스트 필수</td>
+</tr>
+<tr>
+<td style="text-align: center;">D6</td>
+<td>계산 기간과 지출 귀속</td>
+<td>계산일로부터 12개월. 계획 지출은 <code>planned_at</code>이 속한 결제주기에 귀속하고 연회비·전환비용도 같은 기간에 반영</td>
+<td style="text-align: center;">계산 결과에 기간·기준일을 항상 표시</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>D2·D5·D6은 v1.1의 구현 기준이다. 향후 실험 결과로 값을 변경할 수 있지만, 변경 전까지 현재 값이 유효한 제품 정책이며 요구사항의 확정성을 낮추는 경고로 취급하지 않는다.</p>
+</blockquote>
+<hr>
+<h2 id="8">8. 실험·롤아웃·측정</h2>
+<p><strong>베타 채널</strong>: 혼인(Q1) 세그먼트를 SOM Beachhead로 선정 — Trigger 감지가능성(웨딩업체 신호)과 1인당 지출강도(1,473만~2,203만원)가 가장 높은 세그먼트.</p>
+<h3 id="_8">실험 로드맵</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">실험</th>
+<th>검증 질문</th>
+<th>설계</th>
+<th>성공 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>E0 베이스라인</strong></td>
+<td>수기 계산 소요시간이 실제로 약 240분 수준이다</td>
+<td>실사용자 n=15~20, 수기로 카드 조합을 계산하게 하고 스톱워치 실측·자기보고 병행. E2 착수 전 완료</td>
+<td>소요시간 분포(p50·p95) 확정 — G1·차별가치 "48배" 수치의 분모로 확정 사용</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>E2 Concierge</strong></td>
+<td>계산 결과를 받으면 조합안을 선택한다</td>
+<td>혼인 모집 40 / 유효 30, 사람이 직접 계산. 근거 공개 유/무 2군</td>
+<td>선택률 ≥ 40%(중단선 20%) · 신뢰 점수 전후 상승</td>
+</tr>
+<tr>
+<td style="text-align: center;">E1 인터뷰</td>
+<td>미래 입력 의향이 실재한다</td>
+<td>실제 사용자 n=15</td>
+<td>Job A 언급률 ≥ 60%</td>
+</tr>
+<tr>
+<td style="text-align: center;">E3 A/B</td>
+<td>F-11이 온보딩 이탈을 줄인다</td>
+<td>n=500(250/250)</td>
+<td>B군 ≥ 60% 및 A군 대비 +15%p, 수정률 정상</td>
+</tr>
+<tr>
+<td style="text-align: center;">E4 회귀</td>
+<td>규칙 엔진이 경계값에서 정확하다</td>
+<td>경계값 케이스 ≥ 200건</td>
+<td>오류율 ≤ 0.1% · 재계산 불일치 0건</td>
+</tr>
+<tr>
+<td style="text-align: center;">E5 벤치마크</td>
+<td>동일 데이터에서 더 정확한 조합을 낸다(경쟁 대안 대비)</td>
+<td>같은 스냅샷 n=20으로 뱅크샐러드 vs CardFit</td>
+<td>3축 전부 우위 · 순혜택 차액 &gt; 0인 케이스 ≥ 70%</td>
+</tr>
+<tr>
+<td style="text-align: center;">E6 시나리오 정합성</td>
+<td>3개 시나리오가 한 번에 일관되게 산출되고 예상 오차 탐색을 돕는가</td>
+<td>동일 입력 스냅샷으로 <code>LOW</code>·<code>BASE</code>·<code>HIGH</code> 결과와 사용자 문구·적용 금액을 검증하고, E2 참여자의 다른 예상 탭 열람·이해도를 관찰</td>
+<td>3개 결과 동시 산출 성공률 100% · 탭 전환 추가 계산 호출 0건 · 적용 금액 누락 0건 · 부분 결과 노출 0건</td>
+</tr>
+<tr>
+<td style="text-align: center;">E7a 이행 분류</td>
+<td>자기보고와 관측 결과를 독립적으로 분류할 수 있는가</td>
+<td>E2 선택자, 기준 스냅샷과 30일 후 자기보고·후속 관측</td>
+<td>상태·사유코드 분류 누락 0건, 데이터 부재의 미완료 오분류 0건</td>
+</tr>
+<tr>
+<td style="text-align: center;">E7b 기준선</td>
+<td>행동 완주·유지 준수·조합안 이행과 검증 가능성을 측정할 수 있는가</td>
+<td>베타 선택자, 30일 후 High 신뢰도 판정과 자기보고 비교</td>
+<td>5개 이행·데이터 품질 지표의 기준선 확보, 유지 항목의 행동 완주율 혼입 0건</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>중단 조건</strong>
+- <strong>E0 미완료 = E2 착수 불가</strong> — 기준선 없이는 목표 대비 성과를 판정할 수 없음
+- GR1 초과 또는 GR2·GR3·GR4 1건 = 즉시 중단
+- E2 선택률 &lt; 20% = A1 전제 재검토(피벗)
+- E2 제외군("유지" 결론) 비율 &gt; 30% = 북극성 산식 재설계
+- E3 +15%p 미달 또는 수정률 비정상 = F-11 재설계
+- 마이데이터 인가·제휴 미체결 = 베타 진입 불가</p>
+<blockquote>
+<p>표본 수는 목표값과 중단선의 간격에서 역산했다 — 40% vs 20%를 가르는 데는 n=30이면 충분(오판 확률 1.7%).</p>
+</blockquote>
+<hr>
+<h2 id="9-proof">9. 근거(Proof)</h2>
+<p>각 핵심 주장을 실험 설계(Design)와 측정 도구(Metrics)에 연결한다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>주장</th>
+<th>실험 설계(Design)</th>
+<th>측정 지표(Metrics)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>판단 소요시간이 약 240분이다(기준선 자체)</td>
+<td><strong>E0 베이스라인 실험</strong>(n=15~20, 스톱워치 실측·자기보고)</td>
+<td>소요시간 분포 p50·p95</td>
+</tr>
+<tr>
+<td>판단 소요시간 240분 → p95 5분(약 48배 개선)</td>
+<td>E0(기준선 확정) + E2 Concierge Test(혼인 모집 n=40, 유효 30)</td>
+<td>결론 도달 소요시간 p95, 조합안 선택률</td>
+</tr>
+<tr>
+<td>조합 단위 계산이 카드 1장 비교보다 정확도 우위</td>
+<td>E5 벤치마크 — 동일 스냅샷 n=20, 뱅크샐러드 vs CardFit</td>
+<td>순혜택 차액 &gt; 0 케이스 비율(≥70% 목표), 3축(성능·정확도·비용) 비교</td>
+</tr>
+<tr>
+<td>F-11 초기값 제안이 온보딩 이탈을 줄인다</td>
+<td>E3 A/B 테스트, n=500(250/250)</td>
+<td>온보딩 완료율(B군 ≥60%, A군 대비 +15%p), 수정률</td>
+</tr>
+<tr>
+<td>미래 지출 입력 의향이 실재한다(A2)</td>
+<td>E1 실사용자 인터뷰 n=15</td>
+<td>Job A 언급률(≥60%)</td>
+</tr>
+<tr>
+<td>규칙 엔진이 경계값에서 정확하다(GR1 근거)</td>
+<td>E4 회귀 테스트 — 경계값 케이스 ≥200건(실적 1원 부족·한도 초과·실적 충돌·정책혜택 중복)</td>
+<td>오류율(≤0.1%), 재계산 불일치 건수(0건)</td>
+</tr>
+<tr>
+<td>3개 시나리오가 예상 오차를 흡수하면서 일관된 결과를 제공한다(G6·A7)</td>
+<td>E6 시나리오 정합성 테스트 + E2 다른 예상 탭 관찰</td>
+<td>3개 동시 산출 성공률, 추가 계산 호출 건수, 적용 금액 누락 건수, 부분 결과 노출 건수, 다른 예상 탭 열람률</td>
+</tr>
+<tr>
+<td>선택과 실제 추천안 이행 사이의 격차를 구분할 수 있다(A6)</td>
+<td>E7a 상태 분류 · E7b 자기보고와 High 신뢰도 관측 비교</td>
+<td>자기보고 이행률, 행동 완주율, 유지 준수율, 조합안 이행률, 검증 가능·판정 불가·불일치율</td>
+</tr>
+<tr>
+<td>해지 실행 마찰이 실재한다(P3)</td>
+<td>로그 분석 — 금감원 민원 통계</td>
+<td>카드 해지 민원 건수(2022 6,720건 → 2025 12,661건, +88.4%), 발급매수 증가율(+8.5%) 대비 배율</td>
+</tr>
+<tr>
+<td>미래소비 반영 서비스가 시장에 없다(P2)</td>
+<td>경쟁사 리서치 — 뱅크샐러드·카드고릴라·더쎈카드·토스·Credit Karma·NerdWallet 6곳 기능 실측</td>
+<td>미래소비 반영 기능 보유 비율(0/6)</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="10-prd">10. PRD 최종 품질검토</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>검토 결과</th>
+<th>근거</th>
+<th style="text-align: center;">판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>목표·지표</td>
+<td>북극성 1개와 보조 KPI를 수치화하고 기준선·목표·측정 이벤트·주기를 명시했다. 운영 이력이 없는 지표는 도입 기준선 0% 또는 최초 측정 실험을 명시했다</td>
+<td>1장 KPI·Guardrail, 8장 E0~E7</td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td>스토리·AC</td>
+<td>모든 MVP Story를 Given/When/Then으로 작성하고 p95 5초, 500ms, 오류·누락 0건, 24시간, 30일 등 SLO를 연결했다. 각 Story에 실패 케이스가 2개 이상 있다</td>
+<td>3장 US-A·B·C·F·D</td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td>기능 요구</td>
+<td>Must·Should·Could·Won't, 근거와 선행 의존성을 명시했다. Could인 F-07·F-09는 기존 결과·입력 로직을 재사용해 각각 1스프린트(2주) 안에 구현할 수 있다</td>
+<td>4장 기능 요구사항 표</td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td>비기능</td>
+<td>성능·신뢰성·가용성·보안·비용·최신성의 임계치와 탐지 방법·알림 SLA·책임자를 명시했다</td>
+<td>5장 NFR·모니터링 표</td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td>리스크·가정·ADR</td>
+<td>인가·업역·인센티브·데이터·비용·관측 오판정·선택 편향 등 주요 리스크 7개와 대응을 정의했다. ADR 8건은 제품 전제 A1~A7의 검증과 범위 통제에 연결된다</td>
+<td>7장 리스크·ADR·제품 전제</td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td>범위</td>
+<td>Must·Should·Could를 In-Scope로, Won't와 실행 대행·외부 독려를 Out-of-Scope로 구분했다. 유지 결론과 발급 수익 충돌은 Net Benefit 게이트로 통제한다</td>
+<td>7장 범위·ADR-002/003/005</td>
+<td style="text-align: center;"><strong>PASS</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="srs">SRS 변환 적용 원칙</h3>
+<p>후속 SRS는 예시 AD-Core-Platform의 <code>서론 → 이해관계자 → 시스템 맥락 및 인터페이스 → 구체적 요구사항 → 추적성 매트릭스 → 부록</code> 구조를 기본으로 따른다. 예시가 다루지 않는 다음 PRD 내용만 ISO/IEC/IEEE 29148:2018 구성에 따라 확장한다.</p>
+<ul>
+<li>C-TEC 기술 제한과 규제·보안 통제는 <code>Limitations</code>에 대응시킨다.</li>
+<li>마이데이터 인가·제휴와 외부 데이터 의존성은 <code>Assumptions and dependencies</code>에 대응시킨다.</li>
+<li>기능·비기능·제품 지표·Guardrail은 고유 ID와 검증 방법을 부여하고 추적성 매트릭스에 연결한다.</li>
+<li>기준 스냅샷·관측·판정 상태는 논리 데이터 요구사항과 상태 전이로 확장한다.</li>
+<li>E0~E7과 합격·중단 기준은 <code>Verification</code>에 대응시킨다.</li>
+</ul>
+<p>따라서 후속 SRS는 ISO 29148의 모든 항목을 채우는 풀 버전이 아니라, 예시 형식을 유지하면서 PRD에서 필요한 내용만 표준 항목으로 확장하는 문서가 된다.</p>
+<hr>
+<h2 id="11">11. 결론 및 제품 인사이트</h2>
+<p>CardFit v1.1은 예상 미래지출을 한 번 입력하면 세 가지 예상 범위를 자동 계산하고, 각 범위에서 카드 변경이 실제로 유리한 조건을 보여주는 제품으로 정의됐다. 12개월 Net Benefit 50,000원 미만에서는 현재 조합 유지를 반환하므로 미세한 혜택 차이로 신규 발급을 권하지 않는다.</p>
+<p>추천 이후의 성과는 단일 완주율로 축약하지 않는다. 발급·해지는 행동 완주, 유지는 유지 준수, 복합 추천은 조합안 이행으로 측정한다. 자기보고와 마이데이터 관측이 다르거나 관측할 수 없는 경우에도 어느 한쪽을 임의로 정답 처리하지 않는다. 이 설계의 핵심 인사이트는 추천의 강도를 높이는 것이 아니라, 추천이 성립하는 조건과 실행 결과의 불확실성을 사용자가 이해할 수 있게 만드는 데 있다.</p>
+<p>제시된 6개 품질 요건은 모두 충족했다. 후속 SRS는 본 PRD를 요구사항 기준선으로 삼을 수 있으며, 예시 SRS의 구조를 유지하면서 기술 제한·검증·논리 데이터·상태 모델만 ISO 29148 항목에 따라 확장하면 된다.</p>
+<hr>
+<h2 id="12">12. 출처</h2>
+<ul>
+<li>인터뷰: E0(신규, n=15~20), E1(n=15, 실제 사용자 인터뷰로 전면 실행 예정), E2 Concierge Test 결과 로그</li>
+<li>로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계</li>
+<li>벤치마크: <code>윤정/0818/경쟁사_유저플로우_뱅크샐러드.pdf</code>, E5 동일 스냅샷 n=20 비교표</li>
+<li>리서치: <code>윤정/확정본/04_TAM_SAM_SOM_Segment_Map.md</code>, <code>가람/확정본/05_Persona_Spectrum_Journey.md</code>, <code>가람/확정본/07_JTBD.md</code>, <code>가람/확정본/06_Opportunity_Score.md</code>, <code>효진/0820/09_PRD_Requirement_Trace_v0.1.md</code>, <code>효진/0820/09-1_KPI_Design_Worksheet_v0.1.md</code>, <code>master-deck/README.md</code>(페이지별 근거 인덱스)</li>
+<li>SRS 예시: <a href="https://wildmental.notion.site/SRS-AD-Core-Platform-5f1d03212bd4823ba8428142bc22ef76">SRS AD-Core-Platform</a></li>
+<li>표준: <a href="https://committee.iso.org/standard/72089.html">ISO/IEC/IEEE 29148:2018 공식 개요</a>, 사용자 제공 <code>29148-2018-ISOIECIEEE.pdf</code></li>
+</ul>
+    </div>
+  </main>
+</div>
