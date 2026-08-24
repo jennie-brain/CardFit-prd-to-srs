@@ -47,4 +47,4 @@ CardFit PRD(`PRD_CardFit_v1.0.md`)에는 위 7개 섹션만으로는 담기지 �
 - [x] PRD 작성 (`PRD_CardFit_v1.0.md`)
 - [x] PRD 품질 검토 — 측정 가능성/검증 가능성 (`PRD_CardFit_v0.1_품질검토.md`)
 - [x] Use Case Diagram 작성 (`diagrams/`)
-- [ ] SRS 초안 작성 — 위 변환 목표(7섹션 기본 포맷 + 초과분만 표준 확장)에 따라 진행 예정
+- [x] SRS 초안 작성 (`SRS-Drafts/SRS_CardFit_v0.1.md`) — 기본 7섹션(예시 포맷) + 확장 3섹션(가정·제약·의존성 / 검증 / 참고자료, ISO/IEC/IEEE 29148:2018 근거 명시)
