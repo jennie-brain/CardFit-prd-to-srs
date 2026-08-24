@@ -50,3 +50,4 @@ CardFit PRD(`PRD_CardFit_v1.0.md`)에는 위 7개 섹션만으로는 담기지 �
 - [x] SRS 확정본 작성 (`SRS-Drafts/SRS_CardFit_v1.0.md`, `.html`) — 기본 7섹션과 가정·제약·의존성, 검증, 참고자료 포함
 - [x] SRS 기술 제약 통합본 작성 (`SRS-Drafts/SRS_CardFit_v1.1.md`, `.html`) — 기존 제품 요구사항을 유지하면서 Mermaid Use Case, Story·AC, KPI·Guardrail 추적성과 C-TEC-001~007 구현 제약 반영
 - [x] SRS 기술 스택 적합성 반영본 작성 (`SRS-Drafts/SRS_CardFit_v1.2.md`, `.html`) — C-TEC-001~007 의무화, 기능별 적합성·범위 밖 항목, Vercel Cron 기반 계측 구현 명시
+- [x] SRS 추천안 이행 검증본 작성 (`SRS-Drafts/SRS_CardFit_v1.3.md`, `.html`) — 자기보고·마이데이터 관측 분리, 행동 완주·유지 준수·조합안 이행 및 엄격한 판정 불가 모델 반영
