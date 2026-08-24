@@ -149,6 +149,7 @@ PRD가 "핵심 기능 1개"로 지목한 조합 최적화(F-04)를 축으로, 3.
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant API as 시스템(API)
@@ -186,6 +187,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant API as 시스템(API)
@@ -207,6 +209,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 완주모듈 as 완주 계측 모듈
     participant API as 시스템(API)
@@ -231,6 +234,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant 마이데이터모듈 as 마이데이터 연동 모듈
@@ -259,6 +263,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant 초기값모듈 as 초기값 제안 모듈

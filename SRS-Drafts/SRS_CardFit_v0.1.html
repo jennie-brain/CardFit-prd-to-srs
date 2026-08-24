@@ -165,6 +165,8 @@ pre.mermaid {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
   padding: 20px; overflow-x: auto; margin: 1.6em 0; text-align: center;
 }
+/* 시퀀스 다이어그램 autonumber 숫자를 흰색으로 — 배경 원과 대비되어 더 잘 보이도록 */
+.mermaid .sequenceNumber { fill: #ffffff !important; font-weight: 700 !important; }
 
 /* 4.3 Net Benefit 게이팅 흐름도 — 세로로 긴 다이어그램을 한 화면 안에 맞춘다 */
 #mermaid-flow-netbenefit svg { max-height: 76vh; width: auto; height: auto; }
@@ -514,6 +516,7 @@ img { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(
 <p><strong>3.6.1 시나리오 계산 + Net Benefit 게이팅 (<code>POST /calculate</code>, REQ-FUNC-004·005)</strong></p>
 <pre class="mermaid">
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant API as 시스템(API)
@@ -549,6 +552,7 @@ sequenceDiagram
 <p><strong>3.6.2 근거 공개 (<code>GET /calculations/{id}/evidence</code>, REQ-FUNC-007)</strong></p>
 <pre class="mermaid">
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant API as 시스템(API)
@@ -568,6 +572,7 @@ sequenceDiagram
 <p><strong>3.6.3 실행 완주율 계측 (<code>POST /outcomes/{id}/completion</code>, REQ-FUNC-010)</strong></p>
 <pre class="mermaid">
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 완주모듈 as 완주 계측 모듈
     participant API as 시스템(API)
@@ -591,6 +596,7 @@ sequenceDiagram
 </blockquote>
 <pre class="mermaid">
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant 마이데이터모듈 as 마이데이터 연동 모듈
@@ -617,6 +623,7 @@ sequenceDiagram
 <p><strong>3.6.5 과거 패턴 기반 초기값 자동 제안 (REQ-FUNC-008)</strong></p>
 <pre class="mermaid">
 sequenceDiagram
+    autonumber
     actor 사용자
     participant 클라이언트
     participant 초기값모듈 as 초기값 제안 모듈
