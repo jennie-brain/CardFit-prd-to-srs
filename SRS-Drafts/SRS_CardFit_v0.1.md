@@ -136,6 +136,90 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 
 > 이미지 파일: `diagrams/usecase_diagram_cardfit_v0.1.png` (벡터 원본: `diagrams/usecase_diagram_cardfit_v0.1.svg`)
 
+### 3.6 핵심 기능 인터랙션 시퀀스
+
+PRD가 "핵심 기능 1개"로 지목한 조합 최적화(F-04)를 축으로, 3.2~3.4의 인터페이스가 실제로 어떤 순서로 호출되는지 시퀀스 다이어그램으로 나타낸다. 각 분기는 4.1의 해당 REQ-FUNC 인수기준과 1:1로 대응한다.
+
+**3.6.1 시나리오 계산 + Net Benefit 게이팅 (`POST /calculate`, REQ-FUNC-004·005)**
+
+```mermaid
+sequenceDiagram
+    actor 사용자
+    participant 클라이언트
+    participant API as 시스템(API)
+    participant 마이데이터모듈 as 마이데이터 연동 모듈
+    participant 마이데이터API as 마이데이터 API(외부)
+    participant 규칙엔진 as 규칙 엔진(Calculation)
+    participant 게이팅 as Net Benefit 게이팅
+
+    사용자->>클라이언트: 미래지출·제약조건 입력 완료
+    클라이언트->>API: POST /calculate(future_spend, constraint)
+    API->>마이데이터모듈: 최신 보유카드·과거소비 조회
+    마이데이터모듈->>마이데이터API: 데이터 요청
+    alt 마이데이터 정상 응답
+        마이데이터API-->>마이데이터모듈: HeldCard·PastSpend 반환
+    else 응답 지연·장애
+        마이데이터API-->>마이데이터모듈: 지연/오류
+        마이데이터모듈-->>API: "최근 확인된 데이터 기준" 경고 + 기준일(REQ-FUNC-004 AC3)
+    end
+    alt 미래지출 입력 0건
+        API-->>클라이언트: 400 반환(REQ-FUNC-004 AC2)
+    else 입력 1건 이상
+        API->>규칙엔진: 시나리오 계산 요청(rule_version 스냅샷 적용)
+        규칙엔진->>게이팅: PlanCandidate 생성, Net Benefit 산출
+        alt Net Benefit < 임계값(D2)
+            게이팅-->>규칙엔진: "현재 조합 유지" 결론(REQ-FUNC-005 AC2)
+        else Net Benefit ≥ 임계값(D2)
+            게이팅-->>규칙엔진: 추천 조합안 확정
+        end
+        규칙엔진-->>API: 계산 결과(p95 ≤ 5초, REQ-NF-001)
+        API-->>클라이언트: 결과 표시(차액 원 단위, REQ-FUNC-005 AC1)
+    end
+```
+
+**3.6.2 근거 공개 (`GET /calculations/{id}/evidence`, REQ-FUNC-007)**
+
+```mermaid
+sequenceDiagram
+    actor 사용자
+    participant 클라이언트
+    participant API as 시스템(API)
+    participant 근거서비스 as 근거 공개 서비스
+
+    사용자->>클라이언트: "근거 보기" 클릭
+    클라이언트->>API: GET /calculations/{id}/evidence
+    API->>근거서비스: 근거 항목 수 검증(실적구간·한도·연회비·제외조건·기준일·rule_version)
+    alt 근거 항목 ≥ 6개
+        근거서비스-->>API: 근거 항목 목록 + 미반영 비용 안내
+        API-->>클라이언트: 근거 패널 표시(REQ-FUNC-007 AC1·AC2)
+    else 근거 항목 < 6개
+        근거서비스-->>API: 응답 거부
+        API-->>클라이언트: 거부 응답(GR3, REQ-FUNC-007 AC3)
+    end
+```
+
+**3.6.3 실행 완주율 계측 (`POST /outcomes/{id}/completion`, REQ-FUNC-010)**
+
+```mermaid
+sequenceDiagram
+    actor 사용자
+    participant 완주모듈 as 완주 계측 모듈
+    participant API as 시스템(API)
+
+    완주모듈->>사용자: 조합안 선택 +30일 시점 완주 여부 질의(1회만 발송)
+    alt 30일 내 사용자 응답
+        사용자->>API: POST /outcomes/{id}/completion(selection_id, 완주 여부)
+        API->>완주모듈: selection_id 중복 검사
+        alt 최초 제출
+            완주모듈-->>API: 완주 여부 집계(REQ-FUNC-010 AC1)
+        else 동일 selection_id 중복 제출
+            완주모듈-->>API: 중복 무시, 최초 값 유지(REQ-FUNC-010 AC4)
+        end
+    else 30일 경과 무응답
+        완주모듈->>완주모듈: 무응답 자동 집계, 재발송 없음(REQ-FUNC-010 AC3, GR4)
+    end
+```
+
 ---
 
 ## 4. 구체적 요구사항
