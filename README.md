@@ -47,6 +47,5 @@ CardFit PRD(`PRD_CardFit_v1.0.md`)에는 위 7개 섹션만으로는 담기지 �
 - [x] PRD 작성 (`PRD_CardFit_v1.0.md`)
 - [x] PRD 품질 검토 — 측정 가능성/검증 가능성 (`PRD_CardFit_v0.1_품질검토.md`)
 - [x] Use Case Diagram 작성 (`diagrams/`)
-- [x] SRS 초안 작성 (`SRS-Drafts/SRS_CardFit_v0.1.md`) — 기본 7섹션(예시 포맷) + 확장 3섹션(가정·제약·의존성 / 검증 / 참고자료, ISO/IEC/IEEE 29148:2018 근거 명시)
-- [x] SRS 보완본 작성 (`SRS-Drafts/SRS_CardFit_v0.2.md`, `.html`) — Mermaid Use Case, Story·AC 및 KPI·Guardrail 추적성, 출처·확정 상태 관리 추가
-- [x] 별도 구현 기술 SRS 작성 (`SRS-Drafts/SRS_CardFit_v0.3_technical.md`, `.html`) — Next.js App Router 단일 풀스택, Prisma·Supabase, Tailwind·shadcn/ui, Vercel AI SDK·Gemini, Vercel Git 배포 제약 반영
+- [x] SRS 확정본 작성 (`SRS-Drafts/SRS_CardFit_v1.0.md`, `.html`) — 기본 7섹션과 가정·제약·의존성, 검증, 참고자료 포함
+- [x] SRS 기술 제약 통합본 작성 (`SRS-Drafts/SRS_CardFit_v1.1.md`, `.html`) — 기존 제품 요구사항을 유지하면서 Mermaid Use Case, Story·AC, KPI·Guardrail 추적성과 C-TEC-001~007 구현 제약 반영

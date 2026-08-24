@@ -3,22 +3,24 @@
 | 항목 | 내용 |
 | --- | --- |
 | 문서 ID | SRS-CARDFIT-MVP-001 |
-| 개정 버전 | 1.0 |
+| 개정 버전 | 1.1 |
 | 날짜 | 2026-08-24 |
 | 기준 서식 | 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷 |
 | 참고 표준 | ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용) |
-| 원천 문서 | `PRD_CardFit_v1.0.md` (본 SRS는 이 PRD를 요구사항 도출의 유일한 정보 원천으로 한다) |
+| 원천 문서 | `SRS_CardFit_v1.0.md`(직전 기준선), `PRD_CardFit_v1.0.md`, `team-project_2nd/master-deck`, C-TEC-001~007 |
 
-> 📘 **읽기 편한 HTML 버전**: [CardFit SRS 문서 보기](https://claude.ai/code/artifact/88b573ad-833c-4e70-a907-e640d7783964) — 사이드바 목차, 렌더링된 다이어그램(Use Case·ERD·Class·Component·Sequence·Flow Chart), 출처 태그 배지가 포함된 버전. 원본은 `SRS-Drafts/SRS_CardFit_v0.1.html`.
+> 📘 **HTML 버전**: `SRS-Drafts/SRS_CardFit_v1.1.html`
 
 ---
 
 ## 개요 (Summary)
 
-CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD_CardFit_v1.0.md`를 유일한 정보 원천으로 삼아, 예시 SRS 문서(AD-Core-Platform)가 취한 7섹션 포맷을 기본 구조로 채택하고, 그 포맷으로 담기지 않는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 3개 챕터를 추가해 확장했다.
+CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD_CardFit_v1.0.md`를 제품 요구사항 기준선으로 삼고 `team-project_2nd/master-deck`을 제품 의도와 결정 근거로 참고한다. SRS에서 더 안전하고 검증 가능하게 구체화한 내용은 출처·확정 상태를 표시해 반영한다. 문서 구조는 예시 SRS 문서(AD-Core-Platform)의 7섹션 포맷을 기본으로 하며, 가정·제약·의존성, 검증 계획, 참고자료를 ISO/IEC/IEEE 29148:2018에 근거해 확장했다.
 
 - **기능 요구사항**: REQ-FUNC 13건(Must 8·Should 3·Could 2) — PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리했으며, 문항별 출처는 [PRD]/[Derived]/[Design Decision]/[TBD]로 구분한다(4.1 서두 참조)
 - **비기능 요구사항**: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)
+- **제품 측정 요구사항**: REQ-METRIC 7건·REQ-GR 6건 — KPI를 시스템 품질 요구사항과 분리하고, 미측정 목표는 가정으로 유지한다
+- **구현 기술 요구사항**: C-TEC 7건과 REQ-ARCH·DATA·UI·AI·DEPLOY·SEC 35건 — Next.js 단일 풀스택에서 제품 요구사항을 구현하는 기준
 - **미해결 선결 조건**: 마이데이터 인가·제휴 확정(A5), Net Benefit 임계값(D2) 확정 — 8장 참조
 - **검증 경로**: E0~E7b 실험 로드맵과 중단 조건 — 9장 참조
 - **설계 다이어그램**: Use Case(3.5) · Sequence 5개(3.6) · Component(3.7) · 전체 흐름 Flow Chart(3.8) · 핵심 의사결정 Flow Chart(4.3) · Class Diagram(5.1) · ERD·상태전이(6.2) — 배경지식이 없어도 각 다이어그램 앞의 "읽는 법" 설명만으로 이해할 수 있도록 배치했다
@@ -137,9 +139,47 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 
 아래 다이어그램은 3.2~3.4의 액터(사용자·마이데이터 API·카드사 시스템·데이터 운영·계산 품질·컴플라이언스)와 4.1의 기능 요구사항(REQ-FUNC) 간 관계를 나타낸다. 실선은 액터-유스케이스 연관, 점선 화살표는 `<<include>>`/`<<extend>>` 관계다.
 
-![CardFit Use Case Diagram](../diagrams/usecase_diagram_cardfit_v0.1.png)
+```mermaid
+flowchart LR
+    User([사용자])
+    MyData([마이데이터 API])
+    Card([카드사 시스템])
+    DataOps([데이터 운영])
+    Quality([계산 품질])
+    Compliance([컴플라이언스·보안])
 
-> 이미지 파일: `diagrams/usecase_diagram_cardfit_v0.1.png` (벡터 원본: `diagrams/usecase_diagram_cardfit_v0.1.svg`)
+    UC1((미래지출·제약 입력))
+    UC2((카드·과거소비 연동))
+    UC3((시나리오 계산))
+    UC4((조합 최적화·유지 판단))
+    UC5((결제수단 배분))
+    UC6((계산 근거 확인))
+    UC7((카드사 신청 페이지 이동))
+    UC8((완주 여부 응답))
+    UC9((Rule 버전 관리))
+    UC10((오류·오조회 감시))
+
+    User --- UC1
+    User --- UC2
+    User --- UC6
+    User --- UC7
+    User --- UC8
+    MyData --- UC2
+    Card --- UC7
+    DataOps --- UC9
+    Quality --- UC10
+    Compliance --- UC10
+    UC1 -. "<<include>>" .-> UC3
+    UC2 -. "<<include>>" .-> UC3
+    UC3 -. "<<include>>" .-> UC4
+    UC4 -. "임계 통과 시 <<include>>" .-> UC5
+    UC4 -. "<<include>>" .-> UC6
+    UC5 -. "선택 시 <<extend>>" .-> UC7
+    UC7 -. "30일 후 <<extend>>" .-> UC8
+    UC9 -. "<<include>>" .-> UC3
+```
+
+> 이 Mermaid 다이어그램을 정본으로 사용한다. 기존 PNG·SVG는 호환용 산출물로 유지하되, 내용이 달라질 경우 Mermaid 원본을 먼저 갱신한다.
 
 ### 3.6 핵심 기능 인터랙션 시퀀스
 
@@ -399,7 +439,30 @@ flowchart TD
 | **REQ-NF-008** | 감사 로그 보존 | PRD §5 보안 | Must | Security | 로그 보존 정책 점검 | 계산 요청·응답, 적용 `rule_version`, 입력 스냅샷, 마이데이터 응답 코드를 로그로 남긴다. 보존 기간·접근 권한·마스킹·삭제 방식은**[TBD]**(8.3 리스크·6.2.3 참조, 개발 착수 전 확정 필요) | Proposed — 로깅 항목 확정, 보존정책 TBD | 컴플라이언스·보안 |
 | **REQ-NF-009** | Guardrail 모니터링·알림 | PRD §5 모니터링 | Must | Observability | 알림 테스트 | GR1~GR5·오조회 각각에 대해 정의된 탐지 방법과 알림 지연 SLA(5분~24시간)를 충족 | Proposed | 계산 품질/데이터 운영/PM/컴플라이언스 |
 
-### 4.3 핵심 의사결정 흐름 — Net Benefit 게이팅 (Flow Chart)
+### 4.3 제품 측정 및 Guardrail 요구사항
+
+> KPI는 제품 성과를 판단하는 측정 요구사항이며 시스템 품질을 규정하는 비기능 요구사항과 성격이 다르다. 따라서 `REQ-METRIC`으로 분리한다. 기준선이 없는 목표는 `[Assumption]`, 검증 기간 밖의 항목은 `Deferred`, 위반 시 중단해야 하는 안전 지표는 `REQ-GR`로 관리한다.
+
+| ID | 지표 | 산식·판정 기준 | 상태 | 검증 |
+| --- | --- | --- | --- | --- |
+| **REQ-METRIC-001** | 조합안 선택률(북극성) | 결과 도달자 중 7일 이내 저장·확정한 사용자 비율 ≥ 40%. "유지" 결론 사용자는 분모 제외 | Proposed `[Assumption]` | E2 Concierge |
+| **REQ-METRIC-002** | 결론 도달 소요시간 | 사용자 진입부터 유지·추천 결론까지 p95 ≤ 5분 | Proposed `[Assumption]` | E2·사용성 로그 |
+| **REQ-METRIC-003** | 온보딩 완료율 | 온보딩 시작 사용자 중 계산 가능한 입력 완료 비율 ≥ 60% | Proposed `[Assumption]` | E3 A/B |
+| **REQ-METRIC-004** | 근거 열람률 | 결과 도달 사용자 중 근거 화면 열람 비율 ≥ 50% | Proposed `[Assumption]` | 이벤트 로그 |
+| **REQ-METRIC-005** | 실행 완주율 | 조합안 선택 후 30일 시점의 완주·미완주·미응답을 분리 집계. 초기 목표 없음 | Derived — 기준선 측정 | E7b |
+| **REQ-METRIC-006** | 이벤트 비종속 진입률 | 이벤트 선택 없이 자유 입력으로 진입한 사용자 비율 ≥ 20% | Proposed `[Assumption]` | 이벤트 로그 |
+| **REQ-METRIC-007** | D+90 재방문율 | 최초 결과 후 90일 이내 재방문 사용자 비율. 검증 기간 내 합격 판정에서 제외 | Deferred | 장기 코호트 |
+
+| ID | Guardrail | 중단·합격 기준 | 상태 | 책임자 |
+| --- | --- | --- | --- | --- |
+| **REQ-GR-001** | 계산 오류율 | ≤ 0.1%, 재계산 불일치 0건. 초과 시 롤아웃 중단 | Confirmed | 계산 품질 |
+| **REQ-GR-002** | 불필요 신규카드 추천 | 임계 미달 변경 추천 0건. 1건 발생 시 중단 | Confirmed — D2 값 TBD | 계산 품질·PM |
+| **REQ-GR-003** | 근거 미공개 결과 | 근거 6항목 미달 결과 노출 0건 | Confirmed | 계산 품질·PM |
+| **REQ-GR-004** | 실행 대행 오인 문구 | UI·푸시·FAQ·CS 노출 0건 | Confirmed | PM |
+| **REQ-GR-005** | 최신성 경고 누락 | 갱신 지연 데이터의 경고 누락률 0% | Confirmed | 데이터 운영 |
+| **REQ-GR-006** | 마이데이터 오조회 | 0건. 발생 시 서비스 중단·신고 | Confirmed | 컴플라이언스·보안 |
+
+### 4.4 핵심 의사결정 흐름 — Net Benefit 게이팅 (Flow Chart)
 
 REQ-FUNC-005(Net Benefit 게이팅)는 PRD가 "핵심 기능 1개"로 지목한 요구사항이자 8.5에서 계산식 세부가 아직 TBD로 남아있는 항목이다. 코드나 표보다 그림이 이해하기 쉬우므로, **결정되어 있는 부분(회색)**과 **아직 정해지지 않은 부분(노란색)**을 구분해 흐름도로 나타낸다.
 
@@ -529,6 +592,43 @@ classDiagram
 | PRD §5 비용 | REQ-NF-007 | CostDashboard | TC-NF-007 | 미실시(예산 임계치 TBD) |
 | PRD §5 보안 | REQ-NF-008 | AuditLogStore | TC-NF-008 | 미실시(보존정책 TBD) |
 | PRD §5 모니터링 | REQ-NF-009 | GuardrailAlertDispatcher | TC-NF-009 | 미실시 |
+
+### 5.3 Story·AC 단위 추적성
+
+> PRD의 문장 순서를 식별 가능한 AC ID로 고정했다. 한 AC가 기능과 품질을 함께 요구하면 관련 REQ를 모두 연결한다. SRS에서 파생한 실패 기준은 원문 AC와 혼동하지 않도록 `DER-AC-*`로 분리한다.
+
+| Story | AC ID | PRD 인수 기준 요약 | 반영 요구사항 | 검증 ID | 상태 |
+| --- | --- | --- | --- | --- | :---: |
+| US-A | AC-US-A-01 | 미래지출 입력 후 p95 5초 이내 결과 표시 | REQ-FUNC-004, REQ-NF-001 | TC-AC-A-01 | 미실시 |
+| US-A | AC-US-A-02 | 미래 입력 0건이면 400, 과거 단독 결과 금지 | REQ-FUNC-004 | TC-AC-A-02 | 미실시 |
+| US-A | AC-US-A-03 | 유지안·추천안 혜택 차액을 원 단위 표시 | REQ-FUNC-005 | TC-AC-A-03 | 미실시 |
+| US-B | AC-US-B-01 | 근거 6항목 이상 공개 | REQ-FUNC-007 | TC-AC-B-01 | 미실시 |
+| US-B | AC-US-B-02 | 미반영 비용 고지 누락 0% | REQ-FUNC-007 | TC-AC-B-02 | 미실시 |
+| US-B | AC-US-B-03 | 6항목 미달 시 응답 거부 | REQ-FUNC-007, REQ-GR-003 | TC-AC-B-03 | 미실시 |
+| US-C | AC-US-C-01 | 선택 후 30일에 완주 여부 집계 | REQ-FUNC-010, REQ-METRIC-005 | TC-AC-C-01 | 미실시 |
+| US-C | AC-US-C-02 | 완주율을 북극성과 병렬 보고, 격차 20%p 경보 | REQ-FUNC-010, REQ-METRIC-001/005 | TC-AC-C-02 | 미실시 |
+| US-C | AC-US-C-03 | 미완주 사유는 집계만 하고 자동 개입 금지 | REQ-FUNC-010, REQ-GR-004 | TC-AC-C-03 | 미실시 |
+| US-C | AC-US-C-04 | 실행 대행 범위 인지율 90% 이상 | REQ-FUNC-009 | TC-AC-C-04 | 미실시 |
+| US-F | AC-US-F-01 | 이벤트 종류 필수 선택 단계 0개 | REQ-FUNC-001B | TC-AC-F-01 | 미실시 |
+| US-F | AC-US-F-02 | 증가·감소 양방향 처리 오류율 0% | REQ-FUNC-001B | TC-AC-F-02 | 미실시 |
+| US-F | AC-US-F-03 | 자유 입력 카테고리 계산 반영 | REQ-FUNC-001B | TC-AC-F-03 | 미실시 |
+| 공통 | AC-GATE-01 | 임계 미달 시 현재 조합 유지 반환 100% | REQ-FUNC-005, REQ-GR-002 | TC-AC-GATE-01 | D2 TBD |
+| US-D | AC-US-D-DER-01 | 제약조건과 범위 입력의 유효성 검증 | REQ-FUNC-003A/003B | TC-FUNC-003A/B | Derived |
+| US-E | AC-US-E-DEF-01 | 정기 재진단·D+90 재방문 | F-10, REQ-METRIC-007 | TC-METRIC-007 | Deferred |
+
+### 5.4 KPI·Guardrail 추적성
+
+| Master Deck/PRD 출처 | 요구사항 | 수집·통제 구성요소 | 검증 | 상태 |
+| --- | --- | --- | --- | --- |
+| p30 북극성 | REQ-METRIC-001 | ProductAnalytics | E2 | 목표값 Assumption |
+| p30 전환 KPI | REQ-METRIC-002~004 | FunnelAnalytics | E2·E3·이벤트 로그 | 목표값 Assumption |
+| p30 유지 KPI | REQ-METRIC-005~007 | OutcomeTracker·CohortAnalytics | E7b·장기 코호트 | 005 기준선 측정, 007 Deferred |
+| p30 GR1 | REQ-GR-001 | RegressionTestRunner | TC-NF-003 | 미실시 |
+| p30 GR2 | REQ-GR-002 | NetBenefitGate | TC-FUNC-005 | D2 TBD |
+| p30 GR3 | REQ-GR-003 | EvidenceDisclosureService | TC-FUNC-007 | 미실시 |
+| p30 GR4 | REQ-GR-004 | ScopeNoticeGuard | TC-FUNC-009 | 미실시 |
+| p30 GR5 | REQ-GR-005 | RuleFreshnessMonitor | TC-NF-006 | 미실시 |
+| p31 오조회 | REQ-GR-006 | AccessAuditLogger | TC-NF-005 | 미실시 |
 
 ---
 
@@ -729,6 +829,183 @@ REQ-FUNC-005(조합 최적화 + Net Benefit 게이팅)는 PRD가 "핵심 기능 
 
 > 위 9개 항목이 모두 확정되기 전까지 REQ-FUNC-005는 "Proposed — 핵심 로직 미확정" 상태로 유지하며, 확정 즉시 본 SRS와 4.1 표를 갱신한다.
 
+### 8.6 요구사항 출처·확정 상태 관리
+
+Master Deck은 제품 의도와 의사결정 근거로 사용하되, 미확정 내용까지 절대적인 정답으로 간주하지 않는다. 충돌이 발생하면 `법·규제·보안 필수조건 → PRD 목표·범위·AC → 확정된 Master Deck 결정 → SRS 파생 요구사항 → 구현 설계 결정` 순으로 검토한다. 하위 항목이 상위 항목을 더 안전하고 검증 가능하게 구체화하는 경우에는 SRS에 반영할 수 있지만, 출처와 승인 상태를 반드시 기록한다.
+
+| 상태 | 의미 | 승인·사용 원칙 |
+| --- | --- | --- |
+| **Confirmed** | PRD 또는 승인된 제품 결정에 근거하고 합격 기준이 명확함 | 구현 기준으로 사용 가능 |
+| **Derived** | 확정 사실에서 논리적으로 도출한 안전·정합성 요구사항 | 근거와 영향을 기록하고 기술 검토 후 사용 |
+| **Proposed** | 타당하지만 제품·운영 책임자의 승인이 필요한 제안 | 승인 전 구현 기준선으로 고정하지 않음 |
+| **Design Decision** | API 경로, 저장 구조, 인덱스처럼 구현 방식에 관한 선택 | ADR과 대안·영향을 기록 |
+| **TBD** | 값·정책·책임 주체가 결정되지 않음 | 개발 착수 전 결정 기한과 Owner 지정 |
+| **Deferred** | v1 범위 밖이지만 추적성을 위해 보존 | 현 릴리스 합격 판정에서 제외 |
+
+모든 신규 요구사항과 변경 결정은 최소한 `ID·Source·Status·Rationale·Owner·Verification·Dependencies`를 기록한다. Master Deck과 다른 결정을 채택할 때에는 ADR에 기존 내용, 변경안, 변경 이유, 영향 범위와 승인자를 함께 남긴다.
+
+### 8.7 구현 기술 제약 (C-TEC)
+
+본 절은 제품 요구사항을 변경하는 별도 문서가 아니라, 이 SRS를 구현 가능한 시스템 기준선으로 구체화한다.
+
+| ID | 제약조건 | 구현 기준 |
+| --- | --- | --- |
+| **C-TEC-001** | Next.js App Router 기반 단일 풀스택 | UI·서버 렌더링·서버 명령·HTTP API를 단일 Next.js 프로젝트에 배치한다 |
+| **C-TEC-002** | Server Actions 또는 Route Handlers 사용 | UI 폼 명령은 Server Actions, 외부 계약·명시적 API·스트리밍은 Route Handlers로 구현한다 |
+| **C-TEC-003** | Prisma + 로컬/배포 Supabase PostgreSQL | 하나의 Prisma schema와 migration을 Local·Preview·Production DB에 적용한다 |
+| **C-TEC-004** | Tailwind CSS + shadcn/ui | design token과 공용 UI 컴포넌트를 사용하며 임의 스타일을 제한한다 |
+| **C-TEC-005** | Vercel AI SDK 사용 | AI 호출은 Next.js 서버 전용 Adapter에서 수행한다 |
+| **C-TEC-006** | Gemini 기본, 환경 변수로 모델 교체 | `AI_PROVIDER`, `AI_MODEL`, API key를 코드와 분리한다 |
+| **C-TEC-007** | Vercel 단일 배포, Git Push 자동화 | Git 연동 배포와 Vercel Build Command로 migration·build를 수행한다 |
+
+### 8.8 기술 아키텍처
+
+```mermaid
+flowchart LR
+    User([사용자]) --> Browser[브라우저]
+    Browser --> Next[Next.js App Router on Vercel]
+    subgraph App[단일 Next.js 애플리케이션]
+        UI[Server·Client Components]
+        Actions[Server Actions]
+        Routes[Route Handlers]
+        Domain[결정론적 CardFit Domain]
+        DAL[Data Access Layer]
+        AI[Vercel AI SDK Adapter]
+    end
+    Next --> UI
+    UI --> Actions
+    UI --> Routes
+    Actions --> Domain
+    Routes --> Domain
+    Domain --> DAL
+    Domain --> AI
+    DAL -->|Prisma Client| DB[(Supabase PostgreSQL)]
+    Routes --> MyData[마이데이터 API]
+    AI --> Gemini[Google Gemini API]
+    Git[Git Push·Merge] --> Vercel[Vercel Build & Deploy]
+    Vercel --> Next
+    Vercel -->|prisma migrate deploy| DB
+```
+
+아키텍처 경계는 다음과 같이 강제한다.
+
+- 브라우저는 업무 데이터베이스에 직접 접근하지 않는다.
+- Prisma Client, DB URL, Gemini key, MyData secret은 서버 전용 모듈에서만 사용한다.
+- Server Actions와 Route Handlers는 모두 공개 요청 경계로 취급하여 세션·인가·입력 검증을 수행한다.
+- 혜택·조합·Net Benefit은 순수 TypeScript 도메인 로직으로 계산한다.
+- AI는 확정된 Evidence DTO를 설명할 뿐 계산 값과 추천 조합을 생성하거나 변경하지 않는다.
+- Prisma를 사용하는 Route Handler는 Node.js runtime을 사용하고 요청 간 메모리 공유를 전제로 하지 않는다.
+
+### 8.9 기술 요구사항
+
+| ID 범위 | 요구사항 | 핵심 인수 기준 |
+| --- | --- | --- |
+| **REQ-ARCH-001~006** | 단일 Next.js 앱, server-only 경계, Actions·Routes 역할 분리, 결정론적 도메인 | 별도 백엔드 0개, `next build` 성공, Client bundle의 Prisma·비밀키 0건, 동일 입력 결과 해시 100% 일치 |
+| **REQ-DATA-001~007** | Prisma schema·migration 기준선, Local Supabase, pooled/direct 연결 분리, 환경별 DB 격리 | `supabase start`·`prisma migrate dev/deploy` 성공, Preview의 Production DB 접근 0건 |
+| **REQ-UI-001~005** | Tailwind·shadcn/ui·design token·공통 validation·접근성 | 임의 inline style과 비허용 arbitrary value 0건, WCAG 2.2 AA critical 오류 0건 |
+| **REQ-AI-001~006** | AI SDK 표준 인터페이스, Gemini 기본, 환경 변수 교체, 계산 격리·fallback·마스킹 | 코드 변경 없는 model 교체, AI 장애 시 계산·근거 정상 제공, prompt의 직접 식별정보 0건 |
+| **REQ-DEPLOY-001~006** | Vercel Git 배포, 별도 CI/CD 없음, migration·build, 환경 분리, health | Push는 Preview, Production Branch Merge는 Production 배포, 단계 실패 시 배포 중단 |
+| **REQ-SEC-001~005** | 인증·소유권·서버 입력 검증·비밀정보·최소권한·감사 로그 | 타 사용자 데이터 접근 0건, `NEXT_PUBLIC_` 비밀키 0개, 감사 필드 누락 0건 |
+
+개별 요구사항 식별자는 다음과 같다.
+
+| ID | 요구사항 요약 |
+| --- | --- |
+| REQ-ARCH-001 | 실행 가능한 Next.js App Router 애플리케이션은 하나만 둔다 |
+| REQ-ARCH-002 | Prisma와 비밀키 모듈은 server-only 경계에 둔다 |
+| REQ-ARCH-003 | Server Actions는 UI 변경 명령에 사용한다 |
+| REQ-ARCH-004 | 외부 HTTP 계약·스트리밍은 Route Handlers로 구현한다 |
+| REQ-ARCH-005 | 카드 계산은 순수하고 결정론적인 TypeScript 도메인 함수로 구현한다 |
+| REQ-ARCH-006 | Prisma 사용 경로는 Node.js runtime을 사용한다 |
+| REQ-DATA-001 | Prisma schema를 관계형 모델의 기준선으로 사용한다 |
+| REQ-DATA-002 | 로컬 개발은 Supabase CLI의 로컬 PostgreSQL을 사용한다 |
+| REQ-DATA-003 | runtime pooler URL과 migration direct URL을 분리한다 |
+| REQ-DATA-004 | Prisma Client를 서버 프로세스에서 안전하게 재사용한다 |
+| REQ-DATA-005 | 모든 schema 변경을 Prisma migration으로 버전 관리한다 |
+| REQ-DATA-006 | 계산 입력·Rule·결과를 불변 스냅샷으로 보존한다 |
+| REQ-DATA-007 | Local·Preview·Production DB를 물리적으로 분리한다 |
+| REQ-UI-001 | 제품 UI는 Tailwind CSS utility와 token을 사용한다 |
+| REQ-UI-002 | 기본 상호작용 요소는 shadcn/ui 컴포넌트를 사용한다 |
+| REQ-UI-003 | 색상·간격·radius를 design token으로 관리한다 |
+| REQ-UI-004 | 클라이언트와 서버가 같은 입력 schema를 사용한다 |
+| REQ-UI-005 | 핵심 흐름은 WCAG 2.2 AA를 충족한다 |
+| REQ-AI-001 | AI 호출은 Vercel AI SDK 표준 인터페이스를 사용한다 |
+| REQ-AI-002 | 기본 provider는 Google Generative AI로 한다 |
+| REQ-AI-003 | provider·model을 환경 변수로 교체한다 |
+| REQ-AI-004 | AI가 계산 값이나 추천 조합을 생성·수정하지 못하게 한다 |
+| REQ-AI-005 | AI 장애 시 결정론적 계산·근거를 계속 제공한다 |
+| REQ-AI-006 | AI prompt의 개인신용정보를 최소화·마스킹한다 |
+| REQ-DEPLOY-001 | Git Push와 Merge가 Vercel 배포를 자동 생성한다 |
+| REQ-DEPLOY-002 | 별도 배포용 CI/CD 서비스를 두지 않는다 |
+| REQ-DEPLOY-003 | Vercel build에서 Prisma 생성·migration·Next build를 수행한다 |
+| REQ-DEPLOY-004 | Preview·Production 환경 변수를 분리한다 |
+| REQ-DEPLOY-005 | DB migration을 하위 호환 방식으로 작성한다 |
+| REQ-DEPLOY-006 | 앱 버전과 DB 상태를 확인하는 health endpoint를 제공한다 |
+| REQ-SEC-001 | 모든 Actions·Routes가 세션과 리소스 소유권을 검사한다 |
+| REQ-SEC-002 | 모든 외부 입력을 서버 경계에서 검증한다 |
+| REQ-SEC-003 | 비밀정보를 Vercel 환경 변수와 로컬 비추적 파일에만 둔다 |
+| REQ-SEC-004 | runtime DB 계정과 migration 계정에 최소 권한을 적용한다 |
+| REQ-SEC-005 | 계산·Rule 변경·외부 호출을 감사 로그에 남긴다 |
+
+### 8.10 Next.js 인터페이스 배치
+
+| 기능 | 구현 수단 | 경로·Action |
+| --- | --- | --- |
+| 미래지출·제약 저장 | Server Actions | `saveFutureSpend`, `saveConstraints` |
+| 계산 실행 | Route Handler | `POST /api/calculations` |
+| 근거 조회 | Route Handler | `GET /api/calculations/{id}/evidence` |
+| AI 근거 설명 | Route Handler | `POST /api/calculations/{id}/explanation` |
+| 조합 선택 | Server Action | `selectPlan` |
+| 완주 응답 | Route Handler | `POST /api/outcomes/{id}/completion` |
+| Rule 관리 | 관리자 Server Actions | `upsertBenefitRule` |
+| 상태 확인 | Route Handler | `GET /api/health` |
+
+모든 Route Handler와 Server Action은 사용자 세션과 리소스 소유권을 다시 검증한다. 클라이언트 검증 결과는 신뢰하지 않으며 서버에서 동일한 schema validation을 수행한다.
+
+### 8.11 Prisma·Supabase 구현 기준
+
+Prisma ORM 7.x 기준으로 runtime과 migration 연결을 분리한다. `schema.prisma`에는 PostgreSQL provider만 선언하고, `prisma.config.ts`는 `DIRECT_URL`을 사용한다. Next.js runtime의 Prisma Client는 Supabase pooler용 `DATABASE_URL`과 driver adapter를 사용한다.
+
+```ts
+// prisma.config.ts: CLI·migration direct 연결
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: { path: "prisma/migrations" },
+  datasource: { url: env("DIRECT_URL") },
+});
+```
+
+```text
+Local       → Local Supabase DB
+Preview     → Preview Supabase DB
+Production  → Production Supabase DB
+```
+
+`Calculation`에는 입력 스냅샷과 결과 해시를, `CalculationRuleSnapshot`에는 적용 Rule 원본과 version을 보존한다. `AIExplanation`은 provider·model·prompt version·설명·상태만 저장하며 계산 값의 원천이 될 수 없다.
+
+### 8.12 AI·배포·검증 기준
+
+Gemini는 Vercel AI SDK의 Google provider를 통해 호출한다. 기본 provider는 `google`이며 model은 `AI_MODEL`로 지정한다. timeout·429·5xx가 발생하면 AI 설명만 `unavailable`로 처리하고 6항목 이상의 결정론적 근거 화면을 계속 제공한다.
+
+권장 Vercel build script는 다음과 같다.
+
+```json
+{
+  "scripts": {
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+  }
+}
+```
+
+Preview와 Production은 서로 다른 `DATABASE_URL`, `DIRECT_URL`, Gemini key와 MyData 설정을 사용한다. Migration은 Expand → Data Migration → Contract 순서의 하위 호환 방식으로 작성한다. 다음 조건이 모두 충족되어야 기술 제약 구현이 완료된 것으로 판정한다.
+
+- Local Supabase 초기화, migration, seed가 성공한다.
+- Preview Push와 Production Merge가 각 환경 DB에만 migration·배포를 수행한다.
+- 동일 입력과 Rule snapshot의 계산 결과 해시가 일치한다.
+- Gemini 장애 상태에서도 계산과 근거 조회가 성공한다.
+- 브라우저 bundle에 Prisma, DB URL, service role key, Gemini key가 포함되지 않는다.
+- Route Handler 인증·소유권·입력 검증 및 핵심 E2E 테스트가 통과한다.
+
 ---
 
 ## 9. 검증 (Verification)
@@ -780,7 +1057,7 @@ REQ-FUNC-005(조합 최적화 + Net Benefit 게이팅)는 PRD가 "핵심 기능 
 
 ## 10. 결론
 
-CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건) 모두 PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리해 갖췄으며, 4.1의 각 항목은 3.5의 Use Case Diagram과 5장 추적성 매트릭스(PRD 출처 → 요구사항 → 설계 구성요소 → 테스트 케이스 → 검증 상태)를 통해 양방향으로 연결된다. 서로 다른 우선순위가 섞여 있던 요구사항(舊 REQ-FUNC-001·003)은 원자 단위로 분리했고, PRD에 없는 내용을 SRS 작성 과정에서 도출·설계한 항목은 [Derived]/[Design Decision]/[TBD]로 출처를 구분해 표시했다.
+CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건)·제품 측정(REQ-METRIC 7건)·Guardrail(REQ-GR 6건)과 구현 기술 요구사항 35건으로 구분했다. PRD의 Story·AC는 5.3에서 요구사항과 테스트까지 추적하며, C-TEC-001~007은 8.7~8.12에서 기존 기능을 Next.js·Prisma·Supabase·Tailwind·shadcn/ui·Vercel AI SDK·Gemini·Vercel 배포 구조로 구현하는 기준과 연결한다. 따라서 기술 제약은 별도 제품 계열이 아니라 v1.0 제품 SRS를 구현 가능한 수준으로 구체화한 v1.1 개정 내용이다.
 
 다만 베타 착수를 위해서는 세 가지가 선결되어야 한다 — ① 마이데이터 인가·제휴 확정(가정 A5, 8.4 의존성), ② Net Benefit 임계값(D2)과 계산식 세부 규칙 9개 항목 확정(8.5 체크리스트, ADR-003), ③ 감사 로그 보존정책·비용 예산 임계치 등 TBD로 표시된 항목의 승인(REQ-NF-007·008, REQ-FUNC-008 AC③). 이 조건이 충족되면 9장의 실험 로드맵(E0→E2)을 순서대로 진행해 북극성 KPI(조합안 선택률 ≥ 40%)를 검증하고, 이후 정식 개발에 착수한다.
 
@@ -789,6 +1066,13 @@ CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건) �
 ---
 
 ## 11. 참고 자료 (References)
+
+### 문서 개정 이력
+
+| 버전 | 날짜 | 변경 내용 |
+| --- | --- | --- |
+| 1.0 | 2026-08-24 | 초기 확정 SRS 구조, 기능·비기능 요구사항과 핵심 다이어그램 작성 |
+| 1.1 | 2026-08-24 | Mermaid Use Case, AC·KPI·Guardrail 추적성 및 C-TEC-001~007 구현 제약 통합 |
 
 > 본 챕터는 예시 SRS 포맷의 범위를 벗어나는 PRD 내용을 다룬다. ISO/IEC/IEEE 29148:2018 §9.2.4(References) 및 §9.6.20(Supporting information) — "참조 문서 목록을 포함하고, 독자에게 도움이 되는 배경 정보를 제공한다"는 규정을 근거로 추가했다.
 
@@ -812,3 +1096,13 @@ CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건) �
 - 로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계
 - 벤치마크: 경쟁사 유저플로우 실측 자료, E5 동일 스냅샷 n=20 비교표
 - 다이어그램: `diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
+- Master Deck 제품 흐름: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p21-23_To-Be_%EC%82%AC%EC%9A%A9%EC%9E%90%ED%9D%90%EB%A6%84_%ED%95%B5%EC%8B%AC%ED%99%94%EB%A9%B4.md>
+- Master Deck 데이터·시스템: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p24-25_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%8B%9C%EC%8A%A4%ED%85%9C_%EC%A0%95%EC%B1%85_%EC%83%81%ED%83%9C_%EC%98%88%EC%99%B8_%EC%9A%B4%EC%98%81%EC%97%AD%ED%95%A0.md>
+- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
+- Next.js App Router·Route Handlers: <https://nextjs.org/docs/app/getting-started/route-handlers>
+- Next.js Server Actions·Backend for Frontend: <https://nextjs.org/docs/app/guides/backend-for-frontend>
+- Supabase 로컬 개발: <https://supabase.com/docs/guides/local-development/cli/getting-started>
+- Prisma·Supabase 연결 및 Prisma Config: <https://www.prisma.io/docs/orm/v6/overview/databases/supabase>, <https://docs.prisma.io/docs/orm/reference/prisma-config-reference>
+- Tailwind CSS·shadcn/ui: <https://tailwindcss.com/docs/installation/framework-guides/nextjs>, <https://ui.shadcn.com/docs/installation/next>
+- Vercel AI SDK Google Provider: <https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai>
+- Vercel Git 배포·환경 변수: <https://vercel.com/docs/git>, <https://vercel.com/docs/environment-variables>
