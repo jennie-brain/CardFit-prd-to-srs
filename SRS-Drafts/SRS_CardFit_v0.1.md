@@ -1,11 +1,15 @@
 # 소프트웨어 요구사항 명세서 (SRS)
 
-**문서 ID:** SRS-CARDFIT-MVP-001
-**개정 버전:** 1.0
-**날짜:** 2026-08-24
-**기준 서식:** 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷
-**참고 표준:** ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용)
-**원천 문서:** `PRD_CardFit_v1.0.md` (본 SRS는 이 PRD를 요구사항 도출의 유일한 정보 원천으로 한다)
+| 항목 | 내용 |
+| --- | --- |
+| 문서 ID | SRS-CARDFIT-MVP-001 |
+| 개정 버전 | 1.0 |
+| 날짜 | 2026-08-24 |
+| 기준 서식 | 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷 |
+| 참고 표준 | ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용) |
+| 원천 문서 | `PRD_CardFit_v1.0.md` (본 SRS는 이 PRD를 요구사항 도출의 유일한 정보 원천으로 한다) |
+
+> 📘 **읽기 편한 HTML 버전**: [CardFit SRS 문서 보기](https://claude.ai/code/artifact/88b573ad-833c-4e70-a907-e640d7783964) — 사이드바 목차, 렌더링된 다이어그램(Use Case·ERD·Class·Component·Sequence·Flow Chart), 출처 태그 배지가 포함된 버전. 원본은 `SRS-Drafts/SRS_CardFit_v0.1.html`.
 
 ---
 
