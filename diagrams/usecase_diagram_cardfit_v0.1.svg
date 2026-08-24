@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1020" viewBox="0 0 1500 1020" font-family="Malgun Gothic, sans-serif">
+<rect x="0" y="0" width="1500" height="1020" fill="#ffffff"/>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+  </marker>
+</defs>
+<text x="750.0" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#111827">CardFit — Use Case Diagram (v0.1)</text>
+<text x="750.0" y="53" text-anchor="middle" font-size="13" fill="#6b7280">PRD 3장(사용자 스토리)·4장(F-01~F-13) 기준</text>
+<rect x="340" y="95" width="840" height="830" rx="14" fill="#fafafa" stroke="#9ca3af" stroke-width="2"/>
+<text x="760.0" y="119" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">CardFit 시스템</text>
+<ellipse cx="520" cy="175" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC1</text>
+<text x="520" y="174" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">마이데이터 연동</text>
+<text x="520" y="188.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-02)</text>
+<ellipse cx="520" cy="283" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC2</text>
+<text x="520" y="282" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">미래지출 입력</text>
+<text x="520" y="296.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-01)</text>
+<ellipse cx="520" cy="391" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="376" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC8</text>
+<text x="520" y="390" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">초기값 자동 제안 수신</text>
+<text x="520" y="404.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-11)</text>
+<ellipse cx="520" cy="499" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="484" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC3</text>
+<text x="520" y="498" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">제약조건 설정</text>
+<text x="520" y="512.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-02)</text>
+<ellipse cx="520" cy="607" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="592" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC4</text>
+<text x="520" y="606" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">시나리오 계산 요청</text>
+<text x="520" y="620.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-03)</text>
+<ellipse cx="520" cy="715" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="700" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC9</text>
+<text x="520" y="714" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">스코프 경계 고지 확인</text>
+<text x="520" y="728.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-12)</text>
+<ellipse cx="520" cy="823" rx="112" ry="34" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="520" y="808" text-anchor="middle" font-size="12" font-weight="700" fill="#4338ca" font-family="Malgun Gothic, sans-serif">UC10</text>
+<text x="520" y="822" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">완주 여부 응답</text>
+<text x="520" y="836.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-13)</text>
+<ellipse cx="950" cy="175" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC5</text>
+<text x="950" y="174" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">조합 최적화 결과 확인</text>
+<text x="950" y="188.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-04)</text>
+<ellipse cx="950" cy="283" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC6</text>
+<text x="950" y="282" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">결제수단 배분 확인</text>
+<text x="950" y="296.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-05)</text>
+<ellipse cx="950" cy="391" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="376" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC7</text>
+<text x="950" y="390" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">근거 공개 열람</text>
+<text x="950" y="404.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(F-06)</text>
+<ellipse cx="950" cy="499" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="484" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC11</text>
+<text x="950" y="503" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">카드사 신청 페이지 이동</text>
+<ellipse cx="950" cy="607" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="592" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC12</text>
+<text x="950" y="606" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">약관 데이터 수집·</text>
+<text x="950" y="620.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">버전관리</text>
+<ellipse cx="950" cy="715" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="700" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC13</text>
+<text x="950" y="714" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">계산 결과 품질 검증</text>
+<text x="950" y="728.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(회귀 테스트, GR1)</text>
+<ellipse cx="950" cy="823" rx="112" ry="34" fill="#ecfdf5" stroke="#047857" stroke-width="1.6"/>
+<text x="950" y="808" text-anchor="middle" font-size="12" font-weight="700" fill="#047857" font-family="Malgun Gothic, sans-serif">UC14</text>
+<text x="950" y="822" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">오조회 모니터링</text>
+<text x="950" y="836.5" text-anchor="middle" font-size="12" fill="#111827" font-family="Malgun Gothic, sans-serif">(GR-오조회)</text>
+<circle cx="110" cy="499" r="21.0" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<line x1="110" y1="520.0" x2="110" y2="571.0" stroke="#1f2937" stroke-width="2"/>
+<line x1="83.0" y1="535.0" x2="137.0" y2="535.0" stroke="#1f2937" stroke-width="2"/>
+<line x1="110" y1="571.0" x2="86.0" y2="610.0" stroke="#1f2937" stroke-width="2"/>
+<line x1="110" y1="571.0" x2="134.0" y2="610.0" stroke="#1f2937" stroke-width="2"/>
+<text x="110" y="628.0" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">사용자</text>
+<text x="110" y="645.0" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">(User)</text>
+<circle cx="110" cy="175" r="14.700000000000001" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<line x1="110" y1="189.7" x2="110" y2="225.39999999999998" stroke="#1f2937" stroke-width="2"/>
+<line x1="91.1" y1="200.2" x2="128.9" y2="200.2" stroke="#1f2937" stroke-width="2"/>
+<line x1="110" y1="225.39999999999998" x2="93.2" y2="252.7" stroke="#1f2937" stroke-width="2"/>
+<line x1="110" y1="225.39999999999998" x2="126.8" y2="252.7" stroke="#1f2937" stroke-width="2"/>
+<text x="110" y="270.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">마이데이터 API</text>
+<text x="110" y="287.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">(외부 시스템)</text>
+<circle cx="1360" cy="195" r="14.700000000000001" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="209.7" x2="1360" y2="245.39999999999998" stroke="#1f2937" stroke-width="2"/>
+<line x1="1341.1" y1="220.2" x2="1378.9" y2="220.2" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="245.39999999999998" x2="1343.2" y2="272.7" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="245.39999999999998" x2="1376.8" y2="272.7" stroke="#1f2937" stroke-width="2"/>
+<text x="1360" y="290.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">카드사 시스템</text>
+<text x="1360" y="307.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">(외부, 신청 페이지)</text>
+<circle cx="1360" cy="410" r="14.700000000000001" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="424.7" x2="1360" y2="460.4" stroke="#1f2937" stroke-width="2"/>
+<line x1="1341.1" y1="435.2" x2="1378.9" y2="435.2" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="460.4" x2="1343.2" y2="487.7" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="460.4" x2="1376.8" y2="487.7" stroke="#1f2937" stroke-width="2"/>
+<text x="1360" y="505.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">데이터 운영</text>
+<text x="1360" y="522.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">(내부 운영자)</text>
+<circle cx="1360" cy="625" r="14.700000000000001" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="639.7" x2="1360" y2="675.4000000000001" stroke="#1f2937" stroke-width="2"/>
+<line x1="1341.1" y1="650.2" x2="1378.9" y2="650.2" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="675.4000000000001" x2="1343.2" y2="702.7" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="675.4000000000001" x2="1376.8" y2="702.7" stroke="#1f2937" stroke-width="2"/>
+<text x="1360" y="720.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">계산 품질</text>
+<text x="1360" y="737.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">(내부 운영자)</text>
+<circle cx="1360" cy="840" r="14.700000000000001" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="854.7" x2="1360" y2="890.4000000000001" stroke="#1f2937" stroke-width="2"/>
+<line x1="1341.1" y1="865.2" x2="1378.9" y2="865.2" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="890.4000000000001" x2="1343.2" y2="917.7" stroke="#1f2937" stroke-width="2"/>
+<line x1="1360" y1="890.4000000000001" x2="1376.8" y2="917.7" stroke="#1f2937" stroke-width="2"/>
+<text x="1360" y="935.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">컴플라이언스·보안</text>
+<text x="1360" y="952.7" text-anchor="middle" font-size="14.5" font-weight="600" fill="#111827" font-family="Malgun Gothic, sans-serif">(내부 운영자)</text>
+<line x1="136.0" y1="545.0" x2="486.3" y2="207.4" stroke="#374151" stroke-width="1.4"/>
+<line x1="136.0" y1="545.0" x2="474.5" y2="314.1" stroke="#374151" stroke-width="1.4"/>
+<line x1="136.0" y1="545.0" x2="415.8" y2="511.5" stroke="#374151" stroke-width="1.4"/>
+<line x1="136.0" y1="545.0" x2="421.1" y2="591.0" stroke="#374151" stroke-width="1.4"/>
+<line x1="136.0" y1="545.0" x2="456.7" y2="687.0" stroke="#374151" stroke-width="1.4"/>
+<line x1="136.0" y1="545.0" x2="476.7" y2="791.6" stroke="#374151" stroke-width="1.4"/>
+<line x1="130.0" y1="209.0" x2="412.4" y2="184.4" stroke="#2563eb" stroke-width="1.4"/>
+<line x1="1340.0" y1="229.0" x2="995.0" y2="467.9" stroke="#2563eb" stroke-width="1.4"/>
+<line x1="1340.0" y1="444.0" x2="1015.8" y2="579.5" stroke="#2563eb" stroke-width="1.4"/>
+<line x1="1340.0" y1="659.0" x2="1051.2" y2="700.5" stroke="#2563eb" stroke-width="1.4"/>
+<line x1="1340.0" y1="874.0" x2="1052.9" y2="836.5" stroke="#2563eb" stroke-width="1.4"/>
+<line x1="552.4" y1="574.5" x2="917.6" y2="207.5" stroke="#374151" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<rect x="689.0" y="372.0" width="92" height="16" fill="#ffffff" opacity="0.85"/>
+<text x="735.0" y="385.0" text-anchor="middle" font-size="11.5" fill="#6b7280" font-style="italic" font-family="Malgun Gothic, sans-serif">&lt;&lt;include&gt;&gt;</text>
+<line x1="950.0" y1="209.0" x2="950.0" y2="249.0" stroke="#374151" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<rect x="904.0" y="210.0" width="92" height="16" fill="#ffffff" opacity="0.85"/>
+<text x="950.0" y="223.0" text-anchor="middle" font-size="11.5" fill="#6b7280" font-style="italic" font-family="Malgun Gothic, sans-serif">&lt;&lt;include&gt;&gt;</text>
+<line x1="950.0" y1="317.0" x2="950.0" y2="357.0" stroke="#374151" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<rect x="904.0" y="318.0" width="92" height="16" fill="#ffffff" opacity="0.85"/>
+<text x="950.0" y="331.0" text-anchor="middle" font-size="11.5" fill="#6b7280" font-style="italic" font-family="Malgun Gothic, sans-serif">&lt;&lt;include&gt;&gt;</text>
+<line x1="577.9" y1="685.9" x2="892.1" y2="528.1" stroke="#374151" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<rect x="689.0" y="588.0" width="92" height="16" fill="#ffffff" opacity="0.85"/>
+<text x="735.0" y="601.0" text-anchor="middle" font-size="11.5" fill="#6b7280" font-style="italic" font-family="Malgun Gothic, sans-serif">&lt;&lt;include&gt;&gt;</text>
+<line x1="520.0" y1="357.0" x2="520.0" y2="317.0" stroke="#374151" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<rect x="474.0" y="318.0" width="92" height="16" fill="#ffffff" opacity="0.85"/>
+<text x="520.0" y="331.0" text-anchor="middle" font-size="11.5" fill="#6b7280" font-style="italic" font-family="Malgun Gothic, sans-serif">&lt;&lt;extend&gt;&gt;</text>
+<rect x="10" y="326" width="300" height="66" fill="#ffffff" stroke="#d1d5db"/>
+<line x1="24" y1="342" x2="58" y2="342" stroke="#374151" stroke-width="1.4"/>
+<text x="64" y="346" font-size="11" fill="#111827" font-family="Malgun Gothic, sans-serif">실선 = 액터-유스케이스 연관</text>
+<line x1="24" y1="368" x2="58" y2="368" stroke="#374151" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<text x="64" y="372" font-size="11" fill="#111827" font-family="Malgun Gothic, sans-serif">점선 화살표 =</text>
+<text x="64" y="386" font-size="11" fill="#111827" font-family="Malgun Gothic, sans-serif">&lt;&lt;include&gt;&gt;/&lt;&lt;extend&gt;&gt;</text>
+</svg>
