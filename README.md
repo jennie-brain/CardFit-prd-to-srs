@@ -48,3 +48,4 @@ CardFit PRD(`PRD_CardFit_v1.0.md`)에는 위 7개 섹션만으로는 담기지 �
 - [x] PRD 품질 검토 — 측정 가능성/검증 가능성 (`PRD_CardFit_v0.1_품질검토.md`)
 - [x] Use Case Diagram 작성 (`diagrams/`)
 - [x] SRS 초안 작성 (`SRS-Drafts/SRS_CardFit_v0.1.md`) — 기본 7섹션(예시 포맷) + 확장 3섹션(가정·제약·의존성 / 검증 / 참고자료, ISO/IEC/IEEE 29148:2018 근거 명시)
+- [x] SRS 보완본 작성 (`SRS-Drafts/SRS_CardFit_v0.2.md`, `.html`) — Mermaid Use Case, Story·AC 및 KPI·Guardrail 추적성, 출처·확정 상태 관리 추가

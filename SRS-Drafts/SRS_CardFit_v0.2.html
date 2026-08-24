@@ -234,7 +234,7 @@ img { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(
 </tr>
 <tr>
 <td>개정 버전</td>
-<td>1.0</td>
+<td>0.2</td>
 </tr>
 <tr>
 <td>날짜</td>
@@ -250,19 +250,20 @@ img { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(
 </tr>
 <tr>
 <td>원천 문서</td>
-<td><code>PRD_CardFit_v1.0.md</code> (본 SRS는 이 PRD를 요구사항 도출의 유일한 정보 원천으로 한다)</td>
+<td><code>PRD_CardFit_v1.0.md</code>(제품 요구사항 기준선), <code>team-project_2nd/master-deck</code>(제품 의도·결정 근거), SRS 파생 요구사항(출처 태그 필수)</td>
 </tr>
 </tbody>
 </table></div>
 <blockquote>
-<p>📘 <strong>읽기 편한 HTML 버전</strong>: <a href="https://claude.ai/code/artifact/88b573ad-833c-4e70-a907-e640d7783964">CardFit SRS 문서 보기</a> — 사이드바 목차, 렌더링된 다이어그램(Use Case·ERD·Class·Component·Sequence·Flow Chart), 출처 태그 배지가 포함된 버전. 원본은 <code>SRS-Drafts/SRS_CardFit_v0.1.html</code>.</p>
+<p>📘 <strong>현재 HTML 버전</strong>: <code>SRS-Drafts/SRS_CardFit_v0.2.html</code> — 사이드바 목차, 렌더링된 다이어그램(Use Case·ERD·Class·Component·Sequence·Flow Chart), 출처 태그 배지가 포함된 버전.</p>
 </blockquote>
 <hr />
 <h2 id="summary">개요 (Summary)</h2>
-<p>CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 <strong>미래 지출 계획</strong>을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 <code>PRD_CardFit_v1.0.md</code>를 유일한 정보 원천으로 삼아, 예시 SRS 문서(AD-Core-Platform)가 취한 7섹션 포맷을 기본 구조로 채택하고, 그 포맷으로 담기지 않는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 3개 챕터를 추가해 확장했다.</p>
+<p>CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 <strong>미래 지출 계획</strong>을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 <code>PRD_CardFit_v1.0.md</code>를 제품 요구사항 기준선으로 삼고 <code>team-project_2nd/master-deck</code>을 제품 의도와 결정 근거로 참고한다. SRS에서 더 안전하고 검증 가능하게 구체화한 내용은 출처·확정 상태를 표시해 반영한다.</p>
 <ul>
 <li><strong>기능 요구사항</strong>: REQ-FUNC 13건(Must 8·Should 3·Could 2) — PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리했으며, 문항별 출처는 <span class="tag tag-prd">PRD</span>/<span class="tag tag-derived">Derived</span>/<span class="tag tag-design">Design Decision</span>/<span class="tag tag-tbd">TBD</span>로 구분한다(4.1 서두 참조)</li>
 <li><strong>비기능 요구사항</strong>: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)</li>
+<li><strong>제품 측정 요구사항</strong>: REQ-METRIC 7건·REQ-GR 6건 — KPI를 시스템 품질 요구사항과 분리하고, 미측정 목표는 가정으로 유지한다</li>
 <li><strong>미해결 선결 조건</strong>: 마이데이터 인가·제휴 확정(A5), Net Benefit 임계값(D2) 확정 — 8장 참조</li>
 <li><strong>검증 경로</strong>: E0~E7b 실험 로드맵과 중단 조건 — 9장 참조</li>
 <li><strong>설계 다이어그램</strong>: Use Case(3.5) · Sequence 5개(3.6) · Component(3.7) · 전체 흐름 Flow Chart(3.8) · 핵심 의사결정 Flow Chart(4.3) · Class Diagram(5.1) · ERD·상태전이(6.2) — 배경지식이 없어도 각 다이어그램 앞의 "읽는 법" 설명만으로 이해할 수 있도록 배치했다</li>
@@ -511,6 +512,44 @@ img { max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(
 <blockquote>
 <p>이미지 파일: <code>diagrams/usecase_diagram_cardfit_v0.1.png</code> (벡터 원본: <code>diagrams/usecase_diagram_cardfit_v0.1.svg</code>)</p>
 </blockquote>
+<pre class="mermaid">
+flowchart LR
+    User(["사용자"])
+    MyData(["마이데이터 API"])
+    Card(["카드사 시스템"])
+    DataOps(["데이터 운영"])
+    Quality(["계산 품질"])
+    Compliance(["컴플라이언스·보안"])
+    UC1(("미래지출·제약 입력"))
+    UC2(("카드·과거소비 연동"))
+    UC3(("시나리오 계산"))
+    UC4(("조합 최적화·유지 판단"))
+    UC5(("결제수단 배분"))
+    UC6(("계산 근거 확인"))
+    UC7(("카드사 신청 페이지 이동"))
+    UC8(("완주 여부 응답"))
+    UC9(("Rule 버전 관리"))
+    UC10(("오류·오조회 감시"))
+    User --- UC1
+    User --- UC2
+    User --- UC6
+    User --- UC7
+    User --- UC8
+    MyData --- UC2
+    Card --- UC7
+    DataOps --- UC9
+    Quality --- UC10
+    Compliance --- UC10
+    UC1 -. "&lt;&lt;include&gt;&gt;" .-&gt; UC3
+    UC2 -. "&lt;&lt;include&gt;&gt;" .-&gt; UC3
+    UC3 -. "&lt;&lt;include&gt;&gt;" .-&gt; UC4
+    UC4 -. "임계 통과 시 &lt;&lt;include&gt;&gt;" .-&gt; UC5
+    UC4 -. "&lt;&lt;include&gt;&gt;" .-&gt; UC6
+    UC5 -. "선택 시 &lt;&lt;extend&gt;&gt;" .-&gt; UC7
+    UC7 -. "30일 후 &lt;&lt;extend&gt;&gt;" .-&gt; UC8
+    UC9 -. "&lt;&lt;include&gt;&gt;" .-&gt; UC3
+</pre>
+<blockquote><p>Mermaid 다이어그램을 정본으로 사용한다. 기존 PNG·SVG는 호환용 산출물이며, 내용 변경 시 Mermaid 원본을 먼저 갱신한다.</p></blockquote>
 <h3 id="36">3.6 핵심 기능 인터랙션 시퀀스</h3>
 <p>PRD가 "핵심 기능 1개"로 지목한 조합 최적화(F-04)를 축으로, 3.2~3.4의 인터페이스가 실제로 어떤 순서로 호출되는지 시퀀스 다이어그램으로 나타낸다. 각 분기는 4.1의 해당 REQ-FUNC 인수기준과 1:1로 대응한다.</p>
 <p><strong>3.6.1 시나리오 계산 + Net Benefit 게이팅 (<code>POST /calculate</code>, REQ-FUNC-004·005)</strong></p>
@@ -1869,11 +1908,42 @@ outcome_logs              -- 선택·완주 응답 계측
 </ul>
 <hr />
 <h2 id="10">10. 결론</h2>
-<p>CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건) 모두 PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리해 갖췄으며, 4.1의 각 항목은 3.5의 Use Case Diagram과 5장 추적성 매트릭스(PRD 출처 → 요구사항 → 설계 구성요소 → 테스트 케이스 → 검증 상태)를 통해 양방향으로 연결된다. 서로 다른 우선순위가 섞여 있던 요구사항(舊 REQ-FUNC-001·003)은 원자 단위로 분리했고, PRD에 없는 내용을 SRS 작성 과정에서 도출·설계한 항목은 <span class="tag tag-derived">Derived</span>/<span class="tag tag-design">Design Decision</span>/<span class="tag tag-tbd">TBD</span>로 출처를 구분해 표시했다.</p>
+<p>CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건)·제품 측정(REQ-METRIC 7건)·Guardrail(REQ-GR 6건)으로 구분했다. PRD의 Story·AC에는 고유 ID를 부여해 요구사항과 테스트까지 추적하며, Mermaid Use Case와 설계·AC·KPI 추적성 매트릭스로 양방향 연결한다. PRD나 Master Deck에 없는 내용을 SRS에서 도출·설계한 경우 Derived·Proposed·Design Decision·TBD·Deferred 상태를 구분한다.</p>
 <p>다만 베타 착수를 위해서는 세 가지가 선결되어야 한다 — ① 마이데이터 인가·제휴 확정(가정 A5, 8.4 의존성), ② Net Benefit 임계값(D2)과 계산식 세부 규칙 9개 항목 확정(8.5 체크리스트, ADR-003), ③ 감사 로그 보존정책·비용 예산 임계치 등 TBD로 표시된 항목의 승인(REQ-NF-007·008, REQ-FUNC-008 AC③). 이 조건이 충족되면 9장의 실험 로드맵(E0→E2)을 순서대로 진행해 북극성 KPI(조합안 선택률 ≥ 40%)를 검증하고, 이후 정식 개발에 착수한다.</p>
 <p>본 SRS는 예시 SRS 문서(AD-Core-Platform)의 7섹션 포맷을 그대로 따르되, 그 포맷이 담지 못하는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 8·9·11장에 한정 추가했다 — 표준 전체를 기계적으로 채운 완전판이 아니라, PRD 원문의 범위에 정확히 대응하는 확장이다.</p>
+<h2 id="v02-supplement">v0.2 요구사항 보완</h2>
+<h3 id="v11-metrics">제품 측정 및 Guardrail 요구사항</h3>
+<blockquote><p>KPI는 제품 성과를 판단하는 측정 요구사항이므로 비기능 요구사항과 분리한다. 기준선이 없는 목표는 Assumption, 검증 기간 밖의 항목은 Deferred, 위반 시 중단해야 하는 안전 지표는 REQ-GR로 관리한다.</p></blockquote>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>지표·판정 기준</th><th>상태</th></tr></thead><tbody>
+<tr><td>REQ-METRIC-001</td><td>7일 이내 조합안 선택률 ≥ 40%, 유지 결론은 분모 제외</td><td>Proposed · Assumption</td></tr>
+<tr><td>REQ-METRIC-002</td><td>결론 도달 소요시간 p95 ≤ 5분</td><td>Proposed · Assumption</td></tr>
+<tr><td>REQ-METRIC-003</td><td>온보딩 완료율 ≥ 60%</td><td>Proposed · Assumption</td></tr>
+<tr><td>REQ-METRIC-004</td><td>근거 열람률 ≥ 50%</td><td>Proposed · Assumption</td></tr>
+<tr><td>REQ-METRIC-005</td><td>완주·미완주·미응답을 분리 집계, 초기 목표 없음</td><td>Derived · 기준선 측정</td></tr>
+<tr><td>REQ-METRIC-006</td><td>이벤트 비종속 진입률 ≥ 20%</td><td>Proposed · Assumption</td></tr>
+<tr><td>REQ-METRIC-007</td><td>D+90 재방문율</td><td>Deferred</td></tr>
+<tr><td>REQ-GR-001~006</td><td>계산 오류·불필요 추천·근거 미공개·오인 문구·최신성 경고 누락·오조회 통제</td><td>Confirmed, 단 D2 값 TBD</td></tr>
+</tbody></table></div>
+<h3 id="v11-ac-trace">Story·AC 단위 추적성</h3>
+<div class="table-wrap"><table><thead><tr><th>Story</th><th>AC ID</th><th>반영 요구사항</th></tr></thead><tbody>
+<tr><td>US-A</td><td>AC-US-A-01~03</td><td>REQ-FUNC-004/005, REQ-NF-001</td></tr>
+<tr><td>US-B</td><td>AC-US-B-01~03</td><td>REQ-FUNC-007, REQ-GR-003</td></tr>
+<tr><td>US-C</td><td>AC-US-C-01~04</td><td>REQ-FUNC-009/010, REQ-METRIC-001/005, REQ-GR-004</td></tr>
+<tr><td>US-F</td><td>AC-US-F-01~03</td><td>REQ-FUNC-001B</td></tr>
+<tr><td>공통</td><td>AC-GATE-01</td><td>REQ-FUNC-005, REQ-GR-002</td></tr>
+<tr><td>US-D</td><td>AC-US-D-DER-01</td><td>REQ-FUNC-003A/003B · Derived</td></tr>
+<tr><td>US-E</td><td>AC-US-E-DEF-01</td><td>F-10, REQ-METRIC-007 · Deferred</td></tr>
+</tbody></table></div>
+<p>상세한 개별 AC·테스트 ID와 KPI·Guardrail 추적성은 Markdown 정본의 5.3·5.4절을 따른다.</p>
+<h3 id="v11-status">출처·확정 상태 관리</h3>
+<p>충돌 시 법·규제·보안 필수조건 → PRD 목표·범위·AC → 확정된 Master Deck 결정 → SRS 파생 요구사항 → 구현 설계 결정 순으로 검토한다. 상태는 Confirmed, Derived, Proposed, Design Decision, TBD, Deferred로 구분하며, 신규 요구사항은 ID·Source·Status·Rationale·Owner·Verification·Dependencies를 기록한다.</p>
 <hr />
 <h2 id="11-references">11. 참고 자료 (References)</h2>
+<h3 id="revision-history">문서 개정 이력</h3>
+<div class="table-wrap"><table><thead><tr><th>버전</th><th>날짜</th><th>변경 내용</th></tr></thead><tbody>
+<tr><td>0.1</td><td>2026-08-24</td><td>초기 SRS 구조와 요구사항·다이어그램 작성</td></tr>
+<tr><td>0.2</td><td>2026-08-24</td><td>Mermaid Use Case, AC·KPI·Guardrail 추적성, 출처·상태 관리 원칙 추가</td></tr>
+</tbody></table></div>
 <blockquote>
 <p>본 챕터는 예시 SRS 포맷의 범위를 벗어나는 PRD 내용을 다룬다. ISO/IEC/IEEE 29148:2018 §9.2.4(References) 및 §9.6.20(Supporting information) — "참조 문서 목록을 포함하고, 독자에게 도움이 되는 배경 정보를 제공한다"는 규정을 근거로 추가했다.</p>
 </blockquote>
@@ -1936,6 +2006,9 @@ outcome_logs              -- 선택·완주 응답 계측
 <li>로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계</li>
 <li>벤치마크: 경쟁사 유저플로우 실측 자료, E5 동일 스냅샷 n=20 비교표</li>
 <li>다이어그램: <code>diagrams/usecase_diagram_cardfit_v0.1.svg</code> / <code>.png</code></li>
+<li>Master Deck 제품 흐름: <a href="https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p21-23_To-Be_%EC%82%AC%EC%9A%A9%EC%9E%90%ED%9D%90%EB%A6%84_%ED%95%B5%EC%8B%AC%ED%99%94%EB%A9%B4.md">p21~23 To-Be·사용자 흐름</a></li>
+<li>Master Deck 데이터·시스템: <a href="https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p24-25_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%8B%9C%EC%8A%A4%ED%85%9C_%EC%A0%95%EC%B1%85_%EC%83%81%ED%83%9C_%EC%98%88%EC%99%B8_%EC%9A%B4%EC%98%81%EC%97%AD%ED%95%A0.md">p24~25 데이터·시스템·정책</a></li>
+<li>Master Deck PRD·KPI: <a href="https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p26-29_PRD.md">p26~29 PRD</a>, <a href="https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md">p30 KPI·검증</a></li>
 </ul>
     </div>
   </main>
