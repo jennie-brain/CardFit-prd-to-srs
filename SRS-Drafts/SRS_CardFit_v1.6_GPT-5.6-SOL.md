@@ -775,6 +775,103 @@ classDiagram
 
 ```mermaid
 erDiagram
+    User {
+        string user_id PK
+        enum mydata_consent_status
+        string mydata_consent_scope
+        datetime mydata_consent_at
+    }
+    HeldCard {
+        string card_id PK
+        string issuer
+        string card_name
+        decimal annual_fee
+        date issued_at
+        int billing_cycle_month
+    }
+    PastSpend {
+        string merchant
+        string mcc_code
+        decimal amount
+        date paid_at
+    }
+    FutureSpendPlan {
+        string category
+        decimal amount_min
+        decimal amount_max
+        date planned_at
+        enum confidence
+    }
+    Constraint {
+        int max_card_count
+        decimal annual_fee_cap
+        boolean allow_new_card_issuance
+    }
+    BenefitRule {
+        string card_id FK
+        decimal tier_threshold
+        decimal combined_discount_cap
+        string excluded_items
+        date effective_from
+        date effective_to
+        string rule_version
+    }
+    Calculation {
+        string calculation_id PK
+        json input_snapshot
+        string applied_rule_versions
+        date as_of_date
+        string unreflected_items
+        enum status
+    }
+    PlanCandidate {
+        string plan_id PK
+        string calculation_id FK
+        json composition
+        decimal gross_benefit
+        decimal net_benefit
+        boolean threshold_passed
+        enum status
+    }
+    Allocation {
+        string plan_id FK
+        string category
+        decimal amount
+    }
+    OutcomeLog {
+        string outcome_id PK
+        string plan_id FK
+        string selection_id UK
+        datetime selected_at
+        enum self_report_status
+        enum verification_status
+        enum adherence_status
+    }
+    SelectionBaseline {
+        string baseline_id PK
+        string outcome_id FK
+        datetime captured_at
+        datetime provider_data_as_of
+        enum completeness_status
+        json held_card_snapshot
+    }
+    OutcomeItem {
+        string outcome_item_id PK
+        string outcome_id FK
+        enum action_type
+        string target_card_product_id
+        boolean required
+        enum verification_status
+    }
+    OutcomeObservation {
+        string observation_id PK
+        string outcome_item_id FK
+        datetime observed_at
+        enum sync_status
+        enum target_match_status
+        boolean card_presence
+        string evidence_hash
+    }
     User ||--o{ HeldCard : "마이데이터 수집"
     User ||--o{ PastSpend : "마이데이터 수집"
     User ||--o{ FutureSpendPlan : "직접 입력"
@@ -789,6 +886,8 @@ erDiagram
     OutcomeLog ||--o{ OutcomeItem : "필수 항목"
     OutcomeItem ||--o{ OutcomeObservation : "후속 관측"
 ```
+
+> ERD에는 구현 시 관계를 추적하는 데 필요한 핵심 필드만 표시한다. enum의 전체 값, 선택 필드, 세부 비용 항목과 무결성·보존 제약은 아래 6.2.1~6.2.3을 기준으로 한다.
 
 > 아래 6.2.1~6.2.4는 ISO/IEC/IEEE 29148:2018 §9.6.15(Logical database requirements — 정보 유형, 엔터티·관계, 무결성 제약, 보안, 보존 요건)의 항목 구성을 따라 6장(부록) 안에서 확장했다. 필드 타입은 PRD에 명시된 값에서 직접 추론했으며, PRD가 값을 정하지 않은 항목은 창작하지 않고 "미정"으로 표시했다.
 
