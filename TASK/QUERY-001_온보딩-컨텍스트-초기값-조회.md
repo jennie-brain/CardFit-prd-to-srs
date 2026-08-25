@@ -25,7 +25,7 @@ assignees: ''
 ## Task Breakdown
 - [ ] 세션·소유권 기준 조회를 작성한다.
 - [ ] 동의·sync·completeness를 ViewModel로 매핑한다.
-- [ ] 이력 기간을 산출하고 M1/M2 초기값 분기를 구현한다.
+- [ ] M1에서는 빈 입력·비개인화 예시만 제공하고, M2에서 이력 기간 산출과 개인 초기값 분기를 추가한다.
 - [ ] 스코프 고지 버전을 포함한다.
 
 ## Acceptance Criteria (BDD/GWT)
@@ -50,6 +50,7 @@ assignees: ''
 - [ ] TEST-001 온보딩 조회·fallback 테스트가 통과한다.
 - [ ] TEST-005 소유권 테스트가 통과한다.
 - [ ] TEST-006 M1 E2E가 통과한다.
+- [ ] M2 확장 시 TEST-007의 개인 초기값·이력 부족 fallback 경로가 통과한다.
 
 ## Dependencies & Interactions
 - Depends on: DATA-001, API-001, COMMAND-001·002
@@ -64,4 +65,3 @@ assignees: ''
 
 ## 출처
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
-

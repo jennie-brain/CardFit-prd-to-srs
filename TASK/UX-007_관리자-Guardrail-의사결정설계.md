@@ -13,7 +13,7 @@ assignees: ''
 - REQ: REQ-NF-004~009
 
 ## References (Spec & Context)
-- 계약: API-005~007
+- 계약: API-005·006, COMMAND-010 이벤트 계약
 - 로직: QUERY-004, COMMAND-007·010
 - 후행 구현: UI-009
 
@@ -51,7 +51,7 @@ assignees: ''
 - [ ] M1/M2 운영 범위가 구분된다.
 
 ## Dependencies & Interactions
-- Depends on: UX-001, API-005~007, QUERY-004, NFR-002~006
+- Depends on: UX-001, API-005·006, COMMAND-010 이벤트 계약, QUERY-004, NFR-002~006
 - Blocks: UI-009
 - 변경 전파: 관리자 UI·운영 테스트·runbook
 

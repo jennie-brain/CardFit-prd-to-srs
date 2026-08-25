@@ -10,7 +10,7 @@ assignees: ''
 
 ## Summary
 - 목적: 관리자에게 Rule 최신성, 앱/DB 상태, 비용, GR1~GR5와 오조회 상태를 읽기 전용으로 제공한다.
-- REQ: REQ-NF-006·007·009
+- REQ: REQ-NF-006·007·009, REQ-GR-001~006, REQ-METRIC-001~006·008~011
 
 ## References (Spec & Context)
 - 계약: API-005

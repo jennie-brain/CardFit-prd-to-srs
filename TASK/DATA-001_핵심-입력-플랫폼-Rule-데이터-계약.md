@@ -42,7 +42,7 @@ assignees: ''
 - [ ] SRS와 PRD의 필드 차이를 데이터 사전으로 대조한다.
 - [ ] Prisma enum, model, relation, unique/index, decimal precision을 정의한다.
 - [ ] 사용자별 소유권과 동의 상태 전이를 DB 제약·서비스 제약으로 구분한다.
-- [ ] `FutureSpendPlan`의 `SINGLE/RANGE`, 최소·예상·최대 표현을 확정한다.
+- [ ] `FutureSpendPlan.input_mode`의 `SINGLE/RANGE`와 `minimum_amount ≤ expected_amount ≤ maximum_amount` 제약을 구현한다. `SINGLE`은 세 금액을 동일하게 저장한다.
 - [ ] Adapter 품질 메타데이터와 캐시 기준일 필드를 확정한다.
 - [ ] `BenefitRule.rule_version` 유일성·유효기간·최신성 조회 인덱스를 정의한다.
 - [ ] Expand 방식 migration과 rollback 대신 forward-fix 절차를 작성한다.
@@ -95,7 +95,6 @@ assignees: ''
 ## Open Decisions
 
 - [ ] `confidence` enum 값과 사용 여부
-- [ ] PRD의 `SINGLE/RANGE + 예상값`과 SRS의 `amount_min/max` 차이 해소
 - [ ] M1에서 HeldCard·PastSpend 캐시를 저장할 최소 필드와 보존기간
 - [ ] Decimal precision과 통화 단위
 
@@ -107,4 +106,3 @@ DATA-001은 CardFit 계산의 입력 정합성과 Rule 추적성을 고정하는
 
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - `PRD/PRD_CardFit_v1.3.md`
-

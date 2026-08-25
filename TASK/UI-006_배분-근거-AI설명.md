@@ -54,7 +54,8 @@ assignees: ''
 - [ ] AI 비활성 M1에서도 화면이 완전하다.
 
 ## Dependencies & Interactions
-- Depends on: UX-004, UI-001·005, QUERY-002, COMMAND-009, API-003·006
+- Depends on(M1): UX-004, UI-001·005, QUERY-002, API-003·006
+- Depends on(M2 AI 확장): COMMAND-009
 - Blocks: UI-007, 근거 열람 KPI 검증
 - 변경 전파: Evidence DTO·AI 상태·Analytics·E2E
 

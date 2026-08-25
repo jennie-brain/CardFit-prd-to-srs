@@ -61,7 +61,7 @@ assignees: ''
 - When: evidence를 조회한다.
 - Then: p95 500ms 이내 거부 응답을 반환하고 불완전 근거를 노출하지 않는다.
 
-### Scenario 5: Gemini 장애
+### Scenario 5(M2): Gemini 장애
 
 - Given: AI SDK가 timeout·429·5xx를 반환한다.
 - When: explanation을 요청한다.
@@ -77,8 +77,9 @@ assignees: ''
 
 ## Definition of Done
 
-- [ ] 세 endpoint의 schema·상태 코드·오류 코드 예시가 고정됐다.
-- [ ] 정상·부분·동의 오류·근거 미달·AI 장애 계약 검증이 통과한다.
+- [ ] M1에서는 계산·근거 endpoint의 schema·상태 코드·오류 코드 예시가 고정됐다.
+- [ ] M1에서는 정상·부분·동의 오류·근거 미달 계약 검증이 통과한다.
+- [ ] M2에서는 explanation endpoint와 AI 장애·fallback 계약 검증이 추가로 통과한다.
 - [ ] OpenAPI가 프로젝트 범위에 없다면 동등한 versioned schema 문서가 있다.
 - [ ] Mock 응답을 이용해 프론트엔드가 독립 개발 가능하다.
 

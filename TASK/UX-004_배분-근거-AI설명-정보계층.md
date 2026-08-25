@@ -13,7 +13,7 @@ assignees: ''
 - REQ: REQ-FUNC-006·007, REQ-AI-004·005, UX-V-004·006
 
 ## References (Spec & Context)
-- 계약: API-003·006, DATA-004
+- 계약: API-003·006, COMMAND-008 정책 계약
 - 로직: QUERY-002, COMMAND-009
 - 후행 구현: UI-006
 
@@ -51,7 +51,7 @@ assignees: ''
 - [ ] UX-V-004·006을 충족한다.
 
 ## Dependencies & Interactions
-- Depends on: UX-001·003, API-003·006, DATA-004
+- Depends on: UX-001·003, API-003·006, COMMAND-008 정책 계약
 - Blocks: UI-006, UX-005
 - 변경 전파: Evidence UI·AI fallback·스코프 문구·E2E
 

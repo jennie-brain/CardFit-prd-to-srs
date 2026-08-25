@@ -10,7 +10,7 @@ assignees: ''
 
 ## Summary
 - 목적: 환경별 비용과 GR1~GR5·오조회 상태를 측정하고 임계 초과 시 명시적으로 기능 또는 롤아웃을 중단한다.
-- REQ: REQ-NF-007·009
+- REQ: REQ-NF-007·009, REQ-GR-001~006, REQ-METRIC-011
 
 ## References (Spec & Context)
 - 대상: API-005, QUERY-004, CostLedger·GuardrailDashboard

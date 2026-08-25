@@ -796,9 +796,11 @@ erDiagram
         date paid_at
     }
     FutureSpendPlan {
+        string input_mode
         string category
-        decimal amount_min
-        decimal amount_max
+        decimal expected_amount
+        decimal minimum_amount
+        decimal maximum_amount
         date planned_at
         enum confidence
     }
@@ -898,7 +900,7 @@ erDiagram
 | User | user_id:string(PK), mydata_consent_status:enum(미동의\|동의\|만료\|철회), mydata_consent_scope:string, mydata_consent_at:datetime | 자체 |
 | HeldCard | card_id:string(PK), issuer:string, card_name:string, annual_fee:decimal, issued_at:date, billing_cycle_month:int | Platform Adapter(Fixture/실제) |
 | PastSpend | merchant:string, mcc_code:string, amount:decimal, paid_at:date | Platform Adapter(Fixture/실제) |
-| FutureSpendPlan | category:string(자유 입력), amount_min:decimal, amount_max:decimal(단일값이면 min=max), planned_at:date, confidence:enum(**값 미정 — PRD 미명시**) | 사용자(F-01) |
+| FutureSpendPlan | input_mode:enum(SINGLE\|RANGE), category:string(자유 입력), expected_amount:decimal, minimum_amount:decimal, maximum_amount:decimal(단일값이면 세 금액 동일), planned_at:date, confidence:enum(**값 미정 — PRD 미명시**) | 사용자(F-01) |
 | Constraint | max_card_count:int, annual_fee_cap:decimal, allow_new_card_issuance:boolean | 사용자(F-02) |
 | BenefitRule | card_id:string(FK), tier_threshold:decimal, combined_discount_cap:decimal, excluded_items:array\<string\>, effective_from:date, effective_to:date, rule_version:string | 카드사 약관(수집·버전관리) |
 | Calculation | calculation_id:string(PK), input_snapshot:json, applied_rule_versions:array\<string\>, as_of_date:date, unreflected_items:array\<string\>, status:enum(성공\|실패\|부분) | 규칙 엔진 |
