@@ -7,7 +7,7 @@
 | 날짜 | 2026-08-24 |
 | 기준 서식 | 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷 |
 | 참고 표준 | ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용) |
-| 원천 문서 | `PRD_CardFit_v1.0.md` (본 SRS는 이 PRD를 요구사항 도출의 유일한 정보 원천으로 한다) |
+| 원천 문서 | `PRD/PRD_CardFit_v1.0.md` (본 SRS는 이 PRD를 요구사항 도출의 유일한 정보 원천으로 한다) |
 
 > 📘 **HTML 버전**: `SRS-Drafts/SRS_CardFit_v1.0.html`
 
@@ -15,7 +15,7 @@
 
 ## 개요 (Summary)
 
-CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD_CardFit_v1.0.md`를 유일한 정보 원천으로 삼아, 예시 SRS 문서(AD-Core-Platform)가 취한 7섹션 포맷을 기본 구조로 채택하고, 그 포맷으로 담기지 않는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 3개 챕터를 추가해 확장했다.
+CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD/PRD_CardFit_v1.0.md`를 유일한 정보 원천으로 삼아, 예시 SRS 문서(AD-Core-Platform)가 취한 7섹션 포맷을 기본 구조로 채택하고, 그 포맷으로 담기지 않는 PRD 내용(가정·제약·의존성, 검증 계획, 참고자료)만 ISO/IEC/IEEE 29148:2018 표준 조항을 근거로 3개 챕터를 추가해 확장했다.
 
 - **기능 요구사항**: REQ-FUNC 13건(Must 8·Should 3·Could 2) — PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리했으며, 문항별 출처는 [PRD]/[Derived]/[Design Decision]/[TBD]로 구분한다(4.1 서두 참조)
 - **비기능 요구사항**: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)
@@ -137,9 +137,9 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 
 아래 다이어그램은 3.2~3.4의 액터(사용자·마이데이터 API·카드사 시스템·데이터 운영·계산 품질·컴플라이언스)와 4.1의 기능 요구사항(REQ-FUNC) 간 관계를 나타낸다. 실선은 액터-유스케이스 연관, 점선 화살표는 `<<include>>`/`<<extend>>` 관계다.
 
-![CardFit Use Case Diagram](../diagrams/usecase_diagram_cardfit_v0.1.png)
+![CardFit Use Case Diagram](../PRD/diagrams/usecase_diagram_cardfit_v0.1.png)
 
-> 이미지 파일: `diagrams/usecase_diagram_cardfit_v0.1.png` (벡터 원본: `diagrams/usecase_diagram_cardfit_v0.1.svg`)
+> 이미지 파일: `PRD/diagrams/usecase_diagram_cardfit_v0.1.png` (벡터 원본: `PRD/diagrams/usecase_diagram_cardfit_v0.1.svg`)
 
 ### 3.6 핵심 기능 인터랙션 시퀀스
 
@@ -807,8 +807,8 @@ CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건) �
 
 ### 11.2 출처 목록
 
-- 원천 PRD: `PRD_CardFit_v1.0.md`
+- 원천 PRD: `PRD/PRD_CardFit_v1.0.md`
 - 인터뷰/실험: E0~E7b(PRD 8장), E2 Concierge Test 결과 로그
 - 로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계
 - 벤치마크: 경쟁사 유저플로우 실측 자료, E5 동일 스냅샷 n=20 비교표
-- 다이어그램: `diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
+- 다이어그램: `PRD/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`

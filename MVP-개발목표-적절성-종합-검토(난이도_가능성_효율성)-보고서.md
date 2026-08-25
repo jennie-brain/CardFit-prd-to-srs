@@ -2,7 +2,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 검토 대상 | `PRD_CardFit_v1.3.md`, `SRS-Drafts/SRS_CardFit_v1.5.md` |
+| 검토 대상 | `PRD/PRD_CardFit_v1.3.md`, `SRS-Drafts/SRS_CardFit_v1.5.md` |
 | 검토 관점 | 개발 난이도·구현 가능성·개발 속도·외부 연동·오픈소스·운영 비용 |
 | 주요 독자 | 초급 SW 개발 배경지식을 가진 신입 AI 핀테크 PM |
 | 개발 방식 | AI 코딩 도구를 활용한 독립 실행형 검증 MVP |
@@ -408,7 +408,7 @@ CardFit의 지정 기술 스택은 MVP 개발 속도와 비용 면에서 대체�
 
 ### 내부 기준 문서
 
-- `PRD_CardFit_v1.3.md`
+- `PRD/PRD_CardFit_v1.3.md`
 - `SRS-Drafts/SRS_CardFit_v1.5.md`
 - `plans/PLAN_CardFit_v1.5_Three_Layer_Portfolio_Alignment.md`
 

@@ -19,7 +19,7 @@
       {
         "id": "cardfit-documents",
         "label": "CardFit PRD 및 SRS",
-        "path": "PRD_CardFit_v1.0.md",
+        "path": "PRD/PRD_CardFit_v1.0.md",
         "query": {
           "description": "CardFit 기능 코드와 요구사항의 비교 기준으로 사용했다.",
           "language": "markdown"
@@ -182,7 +182,7 @@
     {
       "id": "cardfit-documents",
       "label": "CardFit PRD 및 SRS",
-      "path": "PRD_CardFit_v1.0.md",
+      "path": "PRD/PRD_CardFit_v1.0.md",
       "query": {
         "description": "CardFit 기능 코드와 요구사항의 비교 기준으로 사용했다.",
         "language": "markdown"
