@@ -1,7 +1,7 @@
 ---
 name: CardFit UI Task
-about: 결제수단 배분·결정론적 근거·선택적 AI 설명
-title: "[UI] UI-006: 배분·근거·AI 설명"
+about: 승인된 배분·근거·AI 설명 UX의 프론트엔드 구현
+title: "[Frontend] UI-006: 배분·근거·AI 설명 구현"
 labels: 'ui, evidence, ai, priority:must, milestone:m1'
 assignees: ''
 ---
@@ -11,6 +11,7 @@ assignees: ''
 ## Summary
 - 목적: 카테고리별 배분과 계산 근거를 검증 가능하게 표시하고 AI 설명은 보조 정보로 분리한다.
 - REQ: REQ-FUNC-006·007, UX-V-004·006
+- 구현 책임: UX-004의 정보 계층과 fallback 명세를 화면으로 구현한다.
 
 ## References (Spec & Context)
 - 로직: QUERY-002
@@ -20,7 +21,7 @@ assignees: ''
 ## Scope
 - 배분 합계, 근거 6항목 이상, 미반영 비용, 기준일, Rule 버전
 - M2 AI 설명 available/unavailable와 정형 fallback
-- AI가 계산을 보장한다는 표현은 범위 밖
+- 근거 계층·카피 재설계와 AI가 계산을 보장한다는 표현은 범위 밖
 
 ## Task Breakdown
 - [ ] 카테고리별 카드·금액·합계를 표시한다.
@@ -53,7 +54,7 @@ assignees: ''
 - [ ] AI 비활성 M1에서도 화면이 완전하다.
 
 ## Dependencies & Interactions
-- Depends on: UI-001·005, QUERY-002, API-003
+- Depends on: UX-004, UI-001·005, QUERY-002, COMMAND-009, API-003·006
 - Blocks: UI-007, 근거 열람 KPI 검증
 - 변경 전파: Evidence DTO·AI 상태·Analytics·E2E
 
@@ -65,4 +66,3 @@ assignees: ''
 
 ## 출처
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
-

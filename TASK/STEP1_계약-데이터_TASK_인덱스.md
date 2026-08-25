@@ -2,7 +2,7 @@
 
 ## 개요
 
-CardFit의 백엔드·프론트엔드·테스트가 공유할 데이터와 통신 계약을 먼저 고정하기 위한 Step 1 실행 목록이다. 총 9개의 풀버전 TASK를 의존 순서대로 작성하며, M1 필수 계약과 M2 후속 계약을 구분한다.
+CardFit의 백엔드·프론트엔드·테스트가 공유할 데이터와 통신 계약을 먼저 고정하기 위한 Step 1 실행 목록이다. 총 12개의 풀버전 TASK를 의존 순서대로 작성하며, M1 필수 계약과 M2 후속 계약을 구분한다.
 
 ## 권장 실행 순서
 
@@ -10,13 +10,16 @@ CardFit의 백엔드·프론트엔드·테스트가 공유할 데이터와 통�
 |---:|---|---|---|---|
 | 1 | `DATA-001 핵심 입력·플랫폼·Rule 데이터 계약` | M1 | 없음 | API-001·002, MOCK-001 |
 | 2 | `DATA-002 계산·후보·배분 데이터 계약` | M1 | DATA-001 | API-003, 계산·배분·근거 로직 |
-| 3 | `API-001 Platform Adapter 계약` | M1 Mock/M3 Production | DATA-001 | MOCK-001, 계산·초기값 로직 |
-| 4 | `API-002 입력·선택 Server Action 계약` | M1 | DATA-001·002 | 입력 UI, 계산·이행 흐름 |
-| 5 | `API-003 계산·근거·AI 설명 HTTP 계약` | M1/M2 AI | DATA-001·002, API-001 | 결과 UI, 계산·근거 로직 |
-| 6 | `DATA-003 선택·이행·관측 데이터 계약` | M1 시뮬레이션/M2 | DATA-002, API-001 | API-004, 이행 계측 로직 |
-| 7 | `API-004 이행 자기보고·관측 HTTP 계약` | M2 | DATA-003, API-001 | Cron·Outcome 로직, 이행 UI |
-| 8 | `API-005 운영·Rule·Health 계약` | M1/M2 | DATA-001, API-001; Outcome Cron은 DATA-003 | 관리자·배포·NFR 태스크 |
-| 9 | `MOCK-001 비식별 Fixture·Mock 응답 규격` | M1/M2 | 모든 적용 대상 DATA·API 계약 | 프론트엔드 병렬 개발, 계약·E2E 테스트 |
+| 3 | `DATA-004 스코프 문구·금지어 정책 계약` | M1 | 제품·컴플라이언스 승인 | 문구 검수·UX·Frontend |
+| 4 | `API-001 Platform Adapter 계약` | M1 Mock/M3 Production | DATA-001 | MOCK-001, 계산·초기값 로직 |
+| 5 | `API-002 입력·선택 Server Action 계약` | M1 | DATA-001·002 | 입력 UI, 계산·이행 흐름 |
+| 6 | `API-003 계산·근거·AI 설명 HTTP 계약` | M1/M2 AI | DATA-001·002, API-001 | 결과 UI, 계산·근거 로직 |
+| 7 | `DATA-003 선택·이행·관측 데이터 계약` | M1 시뮬레이션/M2 | DATA-002, API-001 | API-004, 이행 계측 로직 |
+| 8 | `API-004 이행 자기보고·관측 HTTP 계약` | M2 | DATA-003, API-001 | Cron·Outcome 로직, 이행 UI |
+| 9 | `API-005 운영·Rule·Health 계약` | M1/M2 | DATA-001, API-001; Outcome Cron은 DATA-003 | 관리자·배포·NFR 태스크 |
+| 10 | `API-006 Query ViewModel 계약` | M1/M2 | DATA-001~003, API-001~005 | Query·UX·Frontend |
+| 11 | `API-007 제품·Guardrail 이벤트 계약` | M1/M2 | DATA-001~003 | Analytics Command·KPI·Guardrail |
+| 12 | `MOCK-001 비식별 Fixture·Mock 응답 규격` | M1/M2 | 모든 적용 대상 DATA·API 계약 | 프론트엔드 병렬 개발, 계약·E2E 테스트 |
 
 ## 상호작용 기준
 
@@ -28,7 +31,7 @@ CardFit의 백엔드·프론트엔드·테스트가 공유할 데이터와 통�
 
 ## Step 1 완료 조건
 
-- 13개 엔터티와 주요 상태·무결성 규칙이 DATA TASK에 빠짐없이 매핑된다.
+- 13개 엔터티와 콘텐츠 정책의 주요 상태·무결성 규칙이 DATA TASK에 빠짐없이 매핑된다.
 - SRS 8.10의 모든 Action·Route 및 Platform Adapter 메서드가 API TASK에 매핑된다.
 - 정상·부분·오래됨·동의 만료·연결 해제·장애·식별 충돌 Fixture가 MOCK TASK에 정의된다.
 - 각 TASK에 정상과 실패 GWT, 비기능 제약, DoD, Depends on/Blocks가 존재한다.
@@ -36,7 +39,7 @@ CardFit의 백엔드·프론트엔드·테스트가 공유할 데이터와 통�
 
 ## 결론
 
-Step 1은 계산 구현보다 먼저 데이터 의미와 통신 경계를 확정한다. `DATA-001 → DATA-002 → API-001·002·003 → DATA-003 → API-004·005 → MOCK-001` 순으로 검토하면 계약을 먼저 고정하고 마지막에 모든 정상·실패 상태를 Mock 카탈로그로 완결할 수 있다. 프론트엔드는 MOCK-001 전체 완료 전에도 확정된 M1 계약의 Fixture부터 순차적으로 사용할 수 있다.
+Step 1은 계산 구현보다 먼저 데이터 의미와 통신 경계를 확정한다. DATA 계약과 API-001~005를 먼저 고정하고, API-006 읽기 모델·API-007 이벤트 계약을 확정한 뒤 MOCK-001로 모든 정상·실패 상태를 완결한다. 프론트엔드는 MOCK-001 전체 완료 전에도 확정된 M1 계약의 Fixture부터 순차적으로 사용할 수 있다.
 
 ## 출처
 

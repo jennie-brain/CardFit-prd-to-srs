@@ -1,7 +1,7 @@
 ---
 name: CardFit UI Task
-about: Rule·비용·가용성·Guardrail 운영 화면
-title: "[UI] UI-009: 관리자 Guardrail 대시보드"
+about: 승인된 관리자 의사결정 UX의 프론트엔드 구현
+title: "[Frontend] UI-009: 관리자 Guardrail 대시보드 구현"
 labels: 'ui, admin, observability, priority:must, milestone:m1'
 assignees: ''
 ---
@@ -11,6 +11,7 @@ assignees: ''
 ## Summary
 - 목적: 운영자가 GR1~GR5·오조회·Rule 최신성·비용·Health를 확인하고 출시·중단 여부를 판단하게 한다.
 - REQ: REQ-NF-004~009
+- 구현 책임: UX-007의 상태·우선순위·runbook 정보 구조를 관리자 화면으로 구현한다.
 
 ## References (Spec & Context)
 - 로직: QUERY-004, COMMAND-007
@@ -20,7 +21,7 @@ assignees: ''
 ## Scope
 - 상태·임계치·최근 점검시각·책임자·조치 표시
 - M1 수동 점검과 M2 자동화 상태
-- 외부 Slack·이메일 알림 UI는 승인 전 범위 밖
+- 정보 구조·차트 의미 재설계와 외부 Slack·이메일 알림 UI는 승인 전 범위 밖
 
 ## Task Breakdown
 - [ ] 관리자 역할과 공개 Health 화면을 분리한다.
@@ -57,7 +58,7 @@ assignees: ''
 - [ ] NFR-002~006의 임계치·조치와 일치한다.
 
 ## Dependencies & Interactions
-- Depends on: UI-001, QUERY-004, NFR-002~006
+- Depends on: UX-007, UI-001, QUERY-004, API-006·007, NFR-002~006
 - Blocks: M1 시연 승인, M2 운영 승인
 - 변경 전파: Guardrail 산식·역할·runbook·운영 테스트
 
@@ -69,4 +70,3 @@ assignees: ''
 
 ## 출처
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
-

@@ -55,7 +55,7 @@ assignees: ''
 - [ ] M1 E2E 회귀가 계속 green이다.
 
 ## Dependencies & Interactions
-- Depends on: M2 DATA/API/MOCK, COMMAND-005·006, QUERY-003, TEST-004·005
+- Depends on: M2 DATA/API/MOCK, COMMAND-005·006·009·010, QUERY-003, TEST-004·005
 - Blocks: M2 베타 합격
 - 변경 전파: 초기값·AI·Outcome·Cron·비용 정책
 

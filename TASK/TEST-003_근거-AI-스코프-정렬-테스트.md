@@ -14,7 +14,7 @@ assignees: ''
 
 ## References (Spec & Context)
 - 계약: API-003, MOCK-001
-- 로직: QUERY-002, COMMAND-008
+- 로직: QUERY-002, COMMAND-008·009
 
 ## Scope
 - In: Evidence 완전성, AI fallback, 스코프 문구, 단계 정렬 자동 테스트
@@ -55,7 +55,7 @@ assignees: ''
 - [ ] 동률 정책 미확정 시 해당 기능은 skip이 아니라 명시적 blocked다.
 
 ## Dependencies & Interactions
-- Depends on: API-003, MOCK-001, QUERY-002, COMMAND-008
+- Depends on: API-003·006, MOCK-001, QUERY-002, COMMAND-008·009
 - Blocks: QUERY-002·COMMAND-008 DoD, TEST-006
 - 변경 전파: Evidence DTO·문구 규칙·AI adapter·정렬 정책
 

@@ -103,7 +103,7 @@ assignees: ''
 
 - Depends on: DATA-001·002, API-001·003; M2 Fixture는 DATA-003·API-004
 - Blocks: DATA-003 시뮬레이션, 프론트엔드 병렬 개발, 계약·통합·E2E 테스트
-- Interacts with: 모든 Step 2 로직, Step 3 TEST, Step 5 UI
+- Interacts with: 모든 Step 2 로직, Step 3 TEST, Step 5 UX·Frontend
 - 변경 전파: DATA/API schema 변경 시 Fixture validation과 예상 hash를 함께 갱신한다.
 
 ## Open Decisions

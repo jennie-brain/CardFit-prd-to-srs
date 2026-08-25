@@ -48,7 +48,7 @@ assignees: ''
 
 ## Dependencies & Interactions
 - Depends on: 승인 문구·금지어 정책
-- Blocks: 콘텐츠 게시, UI/UX TASK
+- Blocks: 콘텐츠 게시, UX-001·002·004·005, UI-002·006·007
 - 변경 전파: TEST-003·006, 모든 사용자 노출 문구
 
 ## Open Decisions

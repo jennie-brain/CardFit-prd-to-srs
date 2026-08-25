@@ -55,8 +55,8 @@ assignees: ''
 - [ ] NFR 검증 전 기능 합격 증거로 연결된다.
 
 ## Dependencies & Interactions
-- Depends on: M1 DATA/API/MOCK, COMMAND-001~004·007·008, QUERY-001·002·004, TEST-001~003·005
-- Blocks: M1 합격, NFR 배포 검증, Step 5 UI 완료
+- Depends on: M1 DATA/API/MOCK, COMMAND-001~004·007·008·010, QUERY-001·002·004, TEST-001~003·005
+- Blocks: M1 합격, NFR 배포 검증, Step 5 UX·Frontend 완료
 - 변경 전파: 핵심 사용자 흐름·Fixture·API·UI
 
 ## Open Decisions
