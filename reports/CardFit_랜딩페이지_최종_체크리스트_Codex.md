@@ -1,6 +1,6 @@
 # CardFit 랜딩페이지 최종 체크리스트
 
-검토 대상: [`landing/index.html`](../landing/index.html)  
+검토 대상: [`landing/CardFit_Landing_Codex.html`](../landing/CardFit_Landing_Codex.html)  
 검토 기준: 사용자 제공 「랜딩페이지 고도화 전략」 및 「랜딩페이지 체크리스트」, CardFit PRD v1.3·SRS v1.6의 확정 범위
 
 ## 결론
