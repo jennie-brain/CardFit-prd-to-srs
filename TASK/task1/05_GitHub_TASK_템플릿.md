@@ -6,7 +6,7 @@ labels: 'feature, fullstack, priority:must, milestone:m1'
 assignees: ''
 ---
 
-# GitHub Project 용 TASK 템플릿
+# GitHub Project TASK 작성 템플릿
 
 ## 개요
 

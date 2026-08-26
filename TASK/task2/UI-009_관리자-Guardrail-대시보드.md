@@ -49,6 +49,19 @@ assignees: ''
 - Then: 중단 대상·책임자·조치가 최상위에 표시된다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: QUERY-004, NFR-001~004/006, UX-007
+- Writes: 없음(관리자 Command 호출 제외)
+- Side Effects: 승인/차단 Command 호출
+- Transaction Boundary: 서버 Command에 위임
+- Idempotency: decisionId 기준
+- Retry Policy: stale decision은 재조회 후 재시도
+
+## Verification Gates
+- Test Gate: TEST-005·007 관리자 권한·Guardrail 통과
+- NFR Gate: NFR-004 감사·NFR-006 비용 임계치 검증
+- Evidence Location: admin permission matrix와 dashboard E2E
+
 - 색상 외 텍스트 상태를 제공하고 표·차트에는 접근 가능한 요약을 둔다.
 - 대시보드 조회가 운영 상태를 변경하지 않는다.
 
@@ -69,4 +82,7 @@ assignees: ''
 운영 상태의 미측정과 위반을 숨기지 않고 실제 중단 판단으로 연결한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 5 관리자 대시보드는 운영 상태와 조치만 노출하고 내부 원문 데이터는 노출하지 않음.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

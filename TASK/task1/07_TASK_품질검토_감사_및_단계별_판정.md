@@ -1,4 +1,4 @@
-# CardFit TASK 리스트 평가 및 풀버전 작성 계획 보고서
+# CardFit TASK 품질검토·감사·단계별 판정 보고서
 
 ## 기술 요약
 
@@ -26,8 +26,8 @@
 
 - 구현 기준선: `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - 제품 기준선: `PRD/PRD_CardFit_v1.3.md`
-- TASK 템플릿: `TASK/task1/GitHub_Project_TASK_템플릿.md`
-- 통합 목록: `TASK/task1/CardFit_전체_개발_TASK_리스트.md`
+- TASK 템플릿: `TASK/task1/05_GitHub_TASK_템플릿.md`
+- 통합 목록: `TASK/task1/01_전체_TASK_목록_및_기준선.md`
 - 단계별 인덱스와 전체 의존성 매트릭스
 - `DATA/API/MOCK/COMMAND/QUERY/TEST/NFR/UX/UI` 개별 TASK 파일
 - 기존 중복·누락 감사 보고서와 Macro/Micro 추출 파이프라인
@@ -377,7 +377,7 @@ flowchart LR
 
 ## 10. 권장 다음 작업
 
-1. `GitHub_Project_TASK_템플릿.md`를 먼저 개정한다.
+1. `05_GitHub_TASK_템플릿.md`를 먼저 개정한다.
 2. 읽기 ViewModel과 이벤트 계약을 별도 SPEC TASK로 둘지, 기존 TASK의 Contract Freeze 단계로 둘지 결정한다. 권장안은 별도 SPEC TASK다.
 3. 폐기 ID와 축약 참조를 전체 문서에서 정리한다.
 4. 수정된 기준으로 Step 1 TASK부터 한 문서씩 풀버전 검토를 재개한다.
@@ -409,17 +409,17 @@ flowchart LR
 
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - `PRD/PRD_CardFit_v1.3.md`
-- `TASK/task1/GitHub_Project_TASK_템플릿.md`
-- `TASK/task1/CardFit_전체_개발_TASK_리스트.md`
-- `TASK/task1/PLAN_GitHub_Project_TASK_풀버전_추출순서.md`
-- `TASK/task1/STEP1_계약-데이터_TASK_인덱스.md`
-- `TASK/task1/STEP2_CQRS_로직_TASK_인덱스.md`
-- `TASK/task1/STEP3_AC_TEST_TASK_인덱스.md`
-- `TASK/task1/STEP4_NFR_의존성_TASK_인덱스.md`
-- `TASK/task1/STEP4_전체_TASK_의존성_매트릭스.md`
-- `TASK/task1/STEP5_UIUX_TASK_인덱스.md`
-- `TASK/task1/SRS_TASK_중복-누락-감사보고서.md`
-- `TASK/task1/PIPELINE_AI_TASK_EXTRACTION_MACRO_MICRO_v1.0.md`
+- `TASK/task1/05_GitHub_TASK_템플릿.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/02_전체_TASK_실행전략_및_의존성.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/02_전체_TASK_실행전략_및_의존성.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/07_TASK_품질검토_감사_및_단계별_판정.md`
+- `TASK/task1/06_AI_TASK_추출_및_검토_방법론.md`
 
 ## Decision Log
 
@@ -435,3 +435,33 @@ flowchart LR
 - 수행: DATA-001~003, API-001~005, SPEC-001·002, MOCK-001의 11개 문서를 개정 템플릿에 맞춰 완성했다.
 - 검증: 11개 문서 모두 Execution Contract, Verification Gates와 문서 말미 Decision Log를 포함하며 MOCK-001의 Logic TASK 의존성은 0건이다.
 - 영향: 다음 작성 단계는 Step 2 Logic 풀버전 TASK이며 QUERY-001~004는 SPEC-001을, COMMAND-010은 SPEC-002를 구현해야 한다.
+
+## 단계별 최신 판정 요약
+
+| 단계 | 검토 범위 | 최신 판정 | 다음 단계 조건 |
+| --- | --- | --- | --- |
+| Step 1 | Contract·Data·Mock 11개 | **PASS WITH OPEN DECISIONS** | M1/M2 계약 분리, 외부 승인 Blocker 유지 |
+| Step 2 | Command 10개·Query 4개 | **PASS WITH OPEN DECISIONS** | CQRS·실행 계약·검증 Gate 통과, 정책 미승인 항목은 구현 차단 |
+| Step 3 | AC와 TEST-001~007 | **PASS WITH OPEN DECISIONS** | GWT 자동 검증과 계산·Rule 정책 확정 |
+| Step 4 | NFR·전체 의존성 | 기준선 반영 | 성능·보안·비용 임계치와 Gate를 실행 |
+| Step 5 | UX·UI 및 추출체계 | 기준선 반영 | UX 승인 후 UI 구현, M1/M2 병렬 레인 운영 |
+
+### Step 1 핵심 판정
+
+- SPEC-001·002를 Logic보다 먼저 소유하는 구조를 승인했다.
+- MOCK-001에서 Query·Command 직접 의존성을 제거해 Step 1 독립성을 확보했다.
+- DATA-001 금액 타입, 외부 승인 항목, 후행 TASK ID 정규화를 확인했다.
+
+### Step 2 핵심 판정
+
+- Command와 Query의 책임 분리, Reads/Writes, Side Effects, Transaction Boundary, Idempotency, Retry, Test/NFR Gate를 확인했다.
+- M1 계산·선택 경로와 M2 Outcome·AI 경로를 분리해 병렬 실행할 수 있다.
+
+### Step 3 핵심 판정
+
+- TEST-001~005는 구현 전에 실패 기준선을 고정하고, TEST-006·007은 통합 후 E2E Gate로 둔다.
+- 계산 정책, Rule 최신성, AI fallback, 상태전이, 보안 경계는 각각 자동 채점 항목으로 연결했다.
+
+## 문서 축약 기준
+
+기존 Step별 인덱스, SRS 대비 감사보고서, 단계별 개별 검토보고서는 이 문서의 단계별 판정과 기존 통합 기준선에 흡수했다. 실행에 필요한 상세 내용은 [전체 TASK 목록·기준선](01_전체_TASK_목록_및_기준선.md), [전체 실행전략·의존성](02_전체_TASK_실행전략_및_의존성.md), [병렬실행 Gantt](03_병렬실행_Gantt_로드맵.md)에서 관리한다.

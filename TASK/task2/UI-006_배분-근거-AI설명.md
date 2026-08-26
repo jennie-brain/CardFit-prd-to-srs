@@ -45,6 +45,19 @@ assignees: ''
 - Then: 정형 근거·배분·선택은 정상이고 AI 실패만 분리 표시한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: QUERY-002, COMMAND-009 결과, UX-004
+- Writes: 없음
+- Side Effects: 선택 Command 또는 AI 설명 재요청
+- Transaction Boundary: 서버 Command/Query에 위임
+- Idempotency: explanation hash·calculation version 기준
+- Retry Policy: AI timeout만 제한 재시도, 근거 불일치는 차단
+
+## Verification Gates
+- Test Gate: TEST-003·006 근거/AI fallback 통과
+- NFR Gate: NFR-003 latency·NFR-004 redaction
+- Evidence Location: citation assertion과 E2E trace
+
 - Evidence 거부 응답 p95≤500ms 상태를 UI가 처리한다.
 - AI 문구에 직접 식별정보·혜택 보장 표현을 포함하지 않는다.
 
@@ -66,4 +79,7 @@ assignees: ''
 결정론적 근거를 중심에 두고 AI는 실패 가능한 설명 보조수단으로 제한한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 5 배분·AI 설명 UI는 근거 참조 ID만 렌더링하도록 고정.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

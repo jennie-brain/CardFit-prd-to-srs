@@ -48,6 +48,19 @@ assignees: ''
 - Then: 경고 누락률을 산출하고 1건 이상이면 정상 상태로 표시하지 않는다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: AI/배포/DB 사용량, 비용 이벤트, SPEC-002 Guardrail
+- Writes: 비용 집계와 임계치 초과 이벤트
+- Side Effects: 알림·기능 차단 hook
+- Transaction Boundary: 비용 bucket 집계와 이벤트 outbox 원자 처리
+- Idempotency: provider invoice ID·period bucket
+- Retry Policy: usage 수집 timeout만 제한 재시도
+
+## Verification Gates
+- Test Gate: 비용 임계치·초과·차단·복구 시나리오 통과
+- NFR Gate: 비용 목표·80/100% guardrail·UNKNOWN 표기 검증
+- Evidence Location: usage fixture, cost report, guardrail event log
+
 - 실제 MyData 내부 비용은 계약 전 `UNESTIMATED`로 표시하며 0원으로 간주하지 않는다.
 - M1은 외부 Slack·이메일 없이 관리자 수동 점검이 가능해야 한다.
 
@@ -68,4 +81,7 @@ assignees: ''
 비용과 품질 상태를 숨은 운영 변수로 두지 않고 기능 중단 규칙까지 포함한 제품 계약으로 관리한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 4 비용·Guardrail 관측과 차단 hook의 실행 경계를 명시.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

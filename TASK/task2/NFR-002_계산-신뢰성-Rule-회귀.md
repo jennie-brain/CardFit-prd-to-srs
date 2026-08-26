@@ -37,6 +37,19 @@ assignees: ''
 - Then: 차단하고 기존 Rule을 유지한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-002, COMMAND-003/007, TEST-002 golden vector
+- Writes: golden hash와 회귀 결과 artifact
+- Side Effects: fake clock 실행
+- Transaction Boundary: vector별 독립 실행
+- Idempotency: input·rule·clock version hash
+- Retry Policy: 자동 재시도 없이 실패 보존
+
+## Verification Gates
+- Test Gate: 200건 이상 vector·경계·Rule freshness 통과
+- NFR Gate: NFR-002 결정론·허용오차·재현성 증거
+- Evidence Location: vector manifest, hash diff, fake-clock report
+
 - expected 결과를 구현 코드로부터 같은 실행 중 생성하지 않는다.
 - seed·clock·Rule version을 고정한다.
 
@@ -57,4 +70,7 @@ assignees: ''
 Rule 데이터 변경을 코드 변경과 동일한 품질 게이트로 통제한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 4 Rule 회귀 측정 기준과 재현 가능한 artifact를 명시.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

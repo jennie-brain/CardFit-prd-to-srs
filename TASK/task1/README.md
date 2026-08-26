@@ -1,33 +1,26 @@
-# CardFit TASK 문서 안내
+# CardFit TASK 관리 문서 안내
 
-## 폴더 구성
+`task1`은 구현 코드가 아니라 TASK 기준선, 실행계획, 정책, 검토 문서를 관리한다. 실제 구현용 상세 TASK는 [`task2`](../task2)에만 둔다.
 
-- `TASK/task1`: 통합 목록, 인덱스, 계획, 정책, 검토 보고서, TASK 템플릿
-- `TASK/task2`: GitHub Issue로 전환할 수 있는 상세 TASK 문서만 보관
+## 관리 문서 목록
+
+| 파일 | 담고 있는 내용 |
+| --- | --- |
+| [01_전체_TASK_목록_및_기준선](01_전체_TASK_목록_및_기준선.md) | 52개 TASK의 영역별 목록, SRS 매핑, 복잡도, M1/M2/M3 범위 |
+| [02_전체_TASK_실행전략_및_의존성](02_전체_TASK_실행전략_및_의존성.md) | 실행 순서, DAG, Wave, 작업 레인, Milestone, GitHub 운영 규칙 |
+| [03_병렬실행_Gantt_로드맵](03_병렬실행_Gantt_로드맵.md) | 한눈보기 의존성 그림, 병렬 작업 묶음, Gantt 차트 |
+| [04_정책_결정_로그](04_정책_결정_로그.md) | Net Benefit, Golden Vector, 동률·반올림·기간 정책 승인 상태 |
+| [05_GitHub_TASK_템플릿](05_GitHub_TASK_템플릿.md) | 개별 GitHub Issue용 Summary, AC, DoD, Test/NFR Gate 양식 |
+| [06_AI_TASK_추출_및_검토_방법론](06_AI_TASK_추출_및_검토_방법론.md) | SRS에서 Macro·Micro TASK를 추출하고 검토하는 방법 |
+| [07_TASK_품질검토_감사_및_단계별_판정](07_TASK_품질검토_감사_및_단계별_판정.md) | 중복·누락 감사, Step 1~5 검토 결과, 미해결 결정과 품질 판정 |
 
 ## 상세 TASK 현황
 
-| 구분 | 접두사 | 개수 |
-| --- | --- | ---: |
-| 구현 TASK | `DATA`, `API`, `MOCK`, `COMMAND`, `QUERY`, `TEST`, `NFR`, `UX`, `UI` | 50 |
-| 사전 명세 TASK | `SPEC` | 2 |
-| **task2 합계** |  | **52** |
+| 구분 | 개수 |
+| --- | ---: |
+| 기존 구현 TASK 기준선 | 50 |
+| 사전 명세 TASK | 2 |
+| 추가 검토 TASK (`INFRA-001`, `SEC-001`) | 2 |
+| **현재 task2 파일 합계** | **54** |
 
-`SPEC-001`과 `SPEC-002`는 구현 전에 공통 계약을 고정하는 상세 TASK이므로 관리 문서가 아니라 `task2`에 둔다. 기존에 합의한 구현 TASK 목표 수는 50개로 유지된다.
-
-## 주요 관리 문서
-
-- [전체 개발 TASK 목록](CardFit_전체_개발_TASK_리스트.md)
-- [정책 Decision Log](CardFit_정책_DECISION_LOG.md)
-- [전체 TASK 의존성 매트릭스](STEP4_전체_TASK_의존성_매트릭스.md)
-- [SRS 대비 중복·누락 감사 보고서](SRS_TASK_중복-누락-감사보고서.md)
-- [표준 방법론 기반 평가 및 작성 계획](REPORT_표준방법론_기반_TASK리스트_평가와_풀버전_작성계획.md)
-- [GitHub Project TASK 템플릿](GitHub_Project_TASK_템플릿.md)
-- [전체 TASK 구현 실행계획](MASTER_전체_TASK_구현_실행계획.md)
-- [간소화 병렬 실행 Gantt 로드맵](GANTT_간소화_병렬실행_로드맵.md)
-
-## 분류 원칙
-
-- `task1` 문서는 계획과 검토를 지원하며 개발 TASK 개수에 포함하지 않는다.
-- `task2` 문서는 각각 독립적인 목적, 범위, 완료 조건을 가진 상세 TASK이다.
-- UX 설계 TASK와 UI 구현 TASK는 계속 별도 접두사와 문서로 관리한다.
+01~03 문서와 Gantt는 52개 기준선으로 작성되어 있다. `INFRA-001`, `SEC-001`은 현재 추가 검토 TASK이므로 기준선에 편입할 때 목록·의존성·Gantt를 함께 갱신한다. 문서명을 변경하거나 TASK를 추가·삭제할 때도 동일한 규칙을 적용한다.

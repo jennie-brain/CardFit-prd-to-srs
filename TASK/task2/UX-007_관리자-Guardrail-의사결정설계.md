@@ -42,6 +42,19 @@ assignees: ''
 - Then: 민감 운영 정보가 공개 화면에 포함되지 않는다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: QUERY-004, COMMAND-007/010, NFR-004/006
+- Writes: 관리자 Guardrail 의사결정 화면과 승인/차단 흐름
+- Side Effects: 승인/차단 Command 호출 전 확인
+- Transaction Boundary: 없음
+- Idempotency: decisionId 기준
+- Retry Policy: 상태 충돌은 재조회 후 재시도
+
+## Verification Gates
+- Test Gate: TEST-005·007 권한·Guardrail 통과
+- NFR Gate: NFR-004 감사와 NFR-006 비용 차단 기준
+- Evidence Location: 관리자 권한 매트릭스와 decision flow
+
 - 색상 이외의 텍스트·아이콘·요약을 사용한다.
 - 운영 상태를 변경하는 control은 별도 승인 Command 없이는 설계하지 않는다.
 
@@ -62,4 +75,7 @@ assignees: ''
 관리자 화면을 단순 지표 나열이 아니라 출시·중단 의사결정 도구로 설계한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 5 관리자 UX를 QUERY-004와 Guardrail Command의 승인 경계로 고정.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

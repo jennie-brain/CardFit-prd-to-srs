@@ -1,4 +1,4 @@
-# CardFit 전체 TASK 구현 실행계획
+# CardFit 전체 TASK 실행전략 및 의존성
 
 ## 1. 기술 요약
 
@@ -332,10 +332,10 @@ M3는 현재 52개 TASK의 Mock 기반 PoC 완료 후 별도 계획으로 다룬
 
 ## 12. 근거 문서
 
-- [전체 개발 TASK 목록](CardFit_전체_개발_TASK_리스트.md)
-- [전체 TASK 의존성 매트릭스](STEP4_전체_TASK_의존성_매트릭스.md)
-- [TASK 풀버전 추출 계획](PLAN_GitHub_Project_TASK_풀버전_추출순서.md)
-- [정책 Decision Log](CardFit_정책_DECISION_LOG.md)
+- [전체 개발 TASK 목록](01_전체_TASK_목록_및_기준선.md)
+- [전체 TASK 의존성 매트릭스](02_전체_TASK_실행전략_및_의존성.md)
+- [TASK 풀버전 추출 계획](02_전체_TASK_실행전략_및_의존성.md)
+- [정책 Decision Log](04_정책_결정_로그.md)
 - [`TASK/task2` 상세 TASK 52개](../task2)
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - `PRD/PRD_CardFit_v1.3.md`

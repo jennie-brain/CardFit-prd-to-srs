@@ -1,4 +1,4 @@
-# CardFit 전체 개발 TASK 리스트
+# CardFit 전체 TASK 목록 및 기준선
 
 ## 개요
 
@@ -147,7 +147,7 @@ Contract → 실패하는 Unit·Contract Test → Logic → NFR·E2E → UX 설�
 - M2 관측 목적·범위·보존기간·실제 카드 상태 의미
 - 실제 MyData 호출 비용
 
-정책 값과 expected 결과는 [`CardFit_정책_DECISION_LOG.md`](CardFit_정책_DECISION_LOG.md)에서 관리한다. Decision Log 항목은 개발 TASK 52개에 포함하지 않으며 연결 TASK의 착수·완료를 차단할 수 있다.
+정책 값과 expected 결과는 [`04_정책_결정_로그.md`](04_정책_결정_로그.md)에서 관리한다. Decision Log 항목은 개발 TASK 52개에 포함하지 않으며 연결 TASK의 착수·완료를 차단할 수 있다.
 
 ## 9. 결론
 
@@ -157,14 +157,14 @@ CardFit 개발 범위는 52개의 Epic·Feature TASK로 분해된다. 정책 결
 
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - `PRD/PRD_CardFit_v1.3.md`
-- `TASK/task1/STEP1_계약-데이터_TASK_인덱스.md`
-- `TASK/task1/STEP2_CQRS_로직_TASK_인덱스.md`
-- `TASK/task1/STEP3_AC_TEST_TASK_인덱스.md`
-- `TASK/task1/STEP4_NFR_의존성_TASK_인덱스.md`
-- `TASK/task1/STEP4_전체_TASK_의존성_매트릭스.md`
-- `TASK/task1/STEP5_UIUX_TASK_인덱스.md`
-- `TASK/task1/STEP5_5단계_TASK_추출체계_적절성_검토.md`
-- `TASK/task1/CardFit_정책_DECISION_LOG.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/02_전체_TASK_실행전략_및_의존성.md`
+- `TASK/task1/01_전체_TASK_목록_및_기준선.md`
+- `TASK/task1/07_TASK_품질검토_감사_및_단계별_판정.md`
+- `TASK/task1/04_정책_결정_로그.md`
 
 ## Decision Log
 

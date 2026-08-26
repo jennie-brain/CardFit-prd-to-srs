@@ -41,6 +41,19 @@ assignees: ''
 - Then: downtime으로 포함하고 99.5%와 비교한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: 배포 health endpoint, API/DB migration 상태
+- Writes: health·배포 검증 결과
+- Side Effects: Preview 배포와 smoke test
+- Transaction Boundary: 배포 후보 commit별 독립 검증
+- Idempotency: commit SHA와 environment ID 기준
+- Retry Policy: readiness probe만 제한 재시도
+
+## Verification Gates
+- Test Gate: health·rollback·migration smoke 통과
+- NFR Gate: 가용성·readiness·배포 실패 격리 기준 충족
+- Evidence Location: CI log, deployment summary, rollback record
+
 - Git Push 기반 Vercel 배포 외 별도 CI/CD 서버를 두지 않는다.
 - health 응답은 비밀정보를 노출하지 않는다.
 
@@ -61,4 +74,7 @@ assignees: ''
 포트폴리오 smoke와 업무 베타 가용성을 분리해 과도한 M1 운영 구축을 막는다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 4 배포·health 검증을 독립 NFR Gate로 고정.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
