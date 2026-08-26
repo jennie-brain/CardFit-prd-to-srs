@@ -6,7 +6,7 @@
 
 ## 스킬
 
-스킬 9개는 `.claude/skills/`에 저장소와 함께 들어 있다. clone 직후 추가 설정 없이 로드된다.
+스킬 12개는 `.claude/skills/`에 저장소와 함께 들어 있다. clone 직후 추가 설정 없이 로드된다.
 
 Cursor·Antigravity를 함께 쓴다면 `.agents/skills` 링크를 만든다(선택).
 

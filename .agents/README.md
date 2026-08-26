@@ -15,7 +15,7 @@ CLAUDE.md                  @AGENTS.md 를 import + Claude Code 전용 안내
   issue-tracker.md         GitHub Issue 조회 절차
   skills -> ../.claude/skills   링크. git 미포함, setup 스크립트로 생성
 .claude/
-  skills/                  선택형 스킬 9개 (실체, 저장소 포함)
+  skills/                  선택형 스킬 12개 (실체, 저장소 포함)
   commands/                슬래시 커맨드
   agents/                  서브에이전트
 scripts/setup-harness.*    .agents/skills 링크 생성 (Cursor·Antigravity용, 선택)
