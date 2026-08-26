@@ -1,5 +1,6 @@
-# Claude Code 스킬 링크. 실체는 .agents/skills 이며 scripts/setup-harness.* 로 생성한다.
-.claude/skills
+# 스킬 실체는 .claude/skills 에 있고 저장소에 포함된다.
+# .agents/skills 는 Cursor·Antigravity 용 링크이며 scripts/setup-harness.* 로 생성한다.
+.agents/skills
 
 # 로컬 환경
 .env

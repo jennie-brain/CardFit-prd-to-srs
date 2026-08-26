@@ -4,19 +4,16 @@
 
 위 `AGENTS.md`가 이 저장소의 공통 규칙이다. 아래는 Claude Code에서만 적용되는 사용 안내다.
 
-## 최초 1회 설정
+## 스킬
 
-`.claude/skills`는 `.agents/skills`를 가리키는 링크이며 git으로 전달되지 않는다. clone 직후 한 번 실행한다.
+스킬 9개는 `.claude/skills/`에 저장소와 함께 들어 있다. clone 직후 추가 설정 없이 로드된다.
+
+Cursor·Antigravity를 함께 쓴다면 `.agents/skills` 링크를 만든다(선택).
 
 ```bash
-# macOS / Linux
-bash scripts/setup-harness.sh
-
-# Windows (PowerShell)
-powershell -ExecutionPolicy Bypass -File scripts/setup-harness.ps1
+bash scripts/setup-harness.sh                                    # macOS / Linux
+powershell -ExecutionPolicy Bypass -File scripts/setup-harness.ps1  # Windows
 ```
-
-실행 후 `.claude/skills/`에 스킬 9개가 보이면 정상이다. 이 단계를 건너뛰면 스킬이 전혀 로드되지 않는다.
 
 ## 세부 규칙 위치
 

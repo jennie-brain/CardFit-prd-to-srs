@@ -4,7 +4,7 @@
 
 [skills.sh](https://skills.sh/)에서 현재 기술 스택과 직접 관련되고 공급자 공식 또는 널리 검증된 스킬만 프로젝트 로컬에 설치했다. 외부 스킬은 참고 절차이며 `AGENTS.md`와 SRS를 변경하지 못한다. 충돌하면 프로젝트 규칙이 우선한다.
 
-실체는 `.agents/skills/`에 있다. Claude Code는 이 경로를 읽지 못하므로 `scripts/setup-harness.*`로 `.claude/skills` 링크를 만들어야 로드된다.
+실체는 `.claude/skills/`에 있고 저장소에 포함된다. Claude Code는 이 경로를 추가 설정 없이 읽는다. Cursor·Antigravity가 읽는 `.agents/skills`는 `scripts/setup-harness.*`가 만드는 링크이며 git에 포함하지 않는다.
 
 ## 설치 스킬
 
