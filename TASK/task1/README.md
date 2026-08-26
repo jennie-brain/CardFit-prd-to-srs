@@ -58,5 +58,5 @@
 
 ## 랜딩페이지 산출물
 
-- [`../../landing/index.html`](../../landing/index.html) — 현재 서비스 앞단 Hook 랜딩페이지 프로토타입
-- [`../../reports/CardFit_랜딩페이지_최종_체크리스트.md`](../../reports/CardFit_랜딩페이지_최종_체크리스트.md) — 전략·체크리스트 기반 최종 평가
+- [`../../landing/CardFit_Landing_Codex.html`](../../landing/CardFit_Landing_Codex.html) — 현재 서비스 앞단 Hook 랜딩페이지 Codex 버전
+- [`../../reports/CardFit_랜딩페이지_최종_체크리스트_Codex.md`](../../reports/CardFit_랜딩페이지_최종_체크리스트_Codex.md) — 전략·체크리스트 기반 최종 평가 Codex 버전

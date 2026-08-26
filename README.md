@@ -60,7 +60,7 @@ CardFit PRD(`PRD/PRD_CardFit_v1.2.md`)에는 위 7개 섹션만으로는 담기�
 
 현재 서비스 화면 앞단에서 사용자의 문제 인식과 계산 시작을 유도하는 Hook 랜딩페이지를 제공합니다.
 
-- [랜딩페이지 프로토타입](landing/index.html) — 혼인 전 마이데이터 사용자를 위한 A 유형(확신·불안 해소) 중심, C 유형(결과 지향) 보조 전략
-- [랜딩페이지 최종 체크리스트](reports/CardFit_랜딩페이지_최종_체크리스트.md) — 사용자 제공 전략의 STEP 0~3 판정과 출시 전 보완 항목
+- [랜딩페이지 프로토타입 — Codex 버전](landing/CardFit_Landing_Codex.html) — 혼인 전 마이데이터 사용자를 위한 A 유형(확신·불안 해소) 중심, C 유형(결과 지향) 보조 전략
+- [랜딩페이지 최종 체크리스트 — Codex 버전](reports/CardFit_랜딩페이지_최종_체크리스트_Codex.md) — 사용자 제공 전략의 STEP 0~3 판정과 출시 전 보완 항목
 
-현재 저장소에는 본문 서비스 라우트가 없으므로 CTA는 임시 `#current-service-entry` 앵커에 연결되어 있습니다. 실제 서비스 경로가 확정되면 `landing/index.html`의 `data-service-cta` 링크를 교체합니다. 검증되지 않은 사용자 수·로고·추천사·절감액은 랜딩페이지에 임의로 넣지 않습니다.
+현재 저장소에는 본문 서비스 라우트가 없으므로 CTA는 임시 `#current-service-entry` 앵커에 연결되어 있습니다. 실제 서비스 경로가 확정되면 `landing/CardFit_Landing_Codex.html`의 `data-service-cta` 링크를 교체합니다. 검증되지 않은 사용자 수·로고·추천사·절감액은 랜딩페이지에 임의로 넣지 않습니다.
