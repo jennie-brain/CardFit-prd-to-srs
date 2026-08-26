@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1418" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="description"
+      content="결혼·이사로 달라지는 지출을 한 번 입력하면, 카드 조합을 유지할 때와 바꿀 때를 세 가지 시나리오로 비교하고 판단 근거까지 함께 확인하는 CardFit 랜딩페이지"
+    />
+    <title>CardFit | 카드를 바꿀지, 그대로 둘지 근거를 보고 정하세요</title>
+    <style>
+      :root {
+        --ink: #101a20;
+        --ink-2: #3d4c55;
+        --ink-3: #5c6a73;
+        --paper: #ffffff;
+        --tint: #f3f7f6;
+        --tint-2: #e9f0ee;
+        --line: #dde5e3;
+        --line-strong: #c3d0cd;
+        --accent: #0b6b5b;
+        --accent-ink: #084f44;
+        --accent-soft: #e3f2ee;
+        --flag: #9a5b16;
+        --flag-soft: #fdf1e3;
+        --radius: 12px;
+        --radius-lg: 18px;
+        --shadow: 0 1px 2px rgba(16, 26, 32, 0.04), 0 12px 32px rgba(16, 26, 32, 0.06);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #eef3f2;
+          --ink-2: #b3c1c0;
+          --ink-3: #8b9a99;
+          --paper: #0e1418;
+          --tint: #141d21;
+          --tint-2: #1a2429;
+          --line: #26343a;
+          --line-strong: #35474e;
+          --accent: #4ec5a8;
+          --accent-ink: #7ad9c0;
+          --accent-soft: #133029;
+          --flag: #e0a465;
+          --flag-soft: #2d2317;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Pretendard, "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+          "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+        /* 한글은 어절 단위로 끊어야 읽힌다. keep-all 이 없으면 단어 중간에서 줄바꿈된다. */
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+        line-height: 1.75;
+        letter-spacing: -0.006em;
+        font-size: 17px;
+      }
+
+      h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+      ul, ol { padding: 0; list-style: none; }
+      a { color: inherit; }
+
+      /* 한글 제목은 라틴 문자만큼 자간을 좁히면 오히려 읽기 어렵다. 최소한만 좁힌다. */
+      h1 {
+        font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+        line-height: 1.24;
+        letter-spacing: -0.028em;
+        font-weight: 800;
+        text-wrap: balance;
+      }
+      h2 {
+        font-size: clamp(1.55rem, 3.2vw, 2.25rem);
+        line-height: 1.32;
+        letter-spacing: -0.022em;
+        font-weight: 800;
+        text-wrap: balance;
+      }
+      h3 {
+        font-size: 1.06rem;
+        line-height: 1.5;
+        letter-spacing: -0.014em;
+        font-weight: 700;
+      }
+
+      .wrap { width: min(1080px, calc(100% - 2.5rem)); margin-inline: auto; }
+      .stack > * + * { margin-top: var(--gap, 1rem); }
+
+      .skip-link {
+        position: absolute; left: 1rem; top: -4rem; z-index: 20;
+        padding: 0.7rem 1rem; border-radius: 8px;
+        background: var(--ink); color: var(--paper); text-decoration: none; font-weight: 700;
+      }
+      .skip-link:focus-visible { top: 1rem; }
+      :where(a, button):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+      /* ── nav ── */
+      .nav {
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        padding: 1.15rem 0;
+      }
+      .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.03em; text-decoration: none; }
+      .brand em { font-style: normal; color: var(--accent); }
+      .nav-links { display: flex; gap: 1.4rem; font-size: 0.9rem; font-weight: 600; }
+      .nav-links a { color: var(--ink-2); text-decoration: none; }
+      .nav-links a:hover { color: var(--accent); }
+      @media (max-width: 560px) { .nav-links a:not(:last-child) { display: none; } }
+
+      /* ── shared ── */
+      .eyebrow {
+        display: inline-block; padding: 0.32rem 0.7rem; border-radius: 999px;
+        background: var(--accent-soft); color: var(--accent-ink);
+        font-size: 0.78rem; font-weight: 700; letter-spacing: 0.005em;
+      }
+      .lead { color: var(--ink-2); font-size: 1.08rem; max-width: 58ch; }
+      .body-text { color: var(--ink-2); max-width: 62ch; }
+      .fine { color: var(--ink-3); font-size: 0.85rem; line-height: 1.65; }
+
+      .button {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-height: 52px; padding: 0 1.35rem; border-radius: var(--radius);
+        font-weight: 700; font-size: 1rem; text-decoration: none;
+        transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+      }
+      .button-primary { background: var(--accent); color: #ffffff; }
+      .button-primary:hover { background: var(--accent-ink); }
+      @media (prefers-color-scheme: dark) { .button-primary { color: #06211c; } }
+      .button-quiet { border: 1px solid var(--line-strong); color: var(--ink); }
+      .button-quiet:hover { border-color: var(--accent); color: var(--accent); }
+      .actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+      section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+      .section-head { max-width: 62ch; margin-bottom: clamp(2rem, 4vw, 3rem); }
+      .section-head h2 { margin: 0.85rem 0 0.85rem; }
+
+      .tint { background: var(--tint); border-block: 1px solid var(--line); }
+
+      /* ── hero ── */
+      .hero { padding-top: clamp(2rem, 5vw, 3.5rem); }
+      .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+      @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+      .hero h1 { margin: 1rem 0 1.1rem; }
+      .hero .actions { margin: 1.75rem 0 1rem; }
+
+      /* 히어로 시각물: 실제 수치를 주장하지 않는 구조 예시 */
+      .panel {
+        border: 1px solid var(--line); border-radius: var(--radius-lg);
+        background: var(--paper); box-shadow: var(--shadow); overflow: hidden;
+      }
+      .panel-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+        padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--line); background: var(--tint);
+        font-size: 0.8rem; font-weight: 700; color: var(--ink-2);
+      }
+      .tag-sample {
+        padding: 0.18rem 0.5rem; border-radius: 5px;
+        background: var(--flag-soft); color: var(--flag); font-size: 0.72rem; font-weight: 700;
+      }
+      .panel-body { padding: 1.1rem; }
+
+      .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+      .kv div { padding: 0.7rem 0.8rem; border: 1px solid var(--line); border-radius: 10px; background: var(--tint); }
+      .kv dt { color: var(--ink-3); font-size: 0.78rem; font-weight: 600; }
+      .kv dd { margin: 0.15rem 0 0; font-size: 1.02rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+      .verdict {
+        margin-top: 0.85rem; padding: 0.95rem 1rem;
+        border: 1px solid var(--line-strong); border-left: 3px solid var(--accent);
+        border-radius: 10px; background: var(--accent-soft);
+      }
+      .verdict p { font-weight: 700; }
+      .verdict .fine { color: var(--accent-ink); opacity: 0.85; margin-top: 0.2rem; }
+
+      /* ── 원칙 스트립 ── */
+      .principles {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+        margin-top: clamp(2.5rem, 5vw, 3.5rem);
+        border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden;
+      }
+      .principles li { padding: 1.15rem 1.25rem; }
+      .principles li + li { border-left: 1px solid var(--line); }
+      @media (max-width: 760px) {
+        .principles { grid-template-columns: 1fr; }
+        .principles li + li { border-left: 0; border-top: 1px solid var(--line); }
+      }
+      .principles strong { display: block; font-size: 0.97rem; }
+      .principles span { color: var(--ink-2); font-size: 0.88rem; }
+
+      /* ── 리스크 카드 ── */
+      .risks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      @media (max-width: 860px) { .risks { grid-template-columns: 1fr; } }
+      .risk {
+        padding: 1.4rem; border: 1px solid var(--line); border-radius: var(--radius-lg);
+        background: var(--paper);
+      }
+      .risk .num {
+        display: inline-block; margin-bottom: 0.9rem;
+        font-size: 0.78rem; font-weight: 800; color: var(--flag);
+        font-variant-numeric: tabular-nums;
+      }
+      .risk h3 { margin-bottom: 0.45rem; }
+      .risk p { color: var(--ink-2); font-size: 0.94rem; }
+
+      /* ── 3단계 ── */
+      .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; counter-reset: step; }
+      @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+      .step { padding: 1.4rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); }
+      .step::before {
+        counter-increment: step; content: counter(step);
+        display: grid; place-items: center; width: 30px; height: 30px; margin-bottom: 1rem;
+        border-radius: 50%; background: var(--ink); color: var(--paper);
+        font-size: 0.82rem; font-weight: 800;
+      }
+      .step h3 { margin-bottom: 0.45rem; }
+      .step p { color: var(--ink-2); font-size: 0.94rem; }
+
+      /* ── 근거 패널 ── */
+      .evidence-grid { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+      @media (max-width: 900px) { .evidence-grid { grid-template-columns: 1fr; } }
+      .evidence-list li {
+        display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.9rem;
+        padding: 0.85rem 0; border-top: 1px solid var(--line);
+      }
+      .evidence-list li:last-child { border-bottom: 1px solid var(--line); }
+      @media (max-width: 520px) { .evidence-list li { grid-template-columns: 1fr; gap: 0.15rem; } }
+      .evidence-list dt, .evidence-list .label {
+        color: var(--ink-3); font-size: 0.85rem; font-weight: 700;
+      }
+      .evidence-list .value { font-size: 0.95rem; color: var(--ink-2); }
+      .evidence-list .value b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+      /* ── 경계(하지 않는 것) ── */
+      .limits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      @media (max-width: 760px) { .limits { grid-template-columns: 1fr; } }
+      .limit {
+        display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start;
+        padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius-lg);
+        background: var(--paper);
+      }
+      .limit .mark {
+        display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+        background: var(--tint-2); color: var(--accent-ink); font-weight: 800; font-size: 0.85rem;
+      }
+      .limit h3 { margin-bottom: 0.35rem; }
+      .limit p { color: var(--ink-2); font-size: 0.93rem; }
+
+      /* ── 시나리오 탭 ── */
+      .tablist { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+      .tab {
+        appearance: none; cursor: pointer;
+        padding: 0.6rem 1rem; border: 1px solid var(--line-strong); border-radius: 999px;
+        background: transparent; color: var(--ink-2);
+        font: inherit; font-size: 0.92rem; font-weight: 700;
+        transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+      }
+      .tab:hover { border-color: var(--accent); color: var(--accent); }
+      .tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+      .tabpanel { padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); }
+      .tabpanel .scen-label { color: var(--ink-3); font-size: 0.83rem; font-weight: 700; }
+      .tabpanel h3 { margin: 0.4rem 0 0.5rem; font-size: 1.2rem; }
+      .tabpanel p { color: var(--ink-2); }
+      .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.1rem; }
+      .chips span {
+        padding: 0.3rem 0.65rem; border: 1px solid var(--line); border-radius: 999px;
+        background: var(--tint); color: var(--ink-2); font-size: 0.8rem; font-weight: 600;
+      }
+
+      .note {
+        padding: 0.9rem 1.05rem; border: 1px dashed var(--line-strong); border-radius: 10px;
+        background: var(--tint); color: var(--ink-2); font-size: 0.87rem; line-height: 1.65;
+      }
+
+      /* ── CTA ── */
+      .cta-box {
+        display: grid; grid-template-columns: 1fr auto; gap: 1.75rem; align-items: center;
+        padding: clamp(1.75rem, 4vw, 2.75rem);
+        border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--tint);
+      }
+      @media (max-width: 760px) { .cta-box { grid-template-columns: 1fr; } }
+
+      footer { border-top: 1px solid var(--line); padding: 2.5rem 0 3.5rem; color: var(--ink-3); font-size: 0.88rem; }
+      footer p + p { margin-top: 0.4rem; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+    <header class="wrap nav">
+      <a class="brand" href="./" translate="no">Card<em>Fit</em></a>
+      <nav class="nav-links" aria-label="주요 탐색">
+        <a href="#risk">무엇이 틀어지나요</a>
+        <a href="#how">계산 방식</a>
+        <a href="#evidence">근거 공개</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- ══ HERO ══ A유형: 불안의 해소를 약속하되 보장하지 않는다 -->
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <span class="eyebrow">결혼·이사로 지출이 달라지는 분들께</span>
+            <h1>카드를 바꿀지, 그대로 둘지<br />근거를 펼쳐놓고 정하세요.</h1>
+            <p class="lead">
+              다음 달부터 달라질 지출을 한 번 입력하면, 지금 조합을 유지할 때와 바꿀 때를
+              세 가지 지출 시나리오로 나란히 비교합니다. 결론만 던지지 않고 그 판단에 쓴
+              근거를 함께 펼쳐 보여드립니다.
+            </p>
+            <div class="actions">
+              <a class="button button-primary" href="#start">내 지출로 계산해보기</a>
+              <a class="button button-quiet" href="#how">계산 방식 먼저 보기</a>
+            </div>
+            <p class="fine">
+              카드 신청과 해지를 대신 처리하지 않습니다. 비교와 근거 제시까지가 CardFit의 역할이고,
+              마지막 선택은 직접 하십니다.
+            </p>
+          </div>
+
+          <div class="panel" role="img"
+               aria-label="미래지출을 입력하면 유지와 변경을 비교한 판단 결과가 나오는 화면 구조 예시">
+            <div class="panel-head">
+              <span>미래지출 입력 → 판단</span>
+              <span class="tag-sample">구조 예시</span>
+            </div>
+            <div class="panel-body">
+              <dl class="kv">
+                <div><dt>주거·생활</dt><dd>월 180만 원</dd></div>
+                <div><dt>예식·신혼여행</dt><dd>월 70만 원</dd></div>
+              </dl>
+              <div class="verdict">
+                <p>기본 시나리오에서는 지금 조합을 유지하는 쪽이 앞섭니다.</p>
+                <p class="fine">차액과 그 계산에 쓰인 근거를 결과 화면에서 함께 확인합니다.</p>
+              </div>
+              <p class="fine" style="margin-top: 0.85rem;">
+                화면 구조를 설명하기 위한 예시입니다. 실제 카드·금액·혜택은 연결된 데이터와
+                승인된 규칙 버전으로 계산됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="wrap principles" aria-label="CardFit의 판단 원칙">
+          <li>
+            <strong>같은 입력이면 같은 결과</strong>
+            <span>동일한 규칙 버전에서 계산을 그대로 재현합니다.</span>
+          </li>
+          <li>
+            <strong>근거를 접어두지 않음</strong>
+            <span>실적 구간·한도·연회비·제외조건을 결과 옆에 둡니다.</span>
+          </li>
+          <li>
+            <strong>AI는 결론을 정하지 않음</strong>
+            <span>계산과 추천 규칙은 AI와 분리되어 있습니다.</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ══ 불안의 정체 ══ A유형의 핵심: 막연한 불안을 구체적 실패 방식으로 바꾼다 -->
+      <section id="risk" class="tint">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">감으로 바꿀 때 생기는 일</span>
+            <h2>손해는 대부분 눈에 띄지 않게 발생합니다.</h2>
+            <p class="body-text">
+              카드를 바꾼 뒤 손해를 본 사람들이 뒤늦게 발견하는 지점은 대체로 세 가지입니다.
+              어느 쪽도 카드 상세 페이지만 봐서는 알기 어렵습니다.
+            </p>
+          </div>
+          <ul class="risks">
+            <li class="risk">
+              <span class="num">01</span>
+              <h3>실적 구간을 채우지 못함</h3>
+              <p>
+                혜택 대부분은 월 실적 조건에 걸려 있습니다. 지출이 예상보다 줄면 조건에 미달해
+                혜택이 통째로 빠지는데, 그달 명세서만 봐서는 원인을 알기 어렵습니다.
+              </p>
+            </li>
+            <li class="risk">
+              <span class="num">02</span>
+              <h3>연회비가 혜택을 넘어섬</h3>
+              <p>
+                지출이 몰린 달만 놓고 보면 이득처럼 보입니다. 연회비까지 넣고 1년 단위로 다시
+                계산하면 순서가 바뀌는 경우가 있습니다.
+              </p>
+            </li>
+            <li class="risk">
+              <span class="num">03</span>
+              <h3>제외조건에 걸림</h3>
+              <p>
+                상당수 카드는 특정 가맹점이나 결제수단을 실적에서 뺍니다. 정작 지출이 큰
+                항목이 제외 대상이면 계산이 크게 달라집니다.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ══ 3단계 ══ C유형 보조: 입력 → 결과의 단순함 -->
+      <section id="how">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">계산 방식</span>
+            <h2>한 번 입력하면, 판단할 수 있는 화면까지 갑니다.</h2>
+            <p class="body-text">
+              과거에 쓴 돈만으로 추천하지 않습니다. 앞으로 달라질 지출을 반영해야
+              결혼 이후의 판단이 됩니다.
+            </p>
+          </div>
+          <ol class="steps">
+            <li class="step">
+              <h3>미래지출 입력</h3>
+              <p>
+                결혼·이사·여행처럼 다음 달부터 달라질 지출을 직접 입력합니다.
+                연결된 금융 데이터가 있으면 그 기준일을 함께 확인합니다.
+              </p>
+            </li>
+            <li class="step">
+              <h3>세 시나리오 비교</h3>
+              <p>
+                예상보다 적게 쓸 때, 예상한 만큼 쓸 때, 예상보다 많이 쓸 때를
+                한 화면에서 같은 기준으로 비교합니다.
+              </p>
+            </li>
+            <li class="step">
+              <h3>근거 확인 후 선택</h3>
+              <p>
+                실적 구간·한도·연회비·제외조건과 데이터 기준일을 확인하고,
+                유지할지 바꿀지 직접 정합니다.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ══ 근거 공개 ══ A유형 최대 차별점: '근거를 준다'를 말이 아니라 화면으로 -->
+      <section id="evidence" class="tint">
+        <div class="wrap evidence-grid">
+          <div class="section-head" style="margin-bottom: 0;">
+            <span class="eyebrow">근거 공개</span>
+            <h2>“왜 이 결과인지”를 접어두지 않습니다.</h2>
+            <p class="body-text">
+              정확하다고 주장하는 대신, 무엇을 근거로 계산했고 그 데이터가 언제 것인지를
+              결과와 같은 화면에 둡니다. 근거가 부족하면 추천을 내보내지 않습니다.
+            </p>
+            <p class="fine" style="margin-top: 1rem;">
+              아래는 근거 패널에 들어가는 항목의 구조 예시입니다. 값은 실제 계산 결과가 아닙니다.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span>이 결과의 근거</span>
+              <span class="tag-sample">구조 예시</span>
+            </div>
+            <div class="panel-body">
+              <ul class="evidence-list">
+                <li>
+                  <span class="label">실적 구간</span>
+                  <span class="value">월 <b>70만 원</b> 이상 구간 적용</span>
+                </li>
+                <li>
+                  <span class="label">혜택 한도</span>
+                  <span class="value">카테고리별 월 <b>2만 원</b> 상한 반영</span>
+                </li>
+                <li>
+                  <span class="label">연회비</span>
+                  <span class="value">연 <b>3만 원</b>을 12개월로 나눠 차감</span>
+                </li>
+                <li>
+                  <span class="label">제외조건</span>
+                  <span class="value">일부 가맹점·간편결제는 실적에서 제외</span>
+                </li>
+                <li>
+                  <span class="label">데이터 기준일</span>
+                  <span class="value">연결된 데이터를 마지막으로 확인한 시점</span>
+                </li>
+                <li>
+                  <span class="label">규칙 버전</span>
+                  <span class="value">계산에 사용한 혜택 규칙의 버전</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ 판단 경계 ══ A유형: 한계를 먼저 밝히는 것이 신뢰를 만든다 -->
+      <section>
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">판단의 경계</span>
+            <h2>하지 않는 일을 먼저 밝힙니다.</h2>
+            <p class="body-text">
+              할 수 있는 것보다 하지 않는 것을 아는 편이 판단에 도움이 됩니다.
+              아래 네 가지는 CardFit이 의도적으로 하지 않는 일입니다.
+            </p>
+          </div>
+          <ul class="limits">
+            <li class="limit">
+              <span class="mark" aria-hidden="true">—</span>
+              <div>
+                <h3>카드 신청·해지를 대신하지 않습니다</h3>
+                <p>비교와 근거 제시까지가 역할입니다. 신청과 해지는 각 금융기관의 공식 화면에서 직접 진행하십니다.</p>
+              </div>
+            </li>
+            <li class="limit">
+              <span class="mark" aria-hidden="true">—</span>
+              <div>
+                <h3>AI가 결론을 정하지 않습니다</h3>
+                <p>계산과 추천 순서는 정해진 규칙으로 먼저 확정합니다. AI 설명은 이해를 돕는 보조 수단으로만 씁니다.</p>
+              </div>
+            </li>
+            <li class="limit">
+              <span class="mark" aria-hidden="true">—</span>
+              <div>
+                <h3>누락된 데이터를 0원으로 바꾸지 않습니다</h3>
+                <p>동기화에 실패했거나 값이 비어 있으면 그 상태를 그대로 표시합니다. 빈 값을 지출 없음으로 처리하지 않습니다.</p>
+              </div>
+            </li>
+            <li class="limit">
+              <span class="mark" aria-hidden="true">—</span>
+              <div>
+                <h3>절감액을 보장하지 않습니다</h3>
+                <p>입력한 지출 전망과 적용한 규칙 버전에 따른 비교 결과를 보여드릴 뿐, 실제 절감을 약속하지 않습니다.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ══ 결과 미리보기 ══ C유형 보조: Input–Output을 눈으로 -->
+      <section class="tint">
+        <div class="wrap evidence-grid">
+          <div class="section-head" style="margin-bottom: 0;">
+            <span class="eyebrow">결과 화면 미리보기</span>
+            <h2>한 줄 추천 대신, 비교할 수 있는 세 가지를 둡니다.</h2>
+            <p class="body-text">
+              지출 전망은 어차피 빗나갑니다. 그래서 하나의 정답을 내놓는 대신,
+              적게 쓸 때부터 많이 쓸 때까지 같은 기준으로 판단해 둡니다.
+            </p>
+            <p class="fine" style="margin-top: 1rem;">
+              탭을 눌러 시나리오별 설명을 확인하십시오. 실제 카드명과 금액은 표시하지 않습니다.
+            </p>
+          </div>
+
+          <div>
+            <div class="tablist" role="tablist" aria-label="지출 시나리오">
+              <button class="tab" type="button" role="tab" id="tab-low"
+                      aria-selected="false" aria-controls="panel-scenario" tabindex="-1">적게 쓸 때</button>
+              <button class="tab" type="button" role="tab" id="tab-base"
+                      aria-selected="true" aria-controls="panel-scenario" tabindex="0">예상한 만큼</button>
+              <button class="tab" type="button" role="tab" id="tab-high"
+                      aria-selected="false" aria-controls="panel-scenario" tabindex="-1">많이 쓸 때</button>
+            </div>
+            <div class="tabpanel" id="panel-scenario" role="tabpanel"
+                 aria-labelledby="tab-base" tabindex="0">
+              <p class="scen-label" id="scen-label">예상한 만큼 쓸 때 · BASE</p>
+              <h3 id="scen-title">지금 조합을 유지할지부터 확인합니다.</h3>
+              <p id="scen-body">
+                바꾸는 쪽이 항상 낫지는 않습니다. 유지할 때의 결과를 기준선으로 두고
+                변경안과의 차액을 같은 규칙으로 비교합니다.
+              </p>
+              <div class="chips" aria-label="함께 표시하는 정보">
+                <span>근거 항목</span><span>차액</span><span>데이터 기준일</span><span>규칙 버전</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ CTA ══ -->
+      <section id="start">
+        <div class="wrap">
+          <div class="cta-box">
+            <div>
+              <span class="eyebrow">다음 단계</span>
+              <h2 style="margin: 0.85rem 0 0.6rem;">내 지출로 직접 확인해보세요.</h2>
+              <p class="body-text">
+                앞으로의 지출을 입력하면 유지와 변경의 판단이 어떻게 갈리는지,
+                그리고 그렇게 갈린 이유가 무엇인지 함께 확인할 수 있습니다.
+              </p>
+            </div>
+            <a class="button button-primary" href="#start" data-service-cta>계산 시작하기</a>
+          </div>
+          <p class="note" style="margin-top: 1.25rem;">
+            <strong>프로토타입 연결 지점:</strong> 현재 저장소에 서비스 화면 라우트가 없어
+            CTA를 이 진입 앵커에 연결해 두었습니다. 서비스 라우트가 확정되면
+            <code>data-service-cta</code> 링크를 실제 경로로 교체하십시오.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p><strong translate="no">CardFit</strong>은 미래지출을 반영한 카드 비교·판단 보조 서비스입니다.</p>
+        <p>추천 결과와 혜택 범위는 승인된 규칙 버전과 연결된 데이터 상태에 따라 달라질 수 있습니다.</p>
+        <p>이 페이지의 모든 화면과 수치는 구조 설명을 위한 예시이며 실제 계산 결과가 아닙니다.</p>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var COPY = {
+          "tab-low": [
+            "예상보다 적게 쓸 때 · LOW",
+            "혜택 조건을 채울 수 있는지부터 봅니다.",
+            "지출이 줄면 실적 구간에 미달해 혜택이 빠질 수 있습니다. 조건을 채우지 못하는 경우를 먼저 확인합니다."
+          ],
+          "tab-base": [
+            "예상한 만큼 쓸 때 · BASE",
+            "지금 조합을 유지할지부터 확인합니다.",
+            "바꾸는 쪽이 항상 낫지는 않습니다. 유지할 때의 결과를 기준선으로 두고 변경안과의 차액을 같은 규칙으로 비교합니다."
+          ],
+          "tab-high": [
+            "예상보다 많이 쓸 때 · HIGH",
+            "한도와 제외조건이 결과를 가릅니다.",
+            "지출이 커지면 혜택 한도에 먼저 걸립니다. 한도와 제외조건을 포함해 시나리오별 차이를 비교합니다."
+          ]
+        };
+
+        var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+        var panel = document.getElementById("panel-scenario");
+        var label = document.getElementById("scen-label");
+        var title = document.getElementById("scen-title");
+        var body = document.getElementById("scen-body");
+        if (!tabs.length || !panel) return;
+
+        function select(tab, focus) {
+          tabs.forEach(function (t) {
+            var on = t === tab;
+            t.setAttribute("aria-selected", String(on));
+            t.tabIndex = on ? 0 : -1;
+          });
+          var text = COPY[tab.id];
+          if (text) {
+            label.textContent = text[0];
+            title.textContent = text[1];
+            body.textContent = text[2];
+          }
+          panel.setAttribute("aria-labelledby", tab.id);
+          if (focus) tab.focus();
+        }
+
+        tabs.forEach(function (tab, i) {
+          tab.addEventListener("click", function () { select(tab, false); });
+          tab.addEventListener("keydown", function (e) {
+            var next = null;
+            if (e.key === "ArrowRight") next = tabs[(i + 1) % tabs.length];
+            else if (e.key === "ArrowLeft") next = tabs[(i - 1 + tabs.length) % tabs.length];
+            else if (e.key === "Home") next = tabs[0];
+            else if (e.key === "End") next = tabs[tabs.length - 1];
+            if (next) { e.preventDefault(); select(next, true); }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
