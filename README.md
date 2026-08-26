@@ -55,3 +55,12 @@ CardFit PRD(`PRD/PRD_CardFit_v1.2.md`)에는 위 7개 섹션만으로는 담기�
 - [x] SRS 추천안 이행 검증본 작성 (`SRS-Drafts/SRS_CardFit_v1.3.md`, `.html`) — 자기보고·마이데이터 관측 분리, 행동 완주·유지 준수·조합안 이행 및 엄격한 판정 불가 모델 반영
 - [x] SRS MVP 스택·플랫폼 경계 반영본 작성 (`SRS-Drafts/SRS_CardFit_v1.4.md`, `.html`) — 지정 기술 스택, Mock/Production Platform Adapter, 기능 커버리지·핵심 UX 보존 검증 반영
 - [x] SRS v1.5 포트폴리오·통합 준비도 정합화 (`SRS-Drafts/SRS_CardFit_v1.5.md`, `.html`) — PRD v1.3 추적, 3층 구조, 실제 통합 상태 분리, 해지 추정 판정 보완
+
+## 랜딩페이지
+
+현재 서비스 화면 앞단에서 사용자의 문제 인식과 계산 시작을 유도하는 Hook 랜딩페이지를 제공합니다.
+
+- [랜딩페이지 프로토타입](landing/index.html) — 혼인 전 마이데이터 사용자를 위한 A 유형(확신·불안 해소) 중심, C 유형(결과 지향) 보조 전략
+- [랜딩페이지 최종 체크리스트](reports/CardFit_랜딩페이지_최종_체크리스트.md) — 사용자 제공 전략의 STEP 0~3 판정과 출시 전 보완 항목
+
+현재 저장소에는 본문 서비스 라우트가 없으므로 CTA는 임시 `#current-service-entry` 앵커에 연결되어 있습니다. 실제 서비스 경로가 확정되면 `landing/index.html`의 `data-service-cta` 링크를 교체합니다. 검증되지 않은 사용자 수·로고·추천사·절감액은 랜딩페이지에 임의로 넣지 않습니다.
