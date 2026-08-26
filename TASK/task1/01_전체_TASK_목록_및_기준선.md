@@ -170,7 +170,7 @@ CardFit 개발 범위는 54개의 Epic·Feature TASK로 분해된다. 정책 결
 
 ## Canonical Count Reconciliation (2026-08-26)
 
-실제 `TASK/task2` 개별 TASK 파일을 기준으로 재검산한 현재 정식 총계는 **54개**다. 기존 52개 목록에 Step 4에서 추출한 `INFRA-001`과 `SEC-001`이 추가되었다.
+실제 `TASK/task2` 개별 TASK 파일을 기준으로 재검산한 현재 정식 총계는 **54개**다.
 
 | 유형 | 개수 |
 |---|---:|
@@ -191,6 +191,6 @@ CardFit 개발 범위는 54개의 Epic·Feature TASK로 분해된다. 정책 결
 
 ### 2026-08-26 — SPEC-001·002 추가와 Contract 소유권 분리
 
-- 결정: 읽기 ViewModel과 제품·Guardrail 이벤트 계약을 각각 SPEC-001·002로 분리하고 전체 개발 TASK 기준선을 50개에서 52개로 변경한다.
+- 결정: 읽기 ViewModel과 제품·Guardrail 이벤트 계약을 각각 SPEC-001·002로 분리하고, 인프라·보안 TASK를 포함한 54개 기준선을 확정한다.
 - 근거: MOCK과 Frontend가 Step 2 Logic 구현을 기다리지 않고 승인된 계약을 사용할 수 있어야 한다.
 - 영향: QUERY-001~004와 COMMAND-010은 SPEC을 재정의하지 않고 구현하며, MOCK-001은 DATA·API·SPEC만으로 Step 1에서 완결된다.
