@@ -62,7 +62,7 @@ assignees: ''
 - Retry Policy: outbox relay만 재시도, schema 오류는 격리
 
 ## Verification Gates
-- Test Gate: TEST-009 이벤트 schema·중복·순서 시나리오 통과
+- Test Gate: TEST-007 이벤트 schema·중복·순서 시나리오 통과
 - NFR Gate: NFR-004 비식별·마스킹, NFR-006 전달 지연 검증
 - Evidence Location: event contract test와 relay log
 

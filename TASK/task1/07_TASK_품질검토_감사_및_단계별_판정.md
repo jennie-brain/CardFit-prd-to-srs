@@ -18,7 +18,7 @@
 - 풀버전 문서는 `계약 → 로직 → 테스트 → NFR·의존성` 순서로 작성하되, 테스트 문서 작성 후 연결 로직 TASK의 DoD를 역갱신한다.
 - UX와 Frontend는 표준 네 단계 이후의 확장 단계로 관리하되, 실제 구현에서는 Mock이 준비되는 즉시 수직 경로별로 병렬 진행한다.
 
-> **2026-08-26 실행 상태:** Step 1 수행으로 SPEC-001·002를 채택했고, 현재 개발 TASK 기준선은 52개다. DATA·API·SPEC·MOCK 11개 문서는 개정 템플릿의 Execution Contract, Verification Gates와 문서 말미 Decision Log를 갖췄다.
+> **2026-08-26 실행 상태:** Step 1 수행으로 SPEC-001·002를 채택해 기준선을 52개로 변경했고, Step 4에서 `INFRA-001`·`SEC-001`을 추가 추출해 현재 개발 TASK 기준선은 **54개**로 확정됐다. DATA·API·SPEC·MOCK 11개 문서는 개정 템플릿의 Execution Contract, Verification Gates와 문서 말미 Decision Log를 갖췄다.
 
 ## 1. 평가 범위와 판정 기준
 
@@ -436,6 +436,13 @@ flowchart LR
 - 검증: 11개 문서 모두 Execution Contract, Verification Gates와 문서 말미 Decision Log를 포함하며 MOCK-001의 Logic TASK 의존성은 0건이다.
 - 영향: 다음 작성 단계는 Step 2 Logic 풀버전 TASK이며 QUERY-001~004는 SPEC-001을, COMMAND-010은 SPEC-002를 구현해야 한다.
 
+### 2026-08-26 — Step 4 INFRA-001·SEC-001 추출과 기준선 54개 확정
+
+- 결정: NFR·전체 의존성 검토 중 배포·마이그레이션 검증(`INFRA-001`)과 입력 검증·로그 마스킹 경계(`SEC-001`)를 기존 NFR TASK와 분리된 독립 TASK로 추출하고, 개발 TASK 기준선을 52개에서 **54개**로 변경한다.
+- 근거: `NFR-003`(배포·Health)과 `NFR-004`(보안·감사)는 합격선 검증(Gate)이 책임이며, 실제 migration pipeline 구축과 공통 validation middleware 구현은 별도 소유자와 DoD가 필요하다.
+- 수행: `TASK/task1/01_전체_TASK_목록_및_기준선.md`, `02_전체_TASK_실행전략_및_의존성.md`, `03_병렬실행_Gantt_로드맵.md`의 목록·DAG·Wave·Gantt·Milestone 기준을 54개 기준으로 갱신했다.
+- 영향: `INFRA-001`은 `NFR-003`·`TEST-006` 통과 직후 M2 UX·UI 레인과 병렬로, `SEC-001`은 `NFR-004` 확보 직후 `UX-001`과 병렬로 진행하며 둘 다 M1 배포를 막는 Gate로 관리한다.
+
 ## 단계별 최신 판정 요약
 
 | 단계 | 검토 범위 | 최신 판정 | 다음 단계 조건 |
@@ -461,6 +468,11 @@ flowchart LR
 
 - TEST-001~005는 구현 전에 실패 기준선을 고정하고, TEST-006·007은 통합 후 E2E Gate로 둔다.
 - 계산 정책, Rule 최신성, AI fallback, 상태전이, 보안 경계는 각각 자동 채점 항목으로 연결했다.
+
+### Step 4 핵심 판정
+
+- NFR-001~004·006의 합격선 검증과 별개로 `INFRA-001`(배포·마이그레이션·rollback), `SEC-001`(입력 검증·로그 마스킹)을 독립 실행 TASK로 분리했다.
+- 개발 TASK 기준선을 52개에서 54개로 변경하고 `01`~`03` 문서의 목록·DAG·Wave·Gantt를 동일 기준으로 갱신했다.
 
 ## 문서 축약 기준
 

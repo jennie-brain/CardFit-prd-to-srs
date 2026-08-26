@@ -52,7 +52,7 @@ assignees: ''
 - Retry Policy: 모델 timeout만 제한 재시도, 정책 차단은 중단
 
 ## Verification Gates
-- Test Gate: TEST-008 근거 누락·불일치·재현 시나리오 통과
+- Test Gate: TEST-003 근거 누락·불일치·재현 시나리오 통과
 - NFR Gate: NFR-003 latency, NFR-004 데이터 마스킹 검증
 - Evidence Location: prompt hash, citation fixture, redaction log
 

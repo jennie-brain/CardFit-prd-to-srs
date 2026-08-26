@@ -24,7 +24,7 @@ flowchart LR
   O["L5 M2 Outcome·AI<br/>COMMAND-005·006·009<br/>QUERY-003"]
   X["X1 UX 설계<br/>UX-001~004·006·007"]
   U["U1 UI 구현<br/>UI-001~009"]
-  G1["M1 Gate<br/>TEST-006 · NFR-001·002·003·004·006"]
+  G1["M1 Gate<br/>TEST-006 · NFR-001·002·003·004·006 · INFRA-001 · SEC-001"]
   G2["M2 Gate<br/>TEST-007"]
 
   P --> A
@@ -56,6 +56,7 @@ flowchart LR
 - `X1`은 Query 구현 완료까지 기다리지 않고 승인된 `SPEC-001` ViewModel 계약으로 시작한다.
 - `U1`은 UX 승인 후 시작한다. UX 설계와 서버 Logic은 서로의 직접 선행 조건이 없는 범위에서 병렬이다.
 - M1 Gate는 M2 Outcome·AI 묶음과 분리한다. M2 지연이 M1 시연을 자동으로 차단하지 않는다.
+- `INFRA-001`(배포·마이그레이션·rollback)과 `SEC-001`(입력 검증·마스킹)은 각각 NFR-003과 NFR-004 확보 직후 시작하는 M1 Gate 구성 TASK다. 두 TASK 모두 별도 묶음 대신 `N2`(M1 Gate) 묶음에 포함해 관리한다.
 
 ## 2. 한눈보기 Gantt
 
@@ -88,7 +89,7 @@ gantt
   R2 QUERY-002                              :r2, after l3, 4d
   N1 NFR-001·002                             :n1, after r2, 4d
   R3 QUERY-003                               :r3, after l5, 4d
-  N2 TEST-006 + NFR-003·004·006 M1 Gate      :n2, after u4, 5d
+  N2 TEST-006 + NFR-003·004·006 + INFRA-001·SEC-001 M1 Gate :n2, after u4, 6d
   M1 M1 승인                                  :milestone, m1, after n2, 0d
   M2 TEST-007 + M2 회귀                     :milestone, m2, after u5, 0d
 
@@ -124,7 +125,7 @@ gantt
 | X2 | UX-002, 003, 004 | X1, API 계약 | 흐름별 순차 | M1 wireflow |
 | U1~U4 | UI-001~007 | X1/X2와 해당 Logic·Query | 화면 흐름 순차, 서버 레인과 병렬 | M1 UI |
 | N1 | NFR-001, NFR-002 | L3/R2, TEST-002·003 | 두 NFR 병렬 | 계산 성능·신뢰성 |
-| N2 | NFR-003, NFR-004, NFR-006 | M1 Logic·TEST-005·006 | NFR별 병렬 | 배포·보안·비용 |
+| N2 | NFR-003, NFR-004, NFR-006, INFRA-001, SEC-001 | M1 Logic·TEST-005·006, DATA-001~003, API 계약·SPEC-001 | NFR·INFRA·SEC 병렬 | 배포·보안·비용·마이그레이션·입력검증 |
 | X3/U5 | UX-006·007, UI-008·009 | R3, N2 | Outcome·관리자 병렬 | M2 UI |
 | M1/M2 | TEST-006, TEST-007 | 각각 해당 UI·Logic·NFR | Gate는 병렬 작업 종료 후 검증 | 릴리스 판정 |
 
@@ -144,7 +145,9 @@ gantt
 | NFR | NFR-001~004, NFR-006 | 5 | N1~N2 |
 | UX | UX-001~004, UX-006~007 | 6 | X1~X3 |
 | UI | UI-001~009 | 9 | U1~U5 |
-| **합계** |  | **52** |  |
+| 인프라 | INFRA-001 | 1 | N2 |
+| 보안 | SEC-001 | 1 | N2 |
+| **합계** |  | **54** |  |
 
 ## 5. 병렬 실행 시 주의사항
 

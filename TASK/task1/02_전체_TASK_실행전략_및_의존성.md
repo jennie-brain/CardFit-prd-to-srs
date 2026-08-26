@@ -2,7 +2,7 @@
 
 ## 1. 기술 요약
 
-이 문서는 `TASK/task2`의 상세 TASK 52개를 실제 개발 작업으로 전환하기 위한 총괄 실행 기준이다. 구현 TASK 50개와 사전 명세 TASK 2개를 모두 포함하며, 기존 통합 목록과 의존성 매트릭스보다 실행 순서·병렬 작업·통합 Gate를 더 구체적으로 정의한다.
+이 문서는 `TASK/task2`의 상세 TASK 54개를 실제 개발 작업으로 전환하기 위한 총괄 실행 기준이다. 구현 TASK 52개와 사전 명세 TASK 2개를 모두 포함하며, 기존 통합 목록과 의존성 매트릭스보다 실행 순서·병렬 작업·통합 Gate를 더 구체적으로 정의한다.
 
 핵심 전략은 다음과 같다.
 
@@ -25,10 +25,10 @@
 | 쓰기 로직 | COMMAND | 10 | 상태 변경과 외부 부수효과를 담당한다. |
 | 읽기 로직 | QUERY | 4 | 승인된 ViewModel 계약만 반환한다. |
 | 자동 검증 | TEST | 7 | TEST-001~005는 선행 실패 기준선, TEST-006~007은 통합 Gate다. |
-| 비기능 | NFR | 5 | 성능·신뢰성·배포·보안·비용 합격선을 검증한다. |
+| 인프라·NFR·보안 | NFR, INFRA, SEC | 7 | 성능·신뢰성·배포·보안·비용 합격선과 배포 Infra·보안 경계를 검증한다. |
 | UX 설계 | UX | 6 | 정보구조·상태·흐름·카피를 결정한다. |
 | UI 구현 | UI | 9 | 승인된 UX와 ViewModel을 Next.js로 구현한다. |
-| **합계** |  | **52** | Decision 항목은 TASK 수에서 제외한다. |
+| **합계** |  | **54** | Decision 항목은 TASK 수에서 제외한다. |
 
 ### 2.2 작업량 가정
 
@@ -87,6 +87,8 @@ flowchart LR
   EVT["이벤트 기록<br/>COMMAND-010"]
   UX["UX 승인<br/>UX-001~004·006·007"]
   UI["Next.js UI<br/>UI-001~009"]
+  SEC["보안 경계<br/>SEC-001"]
+  INF["배포 Infra<br/>INFRA-001"]
   G1["M1 Gate<br/>TEST-006 / NFR M1"]
   G2["M2 Gate<br/>TEST-007 / NFR M2"]
 
@@ -116,9 +118,17 @@ flowchart LR
   UI --> G2
   EVT --> G1
   EVT --> G2
+  C2 --> SEC
+  S --> SEC
+  T --> SEC
+  SEC --> G1
+  C1 --> INF
+  C3 --> INF
+  G1 --> INF
+  INF --> G2
 ```
 
-이 DAG의 핵심 경로는 `DATA-001 → DATA-002/API-001 → API-003 → SPEC-001 → MOCK-001 → TEST-001/002 → COMMAND-001/002/007 → COMMAND-003 → QUERY-002/COMMAND-004 → UX-004 → UI-005~007 → TEST-006 → NFR-003/006`이다. 계약과 계산 경로가 늦어지면 UI 인력을 추가해도 M1 종료일은 당겨지지 않는다.
+이 DAG의 핵심 경로는 `DATA-001 → DATA-002/API-001 → API-003 → SPEC-001 → MOCK-001 → TEST-001/002 → COMMAND-001/002/007 → COMMAND-003 → QUERY-002/COMMAND-004 → UX-004 → UI-005~007 → TEST-006 → NFR-003/006`이다. 계약과 계산 경로가 늦어지면 UI 인력을 추가해도 M1 종료일은 당겨지지 않는다. `SEC-001`은 API·SPEC 계약과 `TEST-001~005` 확보 후 `M1 Gate`를 직접 막으며, `INFRA-001`은 `M1 Gate`(TEST-006·NFR-003) 통과 직후 배포·rollback을 검증해 `M2 Gate`로 이어진다.
 
 ### 4.2 병렬화 원칙
 
@@ -130,10 +140,12 @@ flowchart LR
 - UX는 해당 ViewModel의 구현 완료가 아니라 승인된 `SPEC-001` 계약을 기준으로 시작할 수 있다.
 - UI는 화면별로 무리하게 병렬화하지 않는다. `UI-002 → 003 → 004 → 005 → 006 → 007`은 사용자 상태 전이가 이어지는 순차 경로다.
 - `COMMAND-005·006`, `QUERY-003`, `UX-006`, `UI-008`은 M1 핵심 경로와 분리한 M2 레인에서 진행한다.
+- `SEC-001`은 UX-001과 마찬가지로 `SPEC-001`·`TEST-001·005` 확보 후 시작할 수 있어 UX 착수와 병렬로 진행한다.
+- `INFRA-001`은 `NFR-003`·`TEST-006` 통과 직후 M2 UX·UI(`UX-006·007`, `UI-008·009`) 레인과 병렬로 진행한다.
 
 ## 5. 실행 Wave와 모든 TASK 배치
 
-아래 표는 52개 TASK를 빠짐없이 한 번씩 배치한 실행 기준표다. 같은 Wave 안에서도 `Depends on`이 충족된 TASK만 착수한다.
+아래 표는 54개 TASK를 빠짐없이 한 번씩 배치한 실행 기준표다. 같은 Wave 안에서도 `Depends on`이 충족된 TASK만 착수한다.
 
 | Wave | 목적 | TASK | 병렬 실행 조건 | 종료 Gate |
 | ---: | --- | --- | --- | --- |
@@ -149,14 +161,14 @@ flowchart LR
 | 9 | 결과·선택 기준선 | QUERY-002, COMMAND-004, NFR-002 | 계산과 회귀 테스트 통과 | 결과 hash·Rule 회귀·선택 기준선 통과 |
 | 10 | M2 로직과 M1 성능 | COMMAND-005, COMMAND-006, COMMAND-009, NFR-001 | COMMAND-004 또는 QUERY-002 완료 | Outcome·AI 단위 경로와 성능 기준 확보 |
 | 11 | 이행 조회·보안 | QUERY-003, NFR-004 | Outcome Command와 보안 경계 확보 | 소유권·감사·보존 검증 통과 |
-| 12 | UX 공통 기반 | UX-001 | SPEC-001, COMMAND-008 승인 | 상태 언어·접근성·정보구조 승인 |
+| 12 | UX 공통 기반·보안 경계 | UX-001, SEC-001 | UX-001: SPEC-001, COMMAND-008 승인 / SEC-001: API-001~005, SPEC-001, NFR-004, TEST-001·005 통과 | 상태 언어·접근성·정보구조 승인 + 입력 검증·소유권·마스킹 경계 통과 |
 | 13 | UX 수직 흐름 | UX-002, UX-003, UX-004 | 각 선행 흐름과 서버 계약 확보 | M1 wireflow 승인 |
 | 14 | UI 기반과 온보딩 | UI-001, UI-002 | UX-001·002와 QUERY-001 완료 | 디자인 시스템·온보딩 통과 |
 | 15 | 입력·계산 상태 | UI-003, UI-004 | 선행 UI와 Command 완료 | 입력 저장·오류 복구 통과 |
 | 16 | 결과·근거·선택 | UI-005, UI-006, UI-007 | QUERY-002, UX-004, COMMAND-004 완료 | M1 핵심 사용자 여정 완성 |
 | 17 | M1 통합 검증 | TEST-006 | UI-001~007과 M1 로직 완료 | 핵심 E2E 통과 |
 | 18 | M1 운영 Gate | NFR-003, NFR-006 | TEST-006과 운영 조회 완료 | 배포·Health·비용 중단 기준 통과 |
-| 19 | M2 UX·UI | UX-006, UX-007, UI-008, UI-009 | QUERY-003·004와 NFR 결과 확보 | Outcome·관리자 흐름 승인 |
+| 19 | M2 UX·UI·배포 인프라 | UX-006, UX-007, UI-008, UI-009, INFRA-001 | UX·UI: QUERY-003·004와 NFR 결과 확보 / INFRA-001: DATA-001~003, NFR-003, TEST-006 통과 | Outcome·관리자 흐름 승인 + migration·Health·rollback 검증 통과 |
 | 20 | M2 통합 검증 | TEST-007 | M2 Logic·UI 완료 | M2 E2E와 M1 회귀 통과 |
 
 ## 6. 12주 병렬 일정
@@ -165,7 +177,7 @@ flowchart LR
 
 ```mermaid
 gantt
-  title CardFit 52 TASK DAG 기반 기준 일정
+  title CardFit 54 TASK DAG 기반 기준 일정
   dateFormat  YYYY-MM-DD
   axisFormat  %m/%d
   excludes    weekends
@@ -208,9 +220,11 @@ gantt
   NFR-001 계산 성능               :n001, after q002, 4d
   QUERY-003 이행 조회              :q003, after c006, 4d
   NFR-004 보안·감사               :n004, after q003, 5d
+  SEC-001 보안 경계                :sec1, after n004, 4d
   TEST-006 M1 E2E                 :milestone, t006, 2026-11-10, 0d
   NFR-003 배포·Health             :n003, after t006, 3d
   NFR-006 비용·Guardrail          :n006, after t006, 4d
+  INFRA-001 배포·마이그레이션      :infra1, after n003, 4d
   TEST-007 M2 E2E                 :milestone, t007, 2026-11-17, 0d
 
   section UX·UI
@@ -219,7 +233,7 @@ gantt
   UX-003 결과 UX                 :u003, after u002, 4d
   UX-004 근거·선택 UX            :u004, after u003, 4d
   UI-001 디자인 시스템            :i001, after u001, 4d
-  UI-002 온보딩                  :i002, 2026-10-06, 4d
+  UI-002 온보딩                  :i002, after u002, 4d
   UI-003 입력                    :i003, after i002, 4d
   UI-004 계산 상태               :i004, after i003, 4d
   UI-005 결과                    :i005, after i004, 5d
@@ -295,6 +309,8 @@ Backlog → Ready → In Progress → In Review → Verification → Done
 - [ ] UX-001~004와 UI-001~007의 핵심 여정이 완료됐다.
 - [ ] 계산 결과는 Gemini 장애와 무관하게 결정론적으로 제공된다.
 - [ ] 승인되지 않은 Production Adapter를 Mock으로 명확히 표시했다.
+- [ ] SEC-001의 입력 검증·소유권 검사·로그 마스킹 경계가 통과했다.
+- [ ] INFRA-001의 migration·Health·rollback 검증이 통과했다.
 
 ### M2 AI·자동화·이행 관측
 
@@ -307,7 +323,7 @@ Backlog → Ready → In Progress → In Review → Verification → Done
 
 ### M3 실제 플랫폼 통합
 
-M3는 현재 52개 TASK의 Mock 기반 PoC 완료 후 별도 계획으로 다룬다. Identity, Consent, MyData, Catalog, 실제 호출 비용과 계약이 확인되기 전에는 Production Adapter 구현 일정을 확정하지 않는다.
+M3는 현재 54개 TASK의 Mock 기반 PoC 완료 후 별도 계획으로 다룬다. Identity, Consent, MyData, Catalog, 실제 호출 비용과 계약이 확인되기 전에는 Production Adapter 구현 일정을 확정하지 않는다.
 
 ## 10. 위험과 일정 완충
 
@@ -336,6 +352,6 @@ M3는 현재 52개 TASK의 Mock 기반 PoC 완료 후 별도 계획으로 다룬
 - [전체 TASK 의존성 매트릭스](02_전체_TASK_실행전략_및_의존성.md)
 - [TASK 풀버전 추출 계획](02_전체_TASK_실행전략_및_의존성.md)
 - [정책 Decision Log](04_정책_결정_로그.md)
-- [`TASK/task2` 상세 TASK 52개](../task2)
+- [`TASK/task2` 상세 TASK 54개](../task2)
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - `PRD/PRD_CardFit_v1.3.md`
