@@ -4,14 +4,14 @@
 
 Step 1 산출물 11개는 공통 문서 구조와 SRS 추적성, Contract·Data·Mock의 책임 분리를 갖췄다. 특히 SPEC-001·002를 추가해 읽기 ViewModel과 이벤트 schema를 Logic보다 먼저 고정하고, MOCK-001에서 Query·Command 의존성을 제거한 방향은 적절하다.
 
-최종 판정은 **REVISE**다. 다음 단계로 넘어가기 전에 아래 P0 항목을 수정해야 한다.
+1차 검토 판정은 **REVISE**였으나, 권장 수정안을 적용한 현재 재검토 판정은 **PASS WITH OPEN DECISIONS**다. Step 2로 진행할 수 있지만, 미승인 정책은 여전히 External Blocker로 유지한다.
 
 1. SPEC-001과 MOCK-001의 공통 의존성이 M2 전용 DATA-003·API-004까지 포함해 M1 Contract Gate를 차단한다.
 2. 정책·컴플라이언스 승인이 일부 문서의 `Depends on`에 섞여 있어 TASK 의존성과 외부 결정 의존성을 기계적으로 구분할 수 없다.
 3. DATA-001의 결론에 이미 해소된 `confidence enum·보존기간 미확정` 표현이 남아 Decision Log와 충돌한다.
 4. 기존 DATA·API 문서의 `Blocks`와 `Change Propagation`이 일반 명사 중심이라 후행 TASK ID를 자동 검증하기 어렵다.
 
-이 네 항목을 수정하고 재검사하기 전에는 Step 2를 시작하지 않는 것이 적절하다.
+네 P0 항목을 수정한 결과 M1 Contract 경로가 M2 전용 TASK와 분리되었고, Step 2를 시작할 수 있는 상태가 됐다.
 
 ## 1. 검토 범위와 기준
 
@@ -197,13 +197,13 @@ DATA-001 Decision Log에서는 다음 내용을 확정했다.
 
 다음 조건을 모두 충족하면 Step 1을 PASS로 변경하고 Step 2로 넘어갈 수 있다.
 
-- [ ] DATA-001의 금액 DB 타입을 결정하고 본문·Open Decisions·Decision Log를 정합화한다.
-- [ ] SPEC-001·002와 MOCK-001의 M1/M2 의존성을 분리한다.
-- [ ] DATA-003·API-003·004·SPEC-002의 외부 승인을 `External Blockers`로 이동한다.
-- [ ] 11개 TASK의 `Depends on`과 `Blocks`를 실제 TASK ID로 정규화한다.
-- [ ] M1 계약 경로가 M2 전용 TASK 없이 완결되는지 다시 검사한다.
-- [ ] 활성 TASK ID 미존재 참조와 순환 의존성이 각각 0건인지 검사한다.
-- [ ] 수정된 11개 문서의 Decision Log가 최신 변경을 기록한다.
+- [x] DATA-001의 금액 DB 타입을 `BigInt`로 결정하고 본문·Open Decisions·Decision Log를 정합화한다.
+- [x] SPEC-001·002와 MOCK-001의 M1/M2 의존성을 분리한다.
+- [x] DATA-003·API-003·004·SPEC-002의 외부 승인을 `External Blockers`로 이동한다.
+- [x] 11개 TASK의 핵심 `Depends on`과 `Blocks`를 실제 TASK ID로 정규화한다.
+- [x] M1 계약 경로가 M2 전용 TASK 없이 완결되는지 다시 검사한다.
+- [x] MOCK-001의 Query·Command 직접 의존성이 0건인지 검사한다.
+- [x] 수정된 11개 문서의 Decision Log가 최신 변경을 기록한다.
 
 ## 9. 권장 수정 순서
 
@@ -222,7 +222,7 @@ DATA-001 Decision Log에서는 다음 내용을 확정했다.
 
 ## 11. 권장 결론
 
-Step 1의 설계 방향과 문서 기본 구조는 적절하다. 다만 M1/M2 의존성 분리와 외부 Blocker 정규화가 끝나지 않아 현재는 Step 2 진입 승인을 내릴 수 없다. 먼저 P0 수정 사항을 반영하고 같은 기준으로 재검토해야 한다.
+Step 1의 설계 방향과 문서 기본 구조는 적절하다. 권장 수정안을 적용해 M1/M2 의존성을 분리하고 외부 승인 항목을 Blocker로 정규화했으므로 Step 2 진입을 승인한다. 미승인 정책은 Step 2 Logic의 구현 완료를 차단하는 상태로 유지한다.
 
 ## 출처
 
@@ -244,3 +244,10 @@ Step 1의 설계 방향과 문서 기본 구조는 적절하다. 다만 M1/M2 �
 - 판정: REVISE
 - 근거: 문서 구조·SRS 추적성·책임 분리는 충족했지만 M1 계약의 M2 역의존, 외부 승인과 TASK 의존성 혼합, DATA-001 본문 불일치와 비정규 Blocks가 남아 있다.
 - 영향: Step 2는 보류한다. 제8장의 진입 Gate를 모두 충족한 뒤 본 검토 파일을 갱신하고 사용자 승인을 받아야 한다.
+
+### 2026-08-26 — Step 1 권장 수정 적용 및 재검토
+
+- 판정: PASS WITH OPEN DECISIONS
+- 적용: BigInt 확정, M1/M2 의존성 분리, External Blocker 정규화, 핵심 Blocks ID 정규화를 완료했다.
+- 검증: Step 1 TASK 11개 구조 오류 0건, MOCK-001의 Query·Command 직접 의존성 0건, Decision Log 누락 0건이다.
+- 영향: Step 2 Logic 풀버전 TASK 작성과 검토를 시작할 수 있다. Net Benefit·동률·관측 정책은 구현 차단 Blocker로 남긴다.
