@@ -56,7 +56,7 @@
 
 ## 출시 전 보완 항목
 
-1. 현재 서비스 화면의 실제 경로가 확정되면 `landing/index.html`의 `data-service-cta` 링크를 해당 경로로 교체합니다.
+1. 현재 서비스 화면의 실제 경로가 확정되면 `landing/CardFit_Landing_Codex.html`의 `data-service-cta` 링크를 해당 경로로 교체합니다.
 2. 실제 결과 화면이 구현되면 CSS 목업을 승인된 캡처 또는 동작 데모로 교체합니다.
 3. 사용자 수·평점·파트너 로고·추천사는 출처와 사용 승인을 확보한 뒤 추가합니다.
 4. E0 기준선이 확정되면 ROI/Before & After 수치를 별도 검증 후 추가합니다.
