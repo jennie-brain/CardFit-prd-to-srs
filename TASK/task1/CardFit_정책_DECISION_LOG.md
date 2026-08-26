@@ -1,0 +1,80 @@
+# CardFit 정책 Decision Log
+
+## 목적
+
+이 문서는 코드 구현 TASK 50개와 분리해 제품·계산 정책의 승인 상태를 관리한다. Decision은 개발 TASK 수에 포함하지 않지만, 연결된 TASK의 착수 또는 완료를 차단할 수 있다. 담당자가 승인하지 않은 값은 구현 기본값이나 테스트 expected 결과로 고정하지 않는다.
+
+## Decision 목록
+
+| ID | 결정 | 현재 상태 | Owner | 결정 기한 | 주요 Blocked TASK |
+| --- | --- | --- | --- | --- | --- |
+| DECISION-001 | Net Benefit 정책 기준선 | `PROPOSED` | PM·계산 품질 | COMMAND-003 착수 전 | COMMAND-003, TEST-002, NFR-002 |
+| DECISION-002 | Golden Vector와 expected 결과 | `PROPOSED` | 계산 품질 | TEST-002 구현 전 | TEST-002, COMMAND-003·007 |
+| DECISION-003 | 동률·반올림·계산 기간 규칙 | `PROPOSED` | PM·계산 품질 | QUERY-002·COMMAND-003 완료 전 | COMMAND-003, QUERY-002, TEST-002·003 |
+
+## DECISION-001 Net Benefit 정책 기준선
+
+다음 항목을 한 정책 버전으로 승인한다.
+
+- 변경 추천 임계값
+- Gross Benefit과 Net Benefit의 계산 기간
+- 연회비의 기간 귀속
+- 실적 재적립 손실
+- 발급 대기 비용
+- 범위 입력의 LOW·BASE·HIGH 매핑
+- 부가서비스·프로모션·가족카드 처리
+
+### 완료 조건
+
+- [ ] PRD의 D2·D5·D6과 SRS 8.5의 차이를 해소했다.
+- [ ] `decision_policy_version`과 시행일을 부여했다.
+- [ ] 변경·유지 판정식과 제외 항목을 예시로 검토했다.
+- [ ] 승인자와 변경 통제 절차를 기록했다.
+
+## DECISION-002 Golden Vector와 expected 결과
+
+정책이 코드와 독립적으로 검증될 수 있도록 대표 입력과 기대 결과를 승인한다.
+
+### 완료 조건
+
+- [ ] 정상·경계·실패 사례와 유지·변경 사례가 있다.
+- [ ] LOW·BASE·HIGH 및 Allocation 기대값이 있다.
+- [ ] Rule 7일·30일 최신성 경계 사례가 있다.
+- [ ] expected hash 생성 규칙과 승인자를 기록했다.
+- [ ] 200개 이상 회귀 Fixture의 기준 seed를 고정했다.
+
+## DECISION-003 동률·반올림·계산 기간 규칙
+
+다음 표시·정밀도 규칙을 승인한다.
+
+- Net Benefit 동률 후보의 안정 정렬 기준
+- 카드별 기여 순혜택 동률 처리
+- 원 단위 절사·반올림 방식
+- 계획 지출과 연회비·전환비용의 기간 귀속
+- timezone과 계산 기준일
+
+### 완료 조건
+
+- [ ] 같은 입력의 정렬 결과가 항상 동일하다.
+- [ ] 통화 정밀도와 hash 직렬화 규칙이 일치한다.
+- [ ] 결과 화면에 계산 기간과 기준일을 표시할 수 있다.
+- [ ] TEST-002·003의 expected 결과를 작성할 수 있다.
+
+## 상태 규칙
+
+| 상태 | 의미 |
+| --- | --- |
+| `PROPOSED` | 구현 가정은 있으나 Owner가 승인하지 않았다. |
+| `APPROVED` | 버전과 시행일을 부여해 구현·테스트 기준으로 사용할 수 있다. |
+| `SUPERSEDED` | 새 정책 버전으로 대체됐으며 과거 계산 재현을 위해 보존한다. |
+| `REJECTED` | 채택하지 않았고 관련 구현에서 사용해서는 안 된다. |
+
+## 변경 전파
+
+Decision이 변경되면 PRD·SRS, DATA-001·002, COMMAND-003·007, QUERY-002, TEST-002·003, NFR-002와 결과 UI의 정책 버전 표기를 함께 갱신한다.
+
+## 출처
+
+- `PRD/PRD_CardFit_v1.3.md`의 D2·D5·D6
+- `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`의 8.5
+- `REVIEW_CRITERIA_SRS_TASK_POC.md`의 TASK 통합 기준
