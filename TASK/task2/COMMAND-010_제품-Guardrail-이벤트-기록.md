@@ -77,7 +77,7 @@ assignees: ''
 - [ ] NFR-006 대시보드가 이벤트 상태를 확인한다.
 
 ## Dependencies & Interactions
-- Depends on: DATA-001~003, SRS KPI·Guardrail 산식
+- Depends on: SPEC-002, DATA-001~003, SRS KPI·Guardrail 산식
 - Blocks: KPI·Guardrail 집계, UI Analytics 완료
 - 변경 전파: 이벤트 카탈로그·Query·NFR·UI·TEST
 

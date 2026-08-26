@@ -411,12 +411,12 @@ flowchart LR
 - `PRD/PRD_CardFit_v1.3.md`
 - `TASK/task1/05_GitHub_TASK_템플릿.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
-- `TASK/task1/02_전체_TASK_실행전략_및_의존성.md`
+- `TASK/task1/02_총괄_개발_실행_계획.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
-- `TASK/task1/02_전체_TASK_실행전략_및_의존성.md`
+- `TASK/task1/02_총괄_개발_실행_계획.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
 - `TASK/task1/07_TASK_품질검토_감사_및_단계별_판정.md`
 - `TASK/task1/06_AI_TASK_추출_및_검토_방법론.md`
@@ -440,7 +440,7 @@ flowchart LR
 
 - 결정: NFR·전체 의존성 검토 중 배포·마이그레이션 검증(`INFRA-001`)과 입력 검증·로그 마스킹 경계(`SEC-001`)를 기존 NFR TASK와 분리된 독립 TASK로 추출하고, 개발 TASK 기준선을 52개에서 **54개**로 변경한다.
 - 근거: `NFR-003`(배포·Health)과 `NFR-004`(보안·감사)는 합격선 검증(Gate)이 책임이며, 실제 migration pipeline 구축과 공통 validation middleware 구현은 별도 소유자와 DoD가 필요하다.
-- 수행: `TASK/task1/01_전체_TASK_목록_및_기준선.md`, `02_전체_TASK_실행전략_및_의존성.md`, `03_병렬실행_Gantt_로드맵.md`의 목록·DAG·Wave·Gantt·Milestone 기준을 54개 기준으로 갱신했다.
+- 수행: `TASK/task1/01_전체_TASK_목록_및_기준선.md`, `02_전체_TASK_실행전략_및_의존성.md`(2026-08-26 `02_총괄_개발_실행_계획.md`로 전면 재작성됨), `03_병렬실행_Gantt_로드맵.md`의 목록·DAG·Wave·Gantt·Milestone 기준을 54개 기준으로 갱신했다.
 - 영향: `INFRA-001`은 `NFR-003`·`TEST-006` 통과 직후 M2 UX·UI 레인과 병렬로, `SEC-001`은 `NFR-004` 확보 직후 `UX-001`과 병렬로 진행하며 둘 다 M1 배포를 막는 Gate로 관리한다.
 
 ## 단계별 최신 판정 요약
@@ -476,4 +476,4 @@ flowchart LR
 
 ## 문서 축약 기준
 
-기존 Step별 인덱스, SRS 대비 감사보고서, 단계별 개별 검토보고서는 이 문서의 단계별 판정과 기존 통합 기준선에 흡수했다. 실행에 필요한 상세 내용은 [전체 TASK 목록·기준선](01_전체_TASK_목록_및_기준선.md), [전체 실행전략·의존성](02_전체_TASK_실행전략_및_의존성.md), [병렬실행 Gantt](03_병렬실행_Gantt_로드맵.md)에서 관리한다.
+기존 Step별 인덱스, SRS 대비 감사보고서, 단계별 개별 검토보고서는 이 문서의 단계별 판정과 기존 통합 기준선에 흡수했다. 실행에 필요한 상세 내용은 [전체 TASK 목록·기준선](01_전체_TASK_목록_및_기준선.md), [총괄 개발 실행 계획](02_총괄_개발_실행_계획.md), [병렬실행 Gantt](03_병렬실행_Gantt_로드맵.md)에서 관리한다.

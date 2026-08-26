@@ -7,7 +7,7 @@
 | 파일 | 담고 있는 내용 |
 | --- | --- |
 | [01_전체_TASK_목록_및_기준선](01_전체_TASK_목록_및_기준선.md) | 54개 TASK의 영역별 목록, SRS 매핑, 복잡도, M1/M2/M3 범위 |
-| [02_전체_TASK_실행전략_및_의존성](02_전체_TASK_실행전략_및_의존성.md) | 실행 순서, DAG, Wave, 작업 레인, Milestone, GitHub 운영 규칙 |
+| [02_총괄_개발_실행_계획](02_총괄_개발_실행_계획.md) | task2 정본과 직접 대조해 재계산한 실행 전략, DAG 레벨, 임계 경로, 트랙별 Gantt, Milestone |
 | [03_병렬실행_Gantt_로드맵](03_병렬실행_Gantt_로드맵.md) | 한눈보기 의존성 그림, 병렬 작업 묶음, Gantt 차트 |
 | [04_정책_결정_로그](04_정책_결정_로그.md) | Net Benefit, Golden Vector, 동률·반올림·기간 정책 승인 상태 |
 | [05_GitHub_TASK_템플릿](05_GitHub_TASK_템플릿.md) | 개별 GitHub Issue용 Summary, AC, DoD, Test/NFR Gate 양식 |
