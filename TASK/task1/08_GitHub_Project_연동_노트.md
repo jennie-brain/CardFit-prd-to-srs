@@ -7,11 +7,13 @@
 ## 목차
 
 1. 등록 방식 요약
-2. GraphQL 요청 한도 함정
-3. 재사용 가능한 ID 매핑
-4. Roadmap 뷰의 API 한계
-5. 결론
-6. 출처
+2. 최종 등록 결과
+3. GraphQL 요청 한도 함정
+4. 재사용 가능한 ID 매핑
+5. Roadmap 뷰의 API 한계와 남은 수동 단계
+6. 그 밖에 걸린 것
+7. 결론
+8. 출처
 
 ## 1. 등록 방식 요약
 
@@ -19,7 +21,31 @@
 - 이슈 본문은 `TASK/task2/<TASK-ID>.md`의 원문에 `TASK/task1/03_병렬실행_Gantt_로드맵.md`(압축 수행 계획) 기준 트랙·레인·시작일·종료일·임계 경로 여부·선행/후행 TASK 표를 상단에 삽입해 생성했다.
 - 라벨·마일스톤(M1/M2)은 각 `task2` 파일의 frontmatter `labels` 값을 그대로 저장소 라벨로 만들어 사용했다.
 
-## 2. GraphQL 요청 한도 함정
+## 2. 최종 등록 결과
+
+2026-08-26 기준 등록을 완료했다.
+
+| 항목 | 결과 |
+|---|---:|
+| Issue | 54건 (`#1`~`#54`) |
+| Project 항목 | 54건 |
+| 필드 누락 | 0건 |
+| 마일스톤 배정 | M1 44건 · M2 10건 |
+| 의존성 링크(`blocked by`) | 전 TASK 반영 |
+
+필드 값은 `03_병렬실행_Gantt_로드맵.md`(압축 수행 일정) 계산 결과를 그대로 옮겼다.
+
+| 필드 | 매핑 규칙 | 분포 |
+|---|---|---|
+| `Track` | TASK 접두사 → 6개 트랙 | 계약·데이터 11 · 읽기·운영 11 · 쓰기 로직 10 · UI 9 · 품질보증 7 · UX 6 |
+| `Priority` | 임계 경로 P0, M1 P1, M2 P2 | P0 15 · P1 34 · P2 5 |
+| `Size` | 복잡도 H→L, M→M | L 36 · M 18 |
+| `Status` | 선행 없는 TASK만 `Ready` | Ready 2(`DATA-001`·`COMMAND-008`) · Backlog 52 |
+| `Start`/`Target date` | 압축 일정 착수·종료일 | 2026-09-01 ~ 2026-12-11 |
+
+`Priority: P0` 15건은 임계 경로 15단계와 정확히 일치한다.
+
+## 3. GraphQL 요청 한도 함정
 
 **증상:** 이슈 8개(≈48회의 `gh project item-edit` 호출)만에 GraphQL 시간당 5,000포인트를 모두 소진했다.
 
@@ -48,7 +74,7 @@ mutation($projectId: ID!, $itemId: ID!, $trackField: ID!, $trackOpt: String!, ..
 
 **다음에 적용할 규칙:** Projects v2를 스크립트로 대량 조작할 때는 처음부터 `--field <이름>` 대신 `field-list`로 ID를 한 번 뽑아 ID 기반 GraphQL 호출로 시작한다. 개별 이슈 수가 10건을 넘어가면 이름 기반 방식은 쓰지 않는다.
 
-## 3. 재사용 가능한 ID 매핑
+## 4. 재사용 가능한 ID 매핑
 
 2026-08-26 기준 프로젝트 `CardFit-SRS-Project`(번호 1, owner `jennie-brain`)의 ID다. 필드를 삭제·재생성하면 값이 바뀌므로 재사용 전 `gh project field-list 1 --owner jennie-brain --format json`으로 재확인한다.
 
@@ -70,17 +96,38 @@ Size 옵션(복잡도 H→L, M→M으로 매핑): M `7515a9f1` · L `817d0097`
 
 Status 옵션: Backlog `f75ad846`(전체 초기값으로 사용)
 
-## 4. Roadmap 뷰의 API 한계
+## 5. Roadmap 뷰의 API 한계와 남은 수동 단계
 
 `createProjectV2View`/`updateProjectV2View`는 `ROADMAP_LAYOUT` 뷰에서 `configuration: {visibleFieldIds}`를 거부한다("Roadmap views do not support visible fields"). 즉 **Roadmap 뷰의 그룹 기준(Group by)과 날짜 필드 매핑은 API로 설정할 수 없고 웹 UI에서 수동으로만 가능**하다. `TABLE_LAYOUT`·`BOARD_LAYOUT` 뷰는 `visibleFieldIds`를 정상적으로 받는다.
 
-기본 프로젝트 템플릿에는 이미 `Roadmap`(ROADMAP_LAYOUT), `Team items`(TABLE_LAYOUT) 뷰가 있었다 — 새로 만들지 않고 `Team items`의 표시 필드만 갱신했다.
+기본 프로젝트 템플릿에는 이미 `Roadmap`(ROADMAP_LAYOUT), `Team items`(TABLE_LAYOUT) 뷰가 있었다. `Team items`는 `전체 TASK 일정`으로 개명해 재사용하고, 필터가 필요한 뷰 4개는 새로 만들었다.
 
-## 5. 결론
+### 구성한 뷰
+
+| 뷰 | 레이아웃 | 필터 |
+|---|---|---|
+| 전체 TASK 일정 | TABLE | 없음 |
+| 임계 경로 | TABLE | `priority:P0` |
+| M1 범위 | TABLE | `milestone:M1` |
+| M2 범위 | TABLE | `milestone:M2` |
+| 지금 착수 가능 | TABLE | `status:Ready` |
+| Roadmap | ROADMAP | 없음 |
+
+### 남은 수동 단계
+
+**`Roadmap` 뷰에서 날짜 필드를 한 번 지정해야 타임라인이 그려진다.** 뷰 우측 설정에서 시작일을 `Start date`, 종료일을 `Target date`로 지정하고, 필요하면 `Group by`를 `Track`으로 설정한다. 이 두 가지는 GraphQL로 설정할 수 없어 웹 UI에서만 가능하다.
+
+## 6. 그 밖에 걸린 것
+
+- **필드 값 조회 시 키는 소문자다.** `gh project item-list --format json`의 항목 키는 `track`, `priority`, `size`, `status`, `start date`, `target date`처럼 소문자이고 공백을 포함한다. 필드 생성 시 이름(`Track`, `Start date`)과 다르므로 검증 스크립트에서 그대로 쓰면 전부 누락으로 잡힌다.
+- **뷰 생성은 멱등하지 않다.** `createProjectV2View`는 같은 이름이 있어도 새로 만든다. 스크립트를 중간에 재실행하면 동명 뷰가 중복 생성되므로, 생성 전에 `views` 목록을 조회해 이름으로 재사용하고 진행 상태를 파일에 저장해야 한다. 이번에도 중복 4건이 생겨 `deleteProjectV2View`로 정리했다.
+- **장시간 스크립트를 `&`로 백그라운드 실행하지 않는다.** 부모 셸이 끝나면 함께 종료돼 54건 중 20건에서 끊겼다. 재개 가능하도록 진행 상태를 파일에 기록해 두면 손실 없이 이어갈 수 있다.
+
+## 7. 결론
 
 이 반복 작업의 핵심 교훈은 하나다: **GitHub Projects v2를 스크립트로 대량 조작할 때는 이름 기반 CLI 편의 플래그가 아니라 처음부터 ID 기반 GraphQL 호출로 시작한다.** 그렇지 않으면 시간당 GraphQL 한도가 실제 작업량보다 훨씬 먼저 소진된다. Roadmap 뷰의 그룹핑처럼 API로 아예 불가능한 설정은 착수 전에 미리 확인해 사용자에게 수동 단계로 안내한다.
 
-## 6. 출처
+## 8. 출처
 
 - `TASK/task1/02_총괄_개발_실행_계획.md`
 - `TASK/task1/03_병렬실행_Gantt_로드맵.md`
