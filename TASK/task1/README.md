@@ -13,6 +13,7 @@
 | [05_GitHub_TASK_템플릿](05_GitHub_TASK_템플릿.md) | TASK 작성 양식과 필수 계약·검증 필드 |
 | [06_AI_TASK_추출_및_검토_방법론](06_AI_TASK_추출_및_검토_방법론.md) | Macro·Micro TASK 추출 및 품질 검토 방법 |
 | [08_GitHub_Project_연동_노트](08_GitHub_Project_연동_노트.md) | GitHub Issue/Project 연동 참고사항 |
+| [prototype-suggestion-local-visual](prototype-suggestion-local-visual.md) | 계약·백엔드 없이 로컬에서 빠르게 시각 검증하는 11건 축약안 |
 | [prototype-suggestion](prototype-suggestion.md) | UI/UX 프로토타입용 TASK 선별안 19건과 41영업일 일정 |
 
 ## 확정 기준선
