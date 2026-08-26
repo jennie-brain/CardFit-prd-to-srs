@@ -165,7 +165,6 @@ CardFit 개발 범위는 54개의 Epic·Feature TASK로 분해된다. 정책 결
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
 - `TASK/task1/02_총괄_개발_실행_계획.md`
 - `TASK/task1/01_전체_TASK_목록_및_기준선.md`
-- `TASK/task1/07_TASK_품질검토_감사_및_단계별_판정.md`
 - `TASK/task1/04_정책_결정_로그.md`
 
 ## Canonical Count Reconciliation (2026-08-26)
