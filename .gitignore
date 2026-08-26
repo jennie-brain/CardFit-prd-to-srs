@@ -1,0 +1,17 @@
+# Claude Code 스킬 링크. 실체는 .agents/skills 이며 scripts/setup-harness.* 로 생성한다.
+.claude/skills
+
+# 로컬 환경
+.env
+.env.local
+.env.*.local
+node_modules/
+.next/
+.vercel/
+coverage/
+playwright-report/
+test-results/
+
+# OS
+.DS_Store
+Thumbs.db
