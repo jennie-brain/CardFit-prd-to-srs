@@ -51,6 +51,19 @@ assignees: ''
 - Then: 7일 초과에는 경고하고 30일 초과에는 해당 카드를 계산에서 제외하며 경고 누락은 0건이다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-002, API-003/005, COMMAND-003/007 계산·Rule 계약
+- Writes: 테스트 전용 계산 결과와 golden vector artifact
+- Side Effects: 없음
+- Transaction Boundary: 각 golden vector 실행은 독립 fixture transaction
+- Idempotency: input hash·rule version 기준 동일 결과 보장
+- Retry Policy: 계산 테스트는 자동 재시도하지 않음
+
+## Verification Gates
+- Test Gate: 결정론·게이팅·배분·Rule freshness 200건 이상 suite 통과
+- NFR Gate: NFR-002 재현성·오차 기준, NFR-006 Rule freshness 검증
+- Evidence Location: golden vector, expected hash, fake-clock report
+
 - Gemini·네트워크 없이 순수 함수로 실행 가능해야 한다.
 - 미확정 SRS 8.5 값에는 승인 전 expected 결과를 만들지 않는다.
 
@@ -72,4 +85,7 @@ assignees: ''
 CardFit의 가장 중요한 계산 주장을 반복 가능한 증거로 만든다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 golden vector·fake clock 기반 회귀 테스트로 변환하고 정책 미확정값은 expected로 임의 고정하지 않음.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

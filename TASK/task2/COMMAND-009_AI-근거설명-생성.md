@@ -43,6 +43,19 @@ assignees: ''
 - Then: 애플리케이션 코드 변경 없이 새 model을 사용한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: 계산 결과·근거 단계·품질 상태
+- Writes: 설명 결과와 근거 참조 ID
+- Side Effects: 생성 모델 호출(민감 원문 비전달)
+- Transaction Boundary: 생성 결과와 참조 메타데이터 저장
+- Idempotency: result hash와 prompt/rule version
+- Retry Policy: 모델 timeout만 제한 재시도, 정책 차단은 중단
+
+## Verification Gates
+- Test Gate: TEST-008 근거 누락·불일치·재현 시나리오 통과
+- NFR Gate: NFR-003 latency, NFR-004 데이터 마스킹 검증
+- Evidence Location: prompt hash, citation fixture, redaction log
+
 - 별도 Python/AI 서버와 Gemini REST 직접 호출을 금지한다.
 - 월 비용 80/100% 중단 규칙과 직접 식별정보 0건을 준수한다.
 
@@ -63,4 +76,7 @@ assignees: ''
 AI를 핵심 계산에서 분리된 실패 가능한 설명 생성 Command로 명시한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 설명은 계산 근거 참조 ID만 사용하고 민감 원문을 모델에 전달하지 않음.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

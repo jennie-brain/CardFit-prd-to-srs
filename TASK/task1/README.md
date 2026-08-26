@@ -24,6 +24,7 @@
 - [표준 방법론 기반 평가 및 작성 계획](REPORT_표준방법론_기반_TASK리스트_평가와_풀버전_작성계획.md)
 - [GitHub Project TASK 템플릿](GitHub_Project_TASK_템플릿.md)
 - [전체 TASK 구현 실행계획](MASTER_전체_TASK_구현_실행계획.md)
+- [간소화 병렬 실행 Gantt 로드맵](GANTT_간소화_병렬실행_로드맵.md)
 
 ## 분류 원칙
 

@@ -43,6 +43,19 @@ assignees: ''
 - Then: 두 상태를 그대로 독립 보존한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: API-004 관측 계약, SPEC-002 이벤트 규약, 사용자 세션
+- Writes: 자기보고 응답과 제출 시각·품질 메타데이터
+- Side Effects: 제품 이벤트 기록
+- Transaction Boundary: 입력 검증·제출·이벤트를 원자 처리
+- Idempotency: 사용자·관측기간·제출 version 키
+- Retry Policy: transient DB 오류만 재시도
+
+## Verification Gates
+- Test Gate: 자기보고 정상·누락·철회 시나리오 및 TEST-003 통과
+- NFR Gate: NFR-004 최소 저장·보존기간 검증
+- Evidence Location: command test와 event payload fixture
+
 - M2 기능이며 M1 합격 필수가 아니다.
 - 응답 payload 로그를 최소화하고 외부 알림을 발생시키지 않는다.
 
@@ -62,4 +75,7 @@ assignees: ''
 자기보고를 플랫폼 관측의 대체 정답이 아닌 독립 증거로 저장한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 자기보고는 원문 최소화와 제출 멱등성을 보장.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

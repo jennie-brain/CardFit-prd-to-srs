@@ -46,6 +46,19 @@ assignees: ''
 - Then: 행동 완주 분자·분모에 포함되지 않는다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: COMMAND-004~006, API-004, DATA-003 상태 계약
+- Writes: 테스트 전용 상태 fixture만 변경
+- Side Effects: 없음
+- Transaction Boundary: 상태 전이 case별 rollback
+- Idempotency: transition event ID 기준 재실행 가능
+- Retry Policy: 상태 충돌은 재시도하지 않고 실패 증거로 남김
+
+## Verification Gates
+- Test Gate: 선택·이행·철회·부분실패 상태전이 GWT 통과
+- NFR Gate: NFR-004 감사 추적·보존기간 검증
+- Evidence Location: transition matrix와 event sequence report
+
 - 실제 24시간·30일 대기 없이 fake clock을 사용한다.
 - 모든 금지 전이는 DB 변경 0건을 assertion한다.
 
@@ -66,4 +79,7 @@ assignees: ''
 관측 신뢰도가 낮을 때 실패로 단정하지 않는 핵심 품질을 상태전이 테스트로 고정한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 상태전이 행렬과 이벤트 순서 검증으로 변환.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

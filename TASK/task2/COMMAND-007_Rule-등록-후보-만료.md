@@ -49,6 +49,19 @@ assignees: ''
 - Then: 해당 Rule을 사용하는 카드를 계산 대상에서 제외하고 기준일과 사유를 기록한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-002 Rule 후보, 만료시각·동의 상태
+- Writes: 만료 상태와 RuleFreshness 이벤트
+- Side Effects: 운영 알림 이벤트
+- Transaction Boundary: 만료 판정과 상태 변경을 원자 처리
+- Idempotency: rule candidate ID와 evaluation timestamp bucket
+- Retry Policy: transient DB 오류만 재시도
+
+## Verification Gates
+- Test Gate: TEST-002/007 만료 경계와 재실행 시나리오 통과
+- NFR Gate: NFR-004 감사·마스킹 및 NFR-006 스케줄 지연 검증
+- Evidence Location: scheduler run log와 expiry fixture
+
 - 변경은 하위 호환 migration과 감사 가능성을 유지한다.
 - 7일·30일 최신성 상태를 산출할 수 있어야 한다.
 
@@ -69,4 +82,7 @@ assignees: ''
 Rule 변경을 계산 결과와 분리하지 않고 회귀·만료까지 하나의 운영 Command로 묶는다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 만료 판정은 스케줄러 재실행에도 멱등적으로 동작.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

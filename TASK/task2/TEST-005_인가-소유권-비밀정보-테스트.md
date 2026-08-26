@@ -46,6 +46,19 @@ assignees: ''
 - Then: 차단·감사 플래그가 발생한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: 세션·소유권·API 계약
+- Writes: 테스트 전용 사용자/권한 fixture
+- Side Effects: 없음
+- Transaction Boundary: case별 사용자 fixture rollback
+- Idempotency: fixture user ID 재사용 가능
+- Retry Policy: 인가 실패는 재시도하지 않음
+
+## Verification Gates
+- Test Gate: 타 사용자 접근·미인증·민감정보 노출 GWT 통과
+- NFR Gate: NFR-004 권한·마스킹 검증
+- Evidence Location: authorization matrix와 response redaction assertion
+
 - 실제 비밀키 대신 canary 값을 사용한다.
 - 오조회 1건도 허용하지 않는다.
 
@@ -66,4 +79,7 @@ assignees: ''
 기능 성공과 별도로 데이터 오조회와 비밀정보 노출이 없음을 배포 전에 증명한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 소유권·인가·비밀정보 비노출 테스트로 구체화.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

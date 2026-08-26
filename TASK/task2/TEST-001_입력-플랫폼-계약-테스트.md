@@ -41,6 +41,19 @@ assignees: ''
 - Then: 빈 성공값으로 변환하지 않고 각 상태를 assertion한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-001~003, API-001/002, MOCK-001 계약과 fixture
+- Writes: 테스트 DB/격리 fixture만 변경, 제품 데이터는 변경하지 않음
+- Side Effects: 없음
+- Transaction Boundary: 각 테스트 case별 rollback 또는 disposable schema
+- Idempotency: seed version과 test case ID 기준 재실행 가능
+- Retry Policy: flaky retry 금지, 환경 오류만 별도 재시도
+
+## Verification Gates
+- Test Gate: 입력·경계·Adapter 오류·초기값 fallback GWT 전부 green
+- NFR Gate: NFR-004 민감정보 비노출, 계약 schema drift 검증
+- Evidence Location: TC-FUNC-001A/B·002·003A/B·008 결과와 fixture hash
+
 - Fixture는 비식별·결정론적이어야 한다.
 - DB 테스트는 격리 transaction 또는 전용 schema를 사용한다.
 
@@ -61,4 +74,7 @@ assignees: ''
 계산 이전의 입력·외부 상태 오류를 가장 먼저 탐지하는 TDD 기준선이다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 독립 contract test suite로 고정하고 테스트 간 격리·재현성 계약을 추가.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

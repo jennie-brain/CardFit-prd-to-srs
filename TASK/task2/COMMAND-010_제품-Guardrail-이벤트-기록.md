@@ -53,6 +53,19 @@ assignees: ''
 - Then: 선택률 분모 제외 여부를 산출할 필드가 포함된다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: SPEC-002 이벤트 schema, 제품 상태·실험 context
+- Writes: Guardrail event와 audit metadata
+- Side Effects: 분석 파이프라인 전송(비식별 payload)
+- Transaction Boundary: 이벤트 outbox 기록을 도메인 변경과 원자 처리
+- Idempotency: eventId 기반 dedupe
+- Retry Policy: outbox relay만 재시도, schema 오류는 격리
+
+## Verification Gates
+- Test Gate: TEST-009 이벤트 schema·중복·순서 시나리오 통과
+- NFR Gate: NFR-004 비식별·마스킹, NFR-006 전달 지연 검증
+- Evidence Location: event contract test와 relay log
+
 - Analytics 장애가 계산·선택의 사용자 성공을 롤백하지 않는다.
 - 실패를 무시하지 않고 운영 상태로 관측한다.
 - schema 변경은 하위 호환·버전 증가 방식으로 처리한다.
@@ -75,5 +88,8 @@ assignees: ''
 분산된 UI 로깅 계약과 기록 로직을 하나의 검증 가능한 변경 단위로 통합한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. Guardrail 이벤트는 outbox와 eventId dedupe를 기본 계약으로 채택.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - `PRD/PRD_CardFit_v1.3.md`

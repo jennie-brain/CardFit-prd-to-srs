@@ -48,6 +48,19 @@ assignees: ''
 - Then: 게시를 차단한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: COMMAND-008/009, SPEC-002, 계산 근거·문구 fixture
+- Writes: 테스트 artifact와 redaction report만 기록
+- Side Effects: 모델 호출은 mock/stub으로 격리
+- Transaction Boundary: case별 독립 fixture
+- Idempotency: prompt hash·근거 ID 기준 재현
+- Retry Policy: 모델 timeout만 test harness에서 제한 재시도
+
+## Verification Gates
+- Test Gate: 근거 누락·불일치·scope 위반·민감정보 차단 GWT 통과
+- NFR Gate: NFR-003 latency, NFR-004 redaction 검증
+- Evidence Location: citation fixture, prompt hash, redaction report
+
 - AI mock은 계산 DTO를 수정할 수 없어야 한다.
 - 금지어 검사는 결정론적으로 실행한다.
 
@@ -71,4 +84,7 @@ assignees: ''
 사용자가 결론을 신뢰할 근거와 서비스가 넘지 말아야 할 경계를 함께 검증한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 근거 정렬·스코프 검수·AI 설명 안전성 테스트로 분리.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

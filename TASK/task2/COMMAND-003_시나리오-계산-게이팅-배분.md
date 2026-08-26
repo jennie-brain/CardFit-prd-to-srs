@@ -50,6 +50,19 @@ assignees: ''
 - Then: 부분/실패로 기록하고 결과를 노출하지 않는다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: COMMAND-001/002/007, DATA-002 계산 규칙, API-003 정책 결과
+- Writes: Calculation·PlanCandidate·Allocation과 계산 근거 이벤트
+- Side Effects: 없음(정책 판정 외부 호출은 사전 계산된 결과만 사용)
+- Transaction Boundary: 순수 계산 후 결과·버전을 하나의 원자 트랜잭션으로 저장
+- Idempotency: 입력 snapshot hash와 rule version 조합으로 중복 계산 방지
+- Retry Policy: transient DB 오류만 재시도, 정책 미확정은 차단 상태 반환
+
+## Verification Gates
+- Test Gate: TEST-002 계산·게이팅·배분 GWT 전부 통과
+- NFR Gate: NFR-001 계산 p95, NFR-002 deterministic/reproducibility 증거
+- Evidence Location: 계산 fixture, rule version, 결과 hash
+
 - 동일 입력·Rule 결과 hash 100% 일치, 오류율 ≤0.1%다.
 - SRS 8.5의 9개 정책 확정 전 완료 처리할 수 없다.
 - 요청 간 메모리 상태와 별도 Python/백엔드 서버를 사용하지 않는다.
@@ -72,4 +85,7 @@ assignees: ''
 CardFit 핵심 가치 로직을 하나의 결정론적 Command로 묶고 미확정 정책을 명시적 Blocker로 둔다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 정책 미확정 시 계산을 진행하지 않고 차단 상태를 저장하도록 계약화.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

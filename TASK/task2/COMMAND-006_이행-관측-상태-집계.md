@@ -48,6 +48,19 @@ assignees: ''
 - Then: VERIFIED_MAINTAINED이며 행동 완주율에서 제외한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-003 관측 원장, COMMAND-005 자기보고, 관측 정책
+- Writes: 기간별 집계·품질 상태·집계 이벤트
+- Side Effects: 없음
+- Transaction Boundary: 기간 snapshot 기준 집계를 원자 저장
+- Idempotency: 사용자·기간·집계버전 키
+- Retry Policy: transient DB 오류만 재시도, 정책 미확정은 보류
+
+## Verification Gates
+- Test Gate: TEST-003 집계·누락·부분기간 시나리오 통과
+- NFR Gate: NFR-001 집계 p95 및 NFR-004 최소 보존 검증
+- Evidence Location: aggregation fixture와 결과 검산표
+
 - 상시 Worker 대신 Vercel Cron→Route Handler를 사용한다.
 - 관측 목적 승인, 비용 한도, 최소 보존 정책을 충족해야 활성화한다.
 - 부분·오래됨·약한 식별·충돌을 미완료로 분류하는 건수는 0건이다.
@@ -69,4 +82,7 @@ assignees: ''
 불충분한 증거를 실패로 바꾸지 않는 보수적 상태 판정을 자동화한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 관측 데이터는 기간별 통계값으로만 집계·보존.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

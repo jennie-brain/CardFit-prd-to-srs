@@ -46,6 +46,19 @@ assignees: ''
 - Then: 계산·근거·선택·이행은 정상이다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: M2 관측·집계·Rule health 계약
+- Writes: E2E 전용 관측 fixture와 결과 artifact
+- Side Effects: scheduler/adapter는 sandbox mock 사용
+- Transaction Boundary: 기간 snapshot별 독립 실행
+- Idempotency: 관측 기간·seed version 기준 재실행 가능
+- Retry Policy: scheduler 지연은 한정 재시도, 데이터 오류는 즉시 실패
+
+## Verification Gates
+- Test Gate: 자기보고→집계→품질지표→Rule health 자동화 여정 통과
+- NFR Gate: NFR-001 집계 p95, NFR-006 스케줄·재처리 검증
+- Evidence Location: scheduler log, aggregation report, E2E trace
+
 - Production 관측은 승인 전 Mock으로만 수행한다.
 - 비용·가용성은 M2 NFR 기준을 함께 검증한다.
 
@@ -66,4 +79,7 @@ assignees: ''
 선택적 자동화가 핵심 가치와 신뢰도 모델을 깨뜨리지 않는다는 M2 증거다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 M2 자동화 이행 E2E와 스케줄·재처리 증거로 변환.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

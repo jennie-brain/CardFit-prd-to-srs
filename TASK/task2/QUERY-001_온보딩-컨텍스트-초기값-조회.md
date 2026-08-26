@@ -45,6 +45,19 @@ assignees: ''
 - Then: 임의 업계 평균 없이 빈 입력과 비개인화 예시를 반환한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-001 저장값, API-001 동기화 상태, SPEC-001 ViewModel/오류 계약
+- Writes: 없음(읽기 전용; 캐시 사용 시 별도 TTL 메타데이터만 허용)
+- Side Effects: 없음
+- Transaction Boundary: 단일 read transaction 또는 일관된 snapshot 조회
+- Idempotency: 동일 사용자·버전 입력에 대해 동일 ViewModel 반환
+- Retry Policy: 일시적 read timeout만 제한 재시도, domain 오류는 즉시 반환
+
+## Verification Gates
+- Test Gate: TEST-001·005·006 및 SPEC-001 contract assertion 통과
+- NFR Gate: NFR-001 응답시간과 NFR-004 개인정보 최소응답 검증
+- Evidence Location: Query contract 테스트와 응답 fixture를 첨부
+
 - Query는 DB·Adapter 상태를 변경하지 않는다.
 - 타 사용자 데이터·원본 금융 응답을 반환하지 않는다.
 - Server Component와 Route Handler는 같은 `OnboardingView` DTO를 사용한다.
@@ -69,3 +82,6 @@ assignees: ''
 
 ## 출처
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. Query는 쓰기·외부 부작용이 없는 snapshot 조회로 고정하고 ViewModel 계약을 게이트로 지정.

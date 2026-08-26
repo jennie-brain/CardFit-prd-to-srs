@@ -45,6 +45,19 @@ assignees: ''
 - Then: 예외를 적용하지 않고 기존 정책을 유지하며 게시를 차단한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: SPEC-002 제품·Guardrail 계약, 문구 입력
+- Writes: 검수 결과·차단 사유·문구 버전
+- Side Effects: 없음
+- Transaction Boundary: 검수 결과와 버전을 원자 저장
+- Idempotency: content hash와 rule version
+- Retry Policy: transient DB 오류만 재시도
+
+## Verification Gates
+- Test Gate: 스코프 위반·경계·통과 GWT 통과
+- NFR Gate: NFR-004 민감정보·과장표현 차단 검증
+- Evidence Location: moderation fixture와 rule evaluation log
+
 - GR4 위반 노출 0건을 목표로 하며 규칙 변경은 감사한다.
 - LLM 단독 판정에 의존하지 않는 결정론적 검사를 기본으로 한다.
 
@@ -65,4 +78,7 @@ assignees: ''
 규제 경계를 승인 가능한 공통 정책 계약과 실행 가능한 게시 차단 로직으로 관리한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 문구 검수는 Guardrail 계약을 통과한 버전만 저장.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

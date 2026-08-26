@@ -43,6 +43,19 @@ assignees: ''
 - Then: 기존 `selection_id`를 반환하고 중복 레코드는 0건이다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: API-002 선택 입력, DATA-002/003, COMMAND-003 계산 후보
+- Writes: Selection과 기준선·선택 근거 이벤트
+- Side Effects: 없음(카드 상태를 외부에서 변경하지 않음)
+- Transaction Boundary: 후보 검증과 선택 저장을 원자 처리
+- Idempotency: `selectionId` 기준 upsert
+- Retry Policy: transient DB 오류만 재시도, stale baseline은 재선택 요구
+
+## Verification Gates
+- Test Gate: TEST-004 선택·기준선·stale 시나리오 통과
+- NFR Gate: NFR-004 최소 저장 및 NFR-002 동일 후보 deterministic 검증
+- Evidence Location: selection contract test와 기준선 fixture
+
 - 선택은 외부 실행이 아니라 측정 기준점이다.
 - 기준선은 승인된 최소 필드만 보존하고 원본 응답을 저장하지 않는다.
 
@@ -63,4 +76,7 @@ assignees: ''
 사용자 선택을 실행 대행과 분리된 명시적이고 재현 가능한 상태 변경으로 만든다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 선택 Command는 외부 상태 변경 없이 기준선과 선택 근거만 원자 저장.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

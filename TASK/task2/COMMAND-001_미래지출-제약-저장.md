@@ -44,6 +44,19 @@ assignees: ''
 - Then: 크래시 없이 승인된 정규화 결과로 저장된다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: API-002 입력 DTO, DATA-001 제약/금액 규칙, 사용자 세션
+- Writes: FutureSpendPlan 및 제약 상태, 변경 이벤트
+- Side Effects: 감사 이벤트 기록(민감 원문·금액 로그 금지)
+- Transaction Boundary: 검증·upsert·이벤트 outbox를 하나의 원자적 트랜잭션으로 처리
+- Idempotency: `requestId`와 사용자 ID 조합으로 중복 저장 방지
+- Retry Policy: 일시적 DB 오류만 제한 재시도하며 검증 오류는 재시도하지 않음
+
+## Verification Gates
+- Test Gate: TEST-001의 정상·경계·실패 GWT와 API-002 계약 테스트 통과
+- NFR Gate: NFR-004 입력 검증/민감정보 로깅 마스킹 증거 제출
+- Evidence Location: 테스트 결과와 스키마 검증 로그를 TASK 실행 결과에 첨부
+
 - Server Action에서 서버 검증을 반복하고 Prisma는 server-only로 사용한다.
 - 금액 정밀도와 범위 규칙은 DATA-001을 따른다.
 - 타 사용자 레코드 변경 0건, 민감 입력 로그 0건이어야 한다.
@@ -67,3 +80,6 @@ assignees: ''
 
 ## 출처
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 저장 Command의 원자성·멱등성·재시도 경계를 명시하고 TEST-001/NFR-004를 게이트로 고정.

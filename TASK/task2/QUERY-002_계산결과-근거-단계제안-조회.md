@@ -50,6 +50,19 @@ assignees: ''
 - Then: 확정된 동률 규칙을 적용하거나 미확정이면 기능을 활성화하지 않는다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: COMMAND-003 계산 결과, 근거 단계·RuleFreshness
+- Writes: 없음
+- Side Effects: 없음
+- Transaction Boundary: 일관된 calculation snapshot read
+- Idempotency: 동일 calculation version에 동일 응답
+- Retry Policy: read timeout만 제한 재시도
+
+## Verification Gates
+- Test Gate: TEST-002 근거·단계·빈 결과 시나리오 통과
+- NFR Gate: NFR-001 응답시간, NFR-004 최소 응답 필드 검증
+- Evidence Location: query fixture와 contract assertion
+
 - Query는 계산 결과를 수정하지 않는다.
 - AI 장애가 결과·근거 가용성을 낮추지 않는다.
 - 타 사용자 calculation 조회 0건이다.
@@ -74,4 +87,7 @@ assignees: ''
 사용자에게 계산 결론뿐 아니라 재현 가능한 근거와 조건부 제안을 읽기 전용으로 전달한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 계산 결과 Query는 versioned snapshot read-only로 고정.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

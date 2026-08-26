@@ -50,6 +50,19 @@ assignees: ''
 - Then: 승인된 경계 규칙에 따라 경고·계산 제외·복구 상태와 기준일을 반환한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: DATA-002 RuleFreshness, SPEC-002 Guardrail 상태
+- Writes: 없음
+- Side Effects: 없음
+- Transaction Boundary: 단일 snapshot read
+- Idempotency: 동일 rule version 동일 응답
+- Retry Policy: read timeout만 제한 재시도
+
+## Verification Gates
+- Test Gate: TEST-007 Rule freshness·차단·정상 시나리오 통과
+- NFR Gate: NFR-004 최소 응답·권한 검증
+- Evidence Location: health fixture와 contract test
+
 - Query는 운영 상태를 변경하지 않는다.
 - Health 공개 응답과 관리자 상세 응답을 분리한다.
 - M1은 외부 알림 없이 수동 점검 가능해야 한다.
@@ -73,4 +86,7 @@ assignees: ''
 운영자가 미측정 상태를 정상으로 오인하지 않고 출시 중단 기준을 판단하게 한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. Rule health Query는 운영 상태만 노출하고 내부 정책 원문은 반환하지 않음.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

@@ -44,6 +44,19 @@ assignees: ''
 - Then: 외부 조회를 하지 않으며 철회면 캐시를 파기한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: API-001 provider adapter, DATA-001 보존·금액 규칙, sync consent
+- Writes: HeldCard/PastSpend 최소 원장과 품질 메타데이터
+- Side Effects: 외부 MyData adapter 호출 및 동기화 감사 이벤트
+- Transaction Boundary: provider batch 결과 검증 후 원장 upsert를 원자 처리
+- Idempotency: provider snapshot ID와 사용자 ID 기준 중복 방지
+- Retry Policy: timeout·429만 지수 백오프, 인증·스키마 오류는 중단
+
+## Verification Gates
+- Test Gate: TEST-001 동기화 성공·부분실패·재실행 시나리오 통과
+- NFR Gate: NFR-004 개인정보 최소화·마스킹, NFR-006 provider timeout 증거
+- Evidence Location: adapter contract test와 sync audit 결과
+
 - 오조회 0건, 토큰·원본 응답 저장 0건을 유지한다.
 - Adapter 비용·timeout을 기록하되 개인신용정보는 로그에 남기지 않는다.
 
@@ -64,4 +77,7 @@ assignees: ''
 플랫폼 장애와 실제 빈 데이터를 구분하는 상태 변경 경계를 제공한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. provider snapshot ID 기반 멱등성과 외부 호출 재시도 경계를 명시.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

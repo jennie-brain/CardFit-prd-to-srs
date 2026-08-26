@@ -45,6 +45,19 @@ assignees: ''
 - Then: 해지·전환 대행을 제공하지 않음을 확인할 수 있다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: M1 DATA/API/SPEC/Mock와 Command/Query 전체 계약
+- Writes: E2E 전용 DB·브라우저 상태
+- Side Effects: 외부 Adapter는 mock으로 격리
+- Transaction Boundary: 테스트 run별 disposable environment
+- Idempotency: seed snapshot version으로 재실행 가능
+- Retry Policy: assertion retry는 금지하고 환경 준비만 제한 재시도
+
+## Verification Gates
+- Test Gate: 온보딩→계산→선택 핵심 여정과 오류 fallback 통과
+- NFR Gate: NFR-001 p95, NFR-004 권한·로그 검증
+- Evidence Location: Playwright trace, screenshot, seed version
+
 - 실제 금융 데이터·실제 카드 신청을 사용하지 않는다.
 - 테스트는 Preview와 로컬에서 반복 가능해야 한다.
 
@@ -66,4 +79,7 @@ assignees: ''
 M1이 기술 데모가 아니라 사용자가 유지 또는 변경 판단을 이해하는 제품임을 전 구간으로 검증한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 3 AC를 M1 핵심 사용자 여정 E2E로 묶고 외부 연동은 mock 경계로 격리.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

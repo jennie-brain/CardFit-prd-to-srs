@@ -45,6 +45,19 @@ assignees: ''
 - Then: 미완료가 아니라 판정 불가율에 포함한다.
 
 ## Technical & Non-Functional Constraints
+## Execution Contract
+- Reads: COMMAND-005/006 집계, DATA-003 품질 메타데이터
+- Writes: 없음
+- Side Effects: 없음
+- Transaction Boundary: 기간 snapshot read
+- Idempotency: 동일 기간·집계버전 동일 응답
+- Retry Policy: read timeout만 제한 재시도
+
+## Verification Gates
+- Test Gate: TEST-003 품질지표·누락·부분기간 시나리오 통과
+- NFR Gate: NFR-001 응답시간, NFR-004 통계값 최소화 검증
+- Evidence Location: KPI fixture와 결과 검산표
+
 - M2 기능이며 개인 상세와 익명 집계 권한을 분리한다.
 - 0 denominator와 미측정 기준선을 명시적으로 반환한다.
 - Server Component와 Route Handler는 같은 `OutcomeView` DTO를 사용한다.
@@ -67,4 +80,7 @@ assignees: ''
 단일 완주율로 불확실성을 숨기지 않는 조회 모델을 제공한다.
 
 ## 출처
+
+## Decision Log
+- 2026-08-26: Step 2 표준 템플릿 적용. 이행상태 Query는 구체 거래내역 대신 통계·품질값만 반환.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
