@@ -94,7 +94,7 @@ assignees: ''
 ## Dependencies & Interactions
 
 - Depends on: DATA-001
-- Blocks: API-003, MOCK-001, 초기값·계산·관측 로직
+- Blocks: API-003, MOCK-001, COMMAND-002, QUERY-001·002, TEST-001
 - Interacts with: DATA-003, API-004, REQ-NF-005·006·007
 - 변경 전파: DTO·상태 변경 시 Mock, 계산 fallback, UI 상태, 계약 테스트를 갱신한다.
 

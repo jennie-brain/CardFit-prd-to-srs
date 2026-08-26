@@ -87,7 +87,7 @@ assignees: ''
 ## Dependencies & Interactions
 
 - Depends on: DATA-001·002
-- Blocks: 입력 UI, 계산 요청 흐름, DATA-003, 이행 계측
+- Blocks: COMMAND-001·004, DATA-003, UI-003·007, TEST-001·004
 - Interacts with: API-003, REQ-SEC-001·002
 - 변경 전파: 입력 필드 변경 시 DATA-001, API-003 요청, Mock, UI, 테스트를 갱신한다.
 
