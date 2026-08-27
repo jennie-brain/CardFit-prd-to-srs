@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>CardFit 라이트 모드 색상 팔레트</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --background: #f7f8f9;
+        --surface: #ffffff;
+        --text: #171c21;
+        --muted: #6b7684;
+        --line: #edf0f2;
+        --primary: #00a873;
+        --primary-strong: #008b60;
+        --primary-soft: #eafaf3;
+        --warning: #8b5d00;
+        --warning-soft: #fff8e8;
+        --danger: #d92d20;
+        --danger-soft: #fff1f0;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--text);
+        font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+        line-height: 1.5;
+        letter-spacing: -0.02em;
+      }
+
+      main {
+        width: min(calc(100% - 32px), 960px);
+        margin: 0 auto;
+        padding: 64px 0 88px;
+      }
+
+      h1 { margin: 0; font-size: clamp(30px, 6vw, 48px); letter-spacing: -0.05em; }
+      .lead { margin: 10px 0 36px; color: var(--muted); }
+
+      .palette {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .swatch {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--surface);
+      }
+
+      .color { height: 112px; border-bottom: 1px solid var(--line); }
+      .info { padding: 14px; }
+      .info strong, .info code { display: block; }
+      .info strong { font-size: 14px; }
+      .info code { margin-top: 4px; color: var(--muted); font-size: 12px; }
+
+      h2 { margin: 48px 0 18px; font-size: 22px; letter-spacing: -0.035em; }
+
+      .examples {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .sample {
+        min-height: 150px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+      }
+
+      .sample strong { display: block; font-size: 18px; }
+      .sample p { margin: 8px 0 0; font-size: 14px; }
+
+      .default { background: var(--surface); color: var(--text); }
+      .default p { color: var(--muted); }
+      .primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+      .primary-soft { background: var(--primary-soft); color: var(--primary-strong); border-color: #cfefe1; }
+      .warning { background: var(--warning-soft); color: var(--warning); border-color: #f4e7c3; }
+      .danger { background: var(--danger-soft); color: var(--danger); border-color: #f5d4d0; }
+
+      .button-row { display: flex; flex-wrap: wrap; gap: 10px; }
+      button {
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 12px;
+        font: inherit;
+        font-weight: 750;
+      }
+      .button-primary { border: 1px solid var(--primary); background: var(--primary); color: #fff; }
+      .button-secondary { border: 1px solid var(--line); background: #fff; color: var(--text); }
+      .button-disabled { border: 1px solid var(--line); background: var(--line); color: var(--muted); }
+
+      .note { margin-top: 30px; color: var(--muted); font-size: 13px; }
+
+      @media (max-width: 720px) {
+        main { padding-top: 36px; }
+        .palette { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .examples { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>CardFit Light</h1>
+      <p class="lead">라이트 모드의 색조합만 비교하기 위한 팔레트입니다.</p>
+
+      <section class="palette" aria-label="기본 색상 팔레트">
+        <article class="swatch"><div class="color" style="background:#f7f8f9"></div><div class="info"><strong>화면 배경</strong><code>#F7F8F9</code></div></article>
+        <article class="swatch"><div class="color" style="background:#ffffff"></div><div class="info"><strong>기본 표면</strong><code>#FFFFFF</code></div></article>
+        <article class="swatch"><div class="color" style="background:#171c21"></div><div class="info"><strong>기본 글자</strong><code>#171C21</code></div></article>
+        <article class="swatch"><div class="color" style="background:#6b7684"></div><div class="info"><strong>보조 글자</strong><code>#6B7684</code></div></article>
+        <article class="swatch"><div class="color" style="background:#edf0f2"></div><div class="info"><strong>구분선</strong><code>#EDF0F2</code></div></article>
+        <article class="swatch"><div class="color" style="background:#00a873"></div><div class="info"><strong>주요 녹색</strong><code>#00A873</code></div></article>
+        <article class="swatch"><div class="color" style="background:#008b60"></div><div class="info"><strong>강한 녹색</strong><code>#008B60</code></div></article>
+        <article class="swatch"><div class="color" style="background:#eafaf3"></div><div class="info"><strong>연한 녹색</strong><code>#EAFAF3</code></div></article>
+      </section>
+
+      <h2>함께 사용했을 때</h2>
+      <section class="examples" aria-label="색상 조합 예시">
+        <article class="sample default"><strong>기본 정보</strong><p>흰 표면 위에서 기본 글자와 보조 글자를 함께 사용합니다.</p></article>
+        <article class="sample primary"><strong>주요 행동</strong><p>흰 글자와 녹색 배경의 조합입니다.</p></article>
+        <article class="sample primary-soft"><strong>선택·강조 정보</strong><p>연한 녹색 위에는 강한 녹색 글자를 사용합니다.</p></article>
+        <article class="sample warning"><strong>확인이 필요한 정보</strong><p>경고는 성공·선택 상태와 색상으로 분리합니다.</p></article>
+        <article class="sample danger"><strong>처리할 수 없는 오류</strong><p>오류는 녹색과 혼동되지 않는 붉은 계열을 사용합니다.</p></article>
+      </section>
+
+      <h2>버튼 조합</h2>
+      <div class="button-row">
+        <button class="button-primary" type="button">결과 확인</button>
+        <button class="button-secondary" type="button">다시 입력</button>
+        <button class="button-disabled" type="button" disabled>선택할 수 없음</button>
+      </div>
+
+      <p class="note">이 파일은 색감 확인용이며 레이아웃·컴포넌트·브랜드 토큰을 확정하지 않습니다.</p>
+    </main>
+  </body>
+</html>

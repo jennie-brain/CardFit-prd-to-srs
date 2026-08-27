@@ -8,6 +8,7 @@
 - 관심 방향: 프로토타입 시각화 계획의 미확정 사항 (화면·상태·데이터·문구·타입 경계)
 - 완료 조건: 아래 토픽 전부 `RESOLVED`
 - OUTPUT: 시각화 계획 정본 `TASK/task1/prototype-visual-spec.md` + 관련 TASK 문서 + 에이전트 하네스
+- 세션 상태: `USER_PAUSED` (2026-08-27) — 사용자가 grill-it 종료를 요청함. 재개 시 T12부터 진행한다.
 
 ## 토픽 원장
 
@@ -30,6 +31,8 @@ RESOLVED: 15 / TOTAL: 17
 - [x] T11 | MINOR | 근거 패널 기본 펼침 수준과 AI 설명 영역의 프로토타입 노출 여부 | status:RESOLVED | decision:예상 순혜택 대표 + 영역별 한도 요약 + 정형 근거 disclosure + AI 미노출 | applied:prototype-visual-spec.md §10, prototype-suggestion.md, UX-004·UI-006 Decision Log, .agents/rules/006
 - [ ] T12 | MINOR | 디자인 토큰 출발점(기존 랜딩 계승 여부)·breakpoint·플랫폼 브랜드 표기 | depends:T2  | status:UNRESOLVED
 - [ ] T13 | MINOR | 시각 검토 판정 기록 방식과 접근성 리뷰 포함 여부                      | depends:T1  | status:UNRESOLVED
+
+> 일시 중단 메모: T12에서는 뱅크샐러드를 참고한 라이트 모드 색감 후보만 확인했다. 색상 토큰·breakpoint·브랜드 표기는 확정하지 않았으며 T12는 `UNRESOLVED`로 유지한다.
 
 ## 해소 기록
 
