@@ -6,7 +6,7 @@
 - **시작 지점**: `master` 브랜치 HEAD. 저장소 루트에 앱 스캐폴딩이 없다(`package.json` 없음).
 - **문서 지위 (착수 전에 이 관계를 먼저 확인한다)**:
   - 계획 정본은 `TASK/task1/prototype-suggestion.md`의 **19건**이고, 최초 실행 단위는 그 문서의 **`P-VIS-01~03` 경량 체크포인트**다.
-  - `TASK/task1/prototype-suggestion-local-visual.md`는 상단에 **"참고용·대체됨(2026-08-27)"** 표기가 있는 문서다. **이 목표는 그 문서의 「프로토타입 완료 기준」 9항목만 판정 기준으로 사용하고, 그 문서의 11건 독립 정본화 결정은 따르지 않는다.**
+  - `TASK/task1/prototype-suggestion-local-visual.md`는 상단에 **"상태: 축약 실행 참고본(2026-08-27)"** 표기가 있고 "11건을 독립 정본으로 취급하지 않는다"고 스스로 밝힌 문서다. **이 목표는 그 문서의 「프로토타입 완료 기준」 9항목만 판정 기준으로 사용한다.**
   - 구현 방식은 전부 `TASK/task1/prototype-visual-spec.md`를 따른다. 다른 문서와 충돌하면 이 문서가 우선이다.
 - **착수 전 읽을 문서**:
   1. `TASK/task1/prototype-visual-spec.md` — §3 라우팅, §4 ViewModel, §5 Fixture, §6 상태 언어, §7 스코프 고지, §8 입력 정책, §9 결과 시나리오, §10 결과 요약·근거 패널
@@ -41,7 +41,8 @@
   - `NOGO_STREAK: N` — `NO-GO`면 +1, `GO`면 즉시 `0`으로 리셋
   - `FULL_PASS: 0|1` — 5축 전부 `P`인 `GO`를 받은 순간에만 `1`
 - **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다.
-- **도구**: 패키지 매니저는 `npm`. 부트스트랩은 `npx create-next-app@latest . --ts --tailwind --eslint --app --no-src-dir` 기준으로 진행하고, shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다.
+- **도구**: 패키지 매니저는 `npm`. 부트스트랩은 `npx create-next-app@latest . --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 로 실행한다. **대화형 프롬프트가 하나라도 뜨면 자율 루프가 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 함께 명시한다. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다.
+- **부트스트랩 직후 정리**: `create-next-app`이 생성한 `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. 프로토타입 진입 URL은 `/plan`이며 `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다.
 
 ## 3) 종료 조건 및 종료 방법
 
@@ -125,3 +126,4 @@ MODE: EVALUATE
 - **실행 증거 (기준 1)** — `npm run dev` 실행 로그에서 서버가 기동한 줄과 접속 URL을 그대로 붙인다.
 - **뷰포트 증거 (기준 7)** — 폭 375px 기준으로 각 화면의 최상위 컨테이너 클래스, 가로 스크롤이 발생할 수 있는 요소(표·긴 금액·탭)와 그 처리 방식(`overflow-x-auto` 래핑 또는 줄바꿈), 핵심 CTA의 위치와 최소 터치 영역을 적는다.
 - **완주 경로 (기준 2)** — `/plan` 첫 진입부터 `/result` 근거 disclosure 열람까지 이어지는 클릭 순서를 화살표로 적고, 각 단계에서 새로고침이 필요 없음을 명시한다.
+- **범위 준수 증거 (기준 9)** — 이번 라운드에서 GitHub Issue 상태를 변경하지 않았음을 한 줄로 명시한다(`gh issue` 계열 명령을 실행하지 않았다는 사실 포함). 평가자가 명령으로 확인할 수 없는 항목이므로 이 기록이 유일한 판정 근거다.
