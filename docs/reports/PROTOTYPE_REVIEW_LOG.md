@@ -757,6 +757,26 @@ npm run build                → exit 0 (라우트 3개 정적 prerender)
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 
+### 라운드 진행 중 발생한 외부 이벤트
+
+- `NOTE:` Round 10 EVALUATE 1차 디스패치가 판정 전에 세션 사용 한도(HTTP 429)로 중단됐다.
+  Round 2와 같은 사유이고 판정이 아니라 실행 실패이므로 `ROUND`·`NOGO_STREAK`을 올리지 않고
+  같은 라운드를 재디스패치했다.
+- `NOTE:` 그 사이 다른 세션이 저장소 문서 구조를 전면 재구성해 커밋했다
+  (`fbea58d docs: consolidate repository documentation`, `7872d3a docs: fix consolidated prototype paths`).
+  - `PRD/` → `docs/product/`, `SRS-Drafts/` → `docs/technical/`, `TASK/` → `docs/tasks/`,
+    `reports/` → `docs/reports/`, `docs/goals/` → `docs/plans/`, `docs/loop/` → `docs/reports/`
+  - 이 목표의 산출물 두 개(이 검토 로그, 분리한 실행 프롬프트)가 워킹트리에서 **삭제 상태**였다.
+    HEAD에는 남아 있어 두 파일만 `git checkout`으로 복원했다. 다른 세션이 삭제 중인 나머지 파일
+    (PRD·SRS 구버전 등)은 이 목표의 대상이 아니라 손대지 않았다.
+  - 분리한 실행 프롬프트가 원본과 개행문자만 달라져 있어(내용은 동일) 원본 본문에서 다시 생성해
+    정확히 일치시켰다. 141줄, `diff` 무차이.
+  - 재구성 후 검증 3종을 다시 실행해 모두 exit 0을 확인했다. 앱 코드는 `app/`·`features/`에 있어
+    문서 이동의 영향을 받지 않는다.
+  - 이후 라운드의 근거 문서 경로는 `docs/tasks/task1/prototype-visual-spec.md`,
+    `docs/tasks/task1/prototype-suggestion-local-visual.md`, `docs/product/PRD_CardFit_v1.3.md`,
+    `docs/reports/PROTOTYPE_WALKTHROUGH.md`를 사용한다.
+
 ### aztks-agent EVALUATE 결과
 
-*(디스패치 후 기록)*
+*(재디스패치 후 기록)*
