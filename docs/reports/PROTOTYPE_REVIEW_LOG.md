@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 12
+ROUND: 13
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -924,6 +924,72 @@ CardFit 시각 프로토타입
 | `npx tsc --noEmit` | exit 0 |
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender, `/_not-found` 포함) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:C Z:P T:C K:C S:C
+
+TOP_FIX: docs/reports/PROTOTYPE_WALKTHROUGH.md 의 「렌더되는 텍스트 전문」 2곳을 Round 12 코드와 일치시켜라 — (1) 2단계 고지를 plan-flow.tsx 의 현재 문구로 교체, (2) 제외 항목에 빠진 "1단계에서 입력한 미래지출(이 프로토타입 결과는 고정 예시 값입니다)"를 추가해 7건으로 맞춘다. 브라우저를 못 보는 검토자가 기준 4·5·6을 이 전문으로 판정하므로 최우선이다.
+
+EVIDENCE:
+- 게이트 실측: npx tsc --noEmit=0, npm run lint=0, npm run build=0. next start -p 3100 실측 /plan=200 /result=200 /=404 /zzz=404 ?state=partial=200, find app -name page.tsx=2개.
+- SSR 렌더 텍스트: 유지·변경 배지, 예상 순혜택 연 153,000원 / 총 예상 혜택 / 연회비 / 생활 할인은 월 최대 1만 원까지, 할부 미반영 고지, Fixture 예시 고지, 두 화면 스코프 고지 확인. 금지어(무조건·보장·대행·완료·절감액 주장·1위·최적) 0건. role=tab×3 · aria-selected=true×1 · aria-expanded=false×1, LOW/HIGH 값(48,000·231,000·147,000)이 클라이언트 페이로드에 포함 → 탭 전환 시 결론·금액 변경. GR2 위반 0, 근거 6종 충족.
+- 범위: app/api 없음, use server·Prisma·env 사용 0, 워킹트리 clean, Done 처리 0건.
+
+NOTES:
+- A: fixtures/result.ts 의 ONLINE_SHOPPING_CONDITION 이 "예시 카드 A의 온라인 쇼핑 할인"이라 적었으나 A 단독 조합엔 그 영역이 없어 LOW 탭 근거 1·2와 어긋난다(귀속을 B로 고치거나 A 영역 추가).
+- K: ui/ 의 미사용 export 3건(tabsListVariants·badgeVariants·AlertAction) — shadcn 생성물로 lint는 통과.
+- S: components/scope-notice.tsx 주석이 /plan 전용으로 적혀 있으나 /result 에서도 사용된다.
+```
+
+**판정 해석**: 네 축이 `C`로 내려갔고 그 근거가 **모두 증거 문서 드리프트 한 건**이다. Round 11에서
+코드(2단계 고지·제외 항목)를 고치면서 워크스루 「렌더되는 텍스트 전문」을 갱신하지 않아, 브라우저를
+볼 수 없는 검토자가 판정 근거로 쓰는 전문이 실제 화면과 어긋났다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 13
+
+### 처리한 TOP_FIX
+
+워크스루 「렌더되는 텍스트 전문」 두 곳을 현재 코드와 일치시켰다.
+
+| 위치 | 이전 | 현재 |
+| --- | --- | --- |
+| `/plan` 2단계 고지 | `카드 조건의 기본값은 화면 확인용 예시이며 …` (카드 조건만) | `이 프로토타입은 입력값으로 계산하지 않습니다. 1단계에서 입력한 미래지출과 이 단계의 카드 조건은 모두 화면 확인용이며 …` |
+| `/result` 근거 5번 제외 항목 | 6건 | 7건 (`1단계에서 입력한 미래지출(이 프로토타입 결과는 고정 예시 값입니다)` 추가) |
+
+### 드리프트 재발 방지 — 전문 대조 검사
+
+같은 사고가 반복되지 않게, 실제 렌더 텍스트와 워크스루 전문을 **양쪽에서 대조**하는 검사를 만들어
+scratchpad에 두고 매 라운드 실행한다(저장소 의존성은 추가하지 않는다). 13개 핵심 문구를 각각
+`화면에 있는가` × `워크스루에 있는가`로 확인한다.
+
+```
+SYNC_RESULT total=13 fail=0
+```
+
+대조 대상은 화면별 대표 문구다 — 스코프 고지, empty 상태 제목, 금액 입력 안내, 2단계 미반영 고지,
+시나리오 탭 안내, 핵심 한도 문장, 할부 미반영 고지, 제외 항목 3건, 규칙 버전, 404 진입 안내.
+
+### 라운드 진행 중 발생한 환경 문제
+
+- `NOTE:` `next dev` 기동이 Turbopack 내부 panic으로 실패했다
+  (`Restore of All for task TaskId … failed in another thread: restoring failed`).
+  반복적인 `taskkill` 강제 종료로 `.next` dev 캐시가 손상된 결과다. `rm -rf .next` 후 정상 기동했다.
+  `.next`는 gitignore 대상이라 저장소 영향은 없다.
+
+`NOTES`의 비차단 항목 세 건(LOW 탭 `ONLINE_SHOPPING_CONDITION` 귀속, `ui/` 미사용 export 3건,
+`scope-notice.tsx` 주석 사용처)은 이번 라운드에서 손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| 전문 대조 검사 | 13/13 일치 (fail=0) |
 
 ### aztks-agent EVALUATE 결과
 
