@@ -30,7 +30,7 @@
 
 ## 2) 작업 세부 규칙
 
-- **사전 조건 — 착수 첫 명령**: Bash 도구로 `node -v` 와 `npm -v` 를 실행하고 두 출력을 대화에 남긴다. **둘 중 하나라도 실패하면 구현에 착수하지 말고 즉시 `STOP REASON: TOOLCHAIN_MISSING` 으로 종료하고 사용자에게 Node.js LTS 설치를 요청한다.** 2026-08-27 확인 기준 이 머신에는 Node.js·npm·npx가 설치돼 있지 않다(`command -v node npm npx` 전부 실패, `C:\Program Files\nodejs` 부재). 설치는 사용자가 `winget install OpenJS.NodeJS.LTS` 등으로 직접 수행하고, 새 셸에서 `node -v`가 응답하는 것을 확인한 뒤에 이 목표를 다시 시작한다.
+- **사전 조건 — 착수 첫 명령**: Bash 도구로 `node -v` 와 `npm -v` 를 실행하고 두 출력을 대화에 남긴다. **둘 중 하나라도 실패하면 구현에 착수하지 말고 즉시 `STOP REASON: TOOLCHAIN_MISSING` 으로 종료하고 사용자에게 Node.js LTS 설치를 요청한다.** 2026-08-27 확인 기준 이 머신에는 Node.js·npm·npx가 설치돼 있지 않다(`command -v node npm npx` 전부 실패, `C:\Program Files\nodejs` 부재). 설치는 사용자가 `winget install OpenJS.NodeJS.LTS` 등으로 직접 수행하고, 새 셸에서 `node -v`가 응답하는 것을 확인한 뒤에 이 목표를 다시 시작한다. `node -v`·`npm -v`가 통과하면 이어서 `npm ping` 도 실행해 레지스트리 접근을 같은 게이트에서 확인하고, 실패하면 같은 `TOOLCHAIN_MISSING` 경로로 종료한다.
 - **구현 규약**: `TASK/task1/prototype-visual-spec.md`와 `.agents/rules/006-prototype-visual-scope.md`를 읽고 그대로 적용한다. 두 문서가 이미 확정한 사항은 **재결정하지 않고 그대로 구현한다.** 재해석이 필요해 보이면 구현을 멈추고 `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `CONFLICT:` 한 줄을 남긴 뒤 spec을 따른다.
 - **미확정 항목 처리 규칙**: spec이 정하지 않은 값·명칭·수치(색상 token, breakpoint, 브랜드 표기, 동률 정렬 규칙 등)를 만나면 새 정책으로 확정하지 말고 (a) 화면에 예시임을 표시하고, (b) 계산에 반영하지 않으며, (c) 근거의 `이 계산에 포함되지 않은 항목`에 적고, (d) `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `ASSUMPTION:` 한 줄로 남긴다.
 - **작업 사이클** — 아래 1라운드를 반복한다.
@@ -45,7 +45,8 @@
   - `ROUND: N` — 라운드마다 +1
   - `NOGO_STREAK: N` — `NO-GO`면 +1, `GO`면 즉시 `0`으로 리셋
   - `FULL_PASS: 0|1` — 5축 전부 `P`인 `GO`를 받은 순간에만 `1`
-- **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다.
+- **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다. **스테이징은 1)의 작업 대상 경로와 `docs/loop/`만 명시적으로 지정한다 — `git add -A`·`git add .`를 쓰지 않는다.** 착수 시점 워킹트리에는 다른 세션이 남긴 수정 파일이 이미 있고, 전체 스테이징은 그것들을 이 목표의 커밋에 섞는다.
+- **기준선 기록**: 착수 첫 턴에 `git status --porcelain`을 한 번 실행해 그 출력을 `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `BASELINE_DIRTY:` 블록으로 기록한다. 종료 방법 6)의 판정은 이 기준선과의 차이만 본다.
 - **도구**: 패키지 매니저는 `npm`.
 - **부트스트랩 — 루트에 직접 실행하지 않는다**: 저장소 루트에는 `AGENTS.md`·`PRD/`·`TASK/`·`SRS-Drafts/`·`plans/`·`reports/`·`landing/` 등 문서 자산이 20개 넘게 있고, `create-next-app`은 대상 디렉터리에 화이트리스트 밖 파일이 있으면 "contains files that could conflict"로 **중단한다**(`--yes`는 프롬프트만 없앨 뿐 이 검사를 건너뛰지 않는다). 따라서 아래 순서로 진행한다.
   1. 먼저 루트 `.gitignore`에 `.scaffold-tmp/` 한 줄을 덧붙인 뒤, `npx create-next-app@latest ./.scaffold-tmp --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 를 실행한다. **스캐폴드 위치는 저장소 안이어야 한다** — 저장소 밖(`../`) 쓰기는 도구 권한 경계 밖이라 승인 프롬프트로 자율 루프가 멈출 수 있다. 또한 **대화형 프롬프트가 하나라도 뜨면 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 명시한다.
@@ -70,7 +71,7 @@
   3. 마지막 `aztks-agent` EVALUATE 응답 전문(`VERDICT:`·`SCORECARD:`·`TOP_FIX:`·`EVIDENCE:` 줄 포함)을 대화에 그대로 남긴다.
   4. `cat docs/loop/PROTOTYPE_REVIEW_LOG.md` 를 실행해 카운터 세 줄과 `STOP REASON:` 줄이 보이는 출력을 대화에 남긴다.
   5. `find app -name "page.tsx" | sort` 를 실행해 `app/plan/page.tsx`·`app/result/page.tsx` 두 개만 보이는 출력과, `ls fixtures/prototype lib/prototype` 출력을 대화에 남긴다.
-  6. `git log --oneline -n 10` 과 `git status --porcelain` 을 실행해 커밋 이력과, 미커밋 파일이 1)의 작업 대상과 `docs/loop/` 안에만 있음을 대화에 남긴다.
+  6. `git log --oneline -n 10` 과 `git status --porcelain` 을 실행해 커밋 이력을 대화에 남기고, **이 목표가 만든 변경**만 1)의 작업 대상과 `docs/loop/` 안에 있음을 확인한다. 착수 전부터 수정 상태였던 다른 세션 파일은 판정 대상이 아니다 — 2)의 `BASELINE_DIRTY:` 기록과 대조해 차이만 본다.
 
 ## 4) 기타 제약조건
 
@@ -136,7 +137,7 @@ MODE: EVALUATE
   - 가능한 사용자 행동과 그 결과 이동 지점
   - 사용하는 Fixture 파일과 ViewModel 타입 이름
   - 충족하는 완료 기준 번호(1~9)
-- **실행 증거 (기준 1)** — `npm run dev` 실행 로그에서 서버가 기동한 줄을 그대로 붙이고, **프로토타입 진입 URL이 `http://localhost:3000/plan`임을 함께 적는다.** `app/page.tsx`를 두지 않으므로 `http://localhost:3000/`은 404이며 이는 범위 밖 라우트를 만들지 않은 결과다 — 기준 1의 실패가 아니다.
+- **실행 증거 (기준 1)** — `npm run dev` 는 blocking이므로 **백그라운드로 띄워 기동 줄만 캡처하고 정리한다**(매 라운드 타임아웃을 소모하지 않기 위해서다). 로그에서 서버가 기동한 줄을 그대로 붙이고, **진입 URL은 로그가 출력한 실제 포트를 그대로 적는다** — 포트 3000이 점유돼 있으면 Next가 3001 등으로 fallback한다. 경로는 `/plan`이다. `app/page.tsx`를 두지 않으므로 루트 경로는 404이며 이는 범위 밖 라우트를 만들지 않은 결과다 — 기준 1의 실패가 아니다.
 - **뷰포트 증거 (기준 7)** — 폭 375px 기준으로 각 화면의 최상위 컨테이너 클래스, 가로 스크롤이 발생할 수 있는 요소(표·긴 금액·탭)와 그 처리 방식(`overflow-x-auto` 래핑 또는 줄바꿈), 핵심 CTA의 위치와 최소 터치 영역을 적는다.
 - **완주 경로 (기준 2)** — `/plan` 첫 진입부터 `/result` 근거 disclosure 열람까지 이어지는 클릭 순서를 화살표로 적고, 각 단계에서 새로고침이 필요 없음을 명시한다.
 - **범위 준수 증거 (기준 9)** — 이번 라운드에서 GitHub Issue 상태를 변경하지 않았음을 한 줄로 명시한다(`gh issue` 계열 명령을 실행하지 않았다는 사실 포함). 평가자가 명령으로 확인할 수 없는 항목이므로 이 기록이 유일한 판정 근거다.
