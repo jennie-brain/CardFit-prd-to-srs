@@ -1,6 +1,6 @@
 # 이슈 트래커
 
-CardFit의 개발 TASK 54건은 `jennie-brain/prd-to-srs` 저장소의 GitHub Issue로 관리한다. 일정·트랙·우선순위 필드는 [GitHub Project 1](https://github.com/users/jennie-brain/projects/1)에 있다.
+CardFit의 개발 TASK 54건은 `jennie-brain/CardFit-prd-to-srs` 저장소의 GitHub Issue로 관리한다. 일정·트랙·우선순위 필드는 [GitHub Project 1](https://github.com/users/jennie-brain/projects/1)에 있다.
 
 ## TASK ID로 이슈 찾기
 
@@ -8,13 +8,13 @@ CardFit의 개발 TASK 54건은 `jennie-brain/prd-to-srs` 저장소의 GitHub Is
 
 ```bash
 # TASK ID로 이슈 번호 찾기
-gh issue list -R jennie-brain/prd-to-srs --state all --search "DATA-001" --json number,title
+gh issue list -R jennie-brain/CardFit-prd-to-srs --state all --search "DATA-001" --json number,title
 
 # 이슈 본문 읽기 (Summary·AC·DoD·실행 일정·의존성 포함)
-gh issue view <번호> -R jennie-brain/prd-to-srs
+gh issue view <번호> -R jennie-brain/CardFit-prd-to-srs
 
 # 특정 TASK를 막고 있는 선행 이슈 확인
-gh issue view <번호> -R jennie-brain/prd-to-srs --json title,body,labels,milestone
+gh issue view <번호> -R jennie-brain/CardFit-prd-to-srs --json title,body,labels,milestone
 ```
 
 ## 이슈 본문 구조

@@ -129,7 +129,7 @@
   }
 }
 /*
- * 브랜드 서체·색상 token은 아직 확정되지 않았다(prototype-visual-spec.md §11 미확정).
+ * 브랜드 서체·색상 token은 아직 확정되지 않았다(TASK/task1/10_시각_프로토타입_화면_명세.md §11 미확정).
  * 새 token을 확정하지 않기 위해 shadcn/ui의 중립(neutral) 기본 팔레트를 그대로 쓰고,
  * 서체는 운영체제 기본 스택에 한글 fallback만 더한다.
  */

@@ -5,9 +5,9 @@
 | 계획 ID | PLAN-CARDFIT-PORTFOLIO-002 |
 | 버전 | 1.5 |
 | 작성일 | 2026-08-25 |
-| 제품 기준선 | `PRD/PRD_CardFit_v1.2.md` |
-| SRS 기준선 | `SRS-Drafts/SRS_CardFit_v1.4.md`, `.html` |
-| 후속 목표 산출물 | `PRD/PRD_CardFit_v1.3.md`, `.html` 및 `SRS-Drafts/SRS_CardFit_v1.5.md`, `.html` |
+| 제품 기준선 | `PRD/archive/PRD_CardFit_v1.2.md` |
+| SRS 기준선 | `SRS-Drafts/archive/SRS_CardFit_v1.4.md` |
+| 후속 목표 산출물 | `PRD/PRD_CardFit_v1.3.md` 및 `SRS-Drafts/archive/SRS_CardFit_v1.5.md` |
 | 문서 상태 | 실행 완료(2026-08-25) |
 
 ## 개요
@@ -103,7 +103,7 @@
 
 ### 4.1 반드시 수정할 충돌
 
-`PRD/PRD_CardFit_v1.2.md`에는 독립 마이데이터 서비스 관점이 남아 있다. 다음 항목을 v1.3에서 수정한다.
+`PRD/archive/PRD_CardFit_v1.2.md`에는 독립 마이데이터 서비스 관점이 남아 있다. 다음 항목을 v1.3에서 수정한다.
 
 | 위치 | 현재 문제 | 변경 방향 |
 | --- | --- | --- |
@@ -222,18 +222,17 @@ Mock 성공을 실제 통합 성공으로 집계하거나 표현하지 않는다
 
 | 파일 | 이유 | 후속 버전 |
 | --- | --- | --- |
-| `PRD/PRD_CardFit_v1.2.md` | 인가·제휴 선결조건과 외부 사업자 관점이 내부 확장 제안과 충돌함 | `PRD/PRD_CardFit_v1.3.md`, `.html` |
-| `SRS-Drafts/SRS_CardFit_v1.4.md` | A5·리스크·의존성·REQ-FUNC-010 일부에 이전 관점이 남아 있음 | `SRS_CardFit_v1.5.md`, `.html` |
+| `PRD/archive/PRD_CardFit_v1.2.md` | 인가·제휴 선결조건과 외부 사업자 관점이 내부 확장 제안과 충돌함 | `PRD/PRD_CardFit_v1.3.md` |
+| `SRS-Drafts/archive/SRS_CardFit_v1.4.md` | A5·리스크·의존성·REQ-FUNC-010 일부에 이전 관점이 남아 있음 | `SRS-Drafts/archive/SRS_CardFit_v1.5.md` |
 | `README.md` | 최신 PRD·SRS·계획 문서와 프로젝트 성격을 안내해야 함 | 동일 파일 수정 |
 
 ### 9.2 조건부 수정
 
 | 파일 | 수정 조건 |
 | --- | --- |
-| `PRD/diagrams/usecase_diagram_cardfit_v1.2.svg`, `.png` | 외부 마이데이터 액터가 표시되어 있다면 뱅크샐러드 Platform Adapter로 교체할 때 수정 |
-| `PRD/PRD_CardFit_v1.1.html` | 최신 포트폴리오 제출물로 계속 노출할 경우에만 수정하고, 과거 버전 보존 목적이면 수정하지 않음 |
-| `reports/cardfit-overseas-benchmark.html` | CardFit을 독립 서비스나 제휴 사업으로 규정한 문장이 있을 때만 정정 |
-| `PRD/p26-29_PRD.md` | Master Deck 원본이면 수정하지 않고 출처 자료로 보존. 최신 발표 원고로 사용할 때만 새 버전 생성 |
+| `PRD/archive/diagrams/usecase_diagram_cardfit_v1.2.svg`, `.png` | 외부 마이데이터 액터가 표시되어 있다면 뱅크샐러드 Platform Adapter로 교체할 때 수정 |
+| `reports/benchmarks/cardfit-overseas-benchmark.html` | CardFit을 독립 서비스나 제휴 사업으로 규정한 문장이 있을 때만 정정 |
+| `PRD/archive/p26-29_PRD.md` | Master Deck 원본이면 수정하지 않고 출처 자료로 보존. 최신 발표 원고로 사용할 때만 새 버전 생성 |
 
 ### 9.3 수정하지 않을 파일
 
@@ -294,10 +293,10 @@ Mock 성공을 실제 통합 성공으로 집계하거나 표현하지 않는다
 
 ## 13. 출처
 
-- 제품 기준선: `PRD/PRD_CardFit_v1.2.md`
-- 현재 SRS 기준선: `SRS-Drafts/SRS_CardFit_v1.4.md`, `.html`
+- 제품 기준선: `PRD/archive/PRD_CardFit_v1.2.md`
+- 현재 SRS 기준선: `SRS-Drafts/archive/SRS_CardFit_v1.4.md`
 - 직전 실행 계획: `plans/PLAN_SRS_CardFit_v1.4_MVP_Stack_Alignment.md`
-- Master Deck 참고 자료: `PRD/p26-29_PRD.md`, `team-project_2nd/master-deck`
+- Master Deck 참고 자료: `PRD/archive/p26-29_PRD.md`, `team-project_2nd/master-deck`
 - Next.js App Router: <https://nextjs.org/docs/app>
 - Next.js Server Actions·Route Handlers: <https://nextjs.org/docs/app/getting-started/updating-data>, <https://nextjs.org/docs/app/getting-started/route-handlers>
 - Supabase CLI 로컬 개발: <https://supabase.com/docs/guides/local-development/cli/getting-started>

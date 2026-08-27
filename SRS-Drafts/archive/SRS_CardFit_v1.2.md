@@ -3,27 +3,26 @@
 | 항목 | 내용 |
 | --- | --- |
 | 문서 ID | SRS-CARDFIT-MVP-001 |
-| 개정 버전 | 1.3 |
+| 개정 버전 | 1.2 |
 | 날짜 | 2026-08-24 |
 | 기준 서식 | 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷 |
 | 참고 표준 | ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용) |
-| 원천 문서 | `SRS_CardFit_v1.2.md`(직전 기준선), `PRD/PRD_CardFit_v1.0.md`, `team-project_2nd/master-deck`, C-TEC-001~007 |
+| 원천 문서 | `SRS_CardFit_v1.1.md`(직전 기준선), `PRD/archive/PRD_CardFit_v1.0.md`, `team-project_2nd/master-deck`, C-TEC-001~007 |
 
-> 📘 **HTML 버전**: `SRS-Drafts/SRS_CardFit_v1.3.html`
 
 ---
 
 ## 개요 (Summary)
 
-CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD/PRD_CardFit_v1.0.md`를 제품 요구사항 기준선으로 삼고 `team-project_2nd/master-deck`을 제품 의도와 결정 근거로 참고한다. SRS에서 더 안전하고 검증 가능하게 구체화한 내용은 출처·확정 상태를 표시해 반영한다. 문서 구조는 예시 SRS 문서(AD-Core-Platform)의 7섹션 포맷을 기본으로 하며, 가정·제약·의존성, 검증 계획, 참고자료를 ISO/IEC/IEEE 29148:2018에 근거해 확장했다.
+CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **미래 지출 계획**을 기준으로 보유·신규 카드 조합을 다시 계산받고, 계산 근거를 스스로 검증해 결제 포트폴리오를 결정하게 하는 서비스다. 본 SRS는 `PRD/archive/PRD_CardFit_v1.0.md`를 제품 요구사항 기준선으로 삼고 `team-project_2nd/master-deck`을 제품 의도와 결정 근거로 참고한다. SRS에서 더 안전하고 검증 가능하게 구체화한 내용은 출처·확정 상태를 표시해 반영한다. 문서 구조는 예시 SRS 문서(AD-Core-Platform)의 7섹션 포맷을 기본으로 하며, 가정·제약·의존성, 검증 계획, 참고자료를 ISO/IEC/IEEE 29148:2018에 근거해 확장했다.
 
 - **기능 요구사항**: REQ-FUNC 13건(Must 8·Should 3·Could 2) — PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리했으며, 문항별 출처는 [PRD]/[Derived]/[Design Decision]/[TBD]로 구분한다(4.1 서두 참조)
 - **비기능 요구사항**: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)
-- **제품 측정 요구사항**: REQ-METRIC 11건·REQ-GR 6건 — 자기보고·마이데이터 관측, 행동 완주·유지 준수·조합안 이행을 분리하고 판정 불가를 실패로 집계하지 않는다
+- **제품 측정 요구사항**: REQ-METRIC 7건·REQ-GR 6건 — KPI를 시스템 품질 요구사항과 분리하고, 미측정 목표는 가정으로 유지한다
 - **구현 기술 요구사항**: C-TEC 7건과 REQ-ARCH·DATA·UI·AI·DEPLOY·SEC 38건 — Next.js 단일 풀스택에서 제품 요구사항을 구현하는 의무 기준
 - **미해결 선결 조건**: 마이데이터 인가·제휴 확정(A5), Net Benefit 임계값(D2) 확정 — 8장 참조
 - **검증 경로**: E0~E7b 실험 로드맵과 중단 조건 — 9장 참조
-- **설계 다이어그램**: Use Case(3.5) · Sequence 5개(3.6) · Component(3.7) · 전체 흐름 Flow Chart(3.8) · 핵심 의사결정 Flow Chart(4.4) · 이행 판정 State Diagram(4.5) · Class Diagram(5.1) · ERD·상태전이(6.2) — 배경지식이 없어도 각 다이어그램 앞의 "읽는 법" 설명만으로 이해할 수 있도록 배치했다
+- **설계 다이어그램**: Use Case(3.5) · Sequence 5개(3.6) · Component(3.7) · 전체 흐름 Flow Chart(3.8) · 핵심 의사결정 Flow Chart(4.3) · Class Diagram(5.1) · ERD·상태전이(6.2) — 배경지식이 없어도 각 다이어그램 앞의 "읽는 법" 설명만으로 이해할 수 있도록 배치했다
 
 ### 목차
 
@@ -62,7 +61,7 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 - F-09 소득·지출 범위 입력
 - F-11 과거 패턴 기반 초기값 자동 제안
 - F-12 스코프 경계 고지 + 금지어 자동 검수
-- F-13 추천안 이행 계측(자기보고 + 마이데이터 관측 검증, 측정 전용)
+- F-13 실행 완주율 계측(측정 전용)
 
 **제외 범위 (Out-of-Scope)**
 
@@ -82,10 +81,6 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 | Guardrail(GR) | 하나라도 초과 시 롤아웃을 즉시 중단시키는 운영 임계치(GR1~GR5, 오조회) |
 | SOM Beachhead | 시장 진입 최우선 세그먼트. 본 서비스에서는 혼인(Q1) 세그먼트 |
 | p95 | 95번째 백분위수. 응답시간 등 지연 지표의 상위 5% 이상치를 배제한 실질 성능 기준 |
-| 행동 완주 | 신규 카드 발급·기존 카드 해지처럼 상태 변경이 필요한 추천 행동을 완료한 상태 |
-| 유지 준수 | 유지 추천을 선택한 사용자가 관측 기간 종료 시 대상 카드를 계속 보유한 상태. 행동 완주와 분리 집계한다 |
-| 추천안 이행 | 조합안의 필수 항목별 행동 완주·유지 준수를 종합한 상위 결과. 완전·부분·미이행·대기·판정 불가로 구분한다 |
-| 관측 검증 | 사용자 자기보고와 별개로, 동의 범위 안의 마이데이터 후속 관측을 통해 추천 이행 여부를 확인하는 절차 |
 
 ---
 
@@ -94,7 +89,7 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 | 역할 | 이름/부서 | 책임 |
 | --- | --- | --- |
 | 제품(PM) | 진정가 팀 | 지표 집계·보고, GR1~GR4 중단 최종 결정, 금지어 스캐너 예외 승인 |
-| 개발 엔지니어 | 백엔드 개발팀 | 계산 엔진·마이데이터 연동·조합 최적화·추천안 이행 계측 구현 |
+| 개발 엔지니어 | 백엔드 개발팀 | 계산 엔진·마이데이터 연동·조합 최적화·완주 계측 구현 |
 | 계산 품질 담당 | 백엔드 개발팀 | 경계값 회귀 테스트, `rule_version` 변경 시 결정론성 검증, GR1 발의 |
 | 데이터 운영 담당 | 데이터팀 | 카드사 8곳 약관 수집·`rule_version` 관리, GR5 최신성 경고 해제 |
 | 컴플라이언스·보안 담당 | 법무/보안팀 | 마이데이터 동의 범위 점검, 오조회 감시(PM 우회 중단 권한), 문구 규제 검토 |
@@ -109,7 +104,7 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 
 ### 3.1 클라이언트 인터페이스
 
-사용자는 온보딩(마이데이터 연동·미래지출 입력·제약조건 설정), 결과·근거 확인, 추천안 선택과 이행 자기보고의 상호작용을 수행하는 클라이언트 앱을 통해 서비스에 접근한다. 후속 마이데이터 관측은 유효한 동의 범위 안에서 서버 측으로 수행한다. 구체적 클라이언트 플랫폼(웹/모바일 등)은 PRD에 명시되지 않아 본 SRS의 범위 밖이며, 별도 UX 설계 문서에서 정의한다.
+사용자는 온보딩(마이데이터 연동·미래지출 입력·제약조건 설정), 결과·근거 확인, 완주 여부 응답의 3단계 상호작용을 수행하는 클라이언트 앱을 통해 서비스에 접근한다. 구체적 클라이언트 플랫폼(웹/모바일 등)은 PRD에 명시되지 않아 본 SRS의 범위 밖이며, 별도 UX 설계 문서에서 정의한다.
 
 ### 3.2 외부 시스템 연동
 
@@ -129,7 +124,7 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 | 배분 엔진(Allocation, F-05) | 확정 조합안의 카테고리별 결제수단 배분 산출 |
 | 근거 공개 서비스(F-06) | 근거 6항목 이상 검증 및 노출, 미달 시 응답 거부 |
 | 초기값 제안 모듈(F-11) | 과거 소비 패턴 기반 미래지출 기본값 생성 |
-| 추천안 이행 계측 모듈(F-13) | 선택 시 기준 스냅샷 저장, +30일 자기보고 수집, 마이데이터 후속 관측·신뢰도 평가, 항목별·조합안 이행 판정 |
+| 완주 계측 모듈(F-13) | 선택 +30일 계측 대상 생성, 재방문 시 in-app 1회 노출·응답 집계, 무응답·중복 처리 |
 
 ### 3.4 API 개요
 
@@ -137,8 +132,7 @@ CardFit은 소비 구조가 곧 바뀔 사용자가 과거 소비가 아닌 **�
 | --- | --- | --- |
 | `POST /calculate` | 입력: 미래지출·제약조건 / 출력: 조합안 또는 유지 결론 | p95 ≤ 5초, 미래 입력 0건이면 400 반환 |
 | `GET /calculations/{id}/evidence` | 출력: 근거 항목 목록(실적구간·한도·연회비·제외조건·기준일·rule_version) | 근거 6항목 미달 시 응답 거부 |
-| `POST /outcomes/{id}/self-report` | 입력: 항목별 이행 여부 자기보고 | 최초 제출 멱등 처리, 실행 개입 없음 |
-| `POST /internal/outcomes/observe` | 입력: Cron 검증 대상 배치 | `CRON_SECRET` 검증, 마이데이터 동의·완전성·연속 관측 규칙 적용 |
+| `POST /outcomes/{id}/completion` | 입력: 완주 여부 자기신고 | 측정 전용 — 실행 개입 엔드포인트 없음 |
 
 ### 3.5 Use Case Diagram
 
@@ -160,7 +154,7 @@ flowchart LR
     UC5((결제수단 배분))
     UC6((계산 근거 확인))
     UC7((카드사 신청 페이지 이동))
-    UC8((추천안 이행 자기보고))
+    UC8((완주 여부 응답))
     UC9((Rule 버전 관리))
     UC10((오류·오조회 감시))
 
@@ -250,41 +244,31 @@ sequenceDiagram
     end
 ```
 
-**3.6.3 추천안 이행 계측 (`POST /outcomes/{id}/self-report`, `POST /internal/outcomes/observe`, REQ-FUNC-010)**
+**3.6.3 실행 완주율 계측 (`POST /outcomes/{id}/completion`, REQ-FUNC-010)**
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor 사용자
     participant Cron as Vercel Cron
-    participant 이행모듈 as 추천안 이행 계측 모듈
+    participant 완주모듈 as 완주 계측 모듈
     participant API as 시스템(API)
-    participant MyData as 마이데이터 API
 
-    Cron->>이행모듈: +30일 도달 대상 멱등 생성
-    이행모듈->>MyData: 동의 범위 내 후속 카드 관측
-    alt 조회 정상·완전
-        MyData-->>이행모듈: 보유카드 + 기준일
-        이행모듈->>이행모듈: 식별 정확도·연속 관측·최신성 평가
-        이행모듈->>이행모듈: VERIFIED / PENDING / CONFLICT 판정
-    else 동의·조회·완전성 문제
-        MyData-->>이행모듈: 오류 또는 부분 데이터
-        이행모듈->>이행모듈: UNAVAILABLE / INCONCLUSIVE + 사유코드
-    end
-    사용자->>이행모듈: 서비스 재방문
-    이행모듈-->>사용자: 항목별 이행 여부 in-app 질의(1회 노출)
+    Cron->>완주모듈: +30일 도달 대상 생성 요청
+    완주모듈->>완주모듈: 계측 대상 멱등 생성
+    사용자->>완주모듈: 서비스 재방문
+    완주모듈-->>사용자: 완주 여부 in-app 질의(1회 노출)
     alt 사용자가 응답
-        사용자->>API: POST /outcomes/{id}/self-report(selection_id, 항목별 응답)
-        API->>이행모듈: selection_id 중복 검사
+        사용자->>API: POST /outcomes/{id}/completion(selection_id, 완주 여부)
+        API->>완주모듈: selection_id 중복 검사
         alt 최초 제출
-            이행모듈-->>API: 자기보고 상태와 관측 상태를 독립 저장
+            완주모듈-->>API: 완주 여부 집계(REQ-FUNC-010 AC1)
         else 동일 selection_id 중복 제출
-            이행모듈-->>API: 중복 무시, 최초 값 유지
+            완주모듈-->>API: 중복 무시, 최초 값 유지(REQ-FUNC-010 AC4)
         end
     else 응답 없이 노출 기간 경과
-        이행모듈->>이행모듈: 무응답 집계, 재노출·외부 발송 없음
+        완주모듈->>완주모듈: 무응답 집계, 재노출·외부 발송 없음(REQ-FUNC-010 AC3, GR4)
     end
-    이행모듈->>이행모듈: 행동 완주·유지 준수·조합안 이행 분리 집계
 ```
 
 **3.6.4 마이데이터 연동 및 동의 관리 (REQ-FUNC-002)**
@@ -363,7 +347,7 @@ flowchart TB
         EvidenceSvc["근거 공개 서비스<br/>(F-06)"]
         SuggestEngine["초기값 제안 모듈<br/>(F-11)"]
         ScopeGuard["스코프 고지 모듈<br/>(F-12)"]
-        OutcomeMod["추천안 이행 계측 모듈<br/>(F-13)"]
+        OutcomeMod["완주 계측 모듈<br/>(F-13)"]
         DB[("데이터 저장소<br/>(6.2 엔터티)")]
     end
 
@@ -408,7 +392,7 @@ flowchart TD
     I --> J["⑥ 근거 공개<br/>(REQ-FUNC-007)"]
     H --> J
     J --> K["⑦ 스코프 고지 후 실행<br/>(REQ-FUNC-009, 카드사 이동)"]
-    K --> L["⑧ 추천안 이행 계측<br/>(자기보고 + 관측 검증, REQ-FUNC-010)"]
+    K --> L["⑧ 완주 여부 계측<br/>(REQ-FUNC-010)"]
 
     style G fill:#fff3cd,stroke:#997404
     style E fill:#fff3cd,stroke:#997404
@@ -439,7 +423,7 @@ flowchart TD
 | **REQ-FUNC-007** | 근거 공개(적용 규칙 + 제외조건·기준일) | US-B / F-06 | Must | Functional | 1) 근거항목 카운트 테스트 2) 거부 로직 테스트 3) QA 검증 | ① "근거 보기" 클릭 시 근거 항목 ≥ 6개 펼쳐짐 ② 미반영 비용은 "이 계산에는 포함되지 않았습니다" 문구로 누락률 0% 표시 ③(실패) 근거 항목 6개 미만 시 응답 거부(GR3 위반 0건) ④(실패) 마이데이터 응답 지연 시 기준일 미표시 건수 0건 | Proposed | 개발 엔지니어 |
 | **REQ-FUNC-008** | 과거 패턴 기반 초기값 자동 제안 | US-D / F-11 | Must | Functional | 1) A/B 테스트(n=500, 250/250) 2) QA 검증 | ① 제안 커버리지 100% ② 온보딩 완료율이 대조군 대비 +15%p 이상 개선 ③(실패)**[TBD — 미승인]** 과거 소비 이력 3개월 미만·부재 신규 사용자는 업계 평균 기반 기본값과 "과거 데이터 기반 제안이 아닙니다" 안내를 제공(대체 제안 커버리지 100%, 무제안 노출 0건). **업계 평균값의 데이터 출처·최신성·편향 검토가 아직 승인되지 않았으므로, AC③은 승인 전까지 Must 확정 요구사항이 아니라 제안 상태로 취급한다** | Proposed — ①·② 확정, ③ TBD | 개발 엔지니어 |
 | **REQ-FUNC-009** | 스코프 경계 고지 + 금지어 자동 검수 | US-C / F-12 | Should | Functional | 1) 금지어 스캐너 테스트 2) 사용자 인지도 설문 | ① 온보딩·결과 화면 노출 후 "해지·전환 대행을 제공하지 않는다"에 대한 사용자 범위 인지율 ≥ 90% ②(실패)**[Derived]** 금지어 스캐너가 실행 대행을 암시하는 사전 정의 문구(UI·푸시·FAQ·CS)를 탐지하면 게시 전 자동 차단되며, GR4(오인 문구 노출) 위반 0건을 유지한다 | Proposed | 제품(PM) |
-| **REQ-FUNC-010** | 추천안 이행 계측(측정 전용) | US-C / F-13 | Should | Functional | 1) Cron·상태전이 테스트 2) 식별·연속관측 테스트 3) 멱등성 테스트 4) QA 검증 | ① 선택 시 보유카드·대상 상품·동의 범위·데이터 기준일을 기준 스냅샷으로 고정한다 ② 선택 +30일에 Vercel Cron이 검증 대상을 생성하고, 동의 범위 안에서 후속 마이데이터 관측을 수행한다 ③ 사용자 재방문 시 항목별 자기보고를 in-app으로 1회 수집하며 자기보고와 관측 상태를 독립 저장한다 ④ 발급은 기준선 부재 후 Exact/Strong 일치 카드가 정상 동기화 2회에서 연속 관측될 때, 해지는 기준선 존재 카드가 동일 카드사 정상 동기화 2회에서 연속 미관측될 때만 High 신뢰도로 확정한다. API가 명시적 발급·해지 상태를 제공하면 1회 정상 관측으로 확정할 수 있다 ⑤ 유지 추천은 행동 완주가 아니라 유지 준수로 분리하며 관측 종료 시 정상 조회에서 보유가 확인되어야 한다 ⑥ 동의·부분응답·오래된 데이터·약한 식별·충돌은 미완료가 아니라 `INCONCLUSIVE` 또는 `UNAVAILABLE`과 사유코드로 기록한다 ⑦ 동일 `selection_id` 자기보고 중복 제출은 최초 1건만 유효하며 재노출·외부 발송을 하지 않는다 | Proposed `[Derived — v1.3]` | 개발 엔지니어 |
+| **REQ-FUNC-010** | 실행 완주율 계측(측정 전용) | US-C / F-13 | Should | Functional | 1) Cron·계측 로직 테스트 2) 멱등성 테스트 3) QA 검증 | ① 조합안 선택 +30일 시점에 Vercel Cron이 계측 대상을 생성하고 사용자 재방문 시 in-app 질의를 1회 노출한다 ② 완주율·북극성 지표 격차 20%p 이상 시 경보 ③(실패) 노출 기간 내 무응답은 별도 상태로 집계하고 재노출·외부 발송을 하지 않는다 ④(실패) 동일 `selection_id` 중복 제출 시 최초 1건만 유효 처리한다 | Proposed | 개발 엔지니어 |
 | **REQ-FUNC-011** | 단계적 전환 제안(효과 큰 카드부터) | F-07 | Could | Functional | 1) 정렬 로직 테스트 2) 동률 케이스 테스트 | 카드 다량 보유 사용자 대상으로 REQ-FUNC-005/007 결과를 재정렬해 표시한다. 정렬 기준:**[Design Decision — 확정 필요]** 카드별 기여 순혜택(Allocation 기준) 내림차순. 동률 처리 규칙은 **[TBD]**(PRD·SRS 어디에도 정의되지 않음) | Proposed | 개발 엔지니어 |
 
 > REQ-FUNC-011은 신규 계산 로직 없이 REQ-FUNC-005/007 결과의 표시 순서만 바꾸는 경량 확장이라 구현 규모가 작다(PRD 4장 근거). 이는 우선순위 산정의 참고 근거일 뿐 합격 판정 기준이 아니므로 인수 기준에서 제외했다.
@@ -468,13 +452,9 @@ flowchart TD
 | **REQ-METRIC-002** | 결론 도달 소요시간 | 사용자 진입부터 유지·추천 결론까지 p95 ≤ 5분 | Proposed `[Assumption]` | E2·사용성 로그 |
 | **REQ-METRIC-003** | 온보딩 완료율 | 온보딩 시작 사용자 중 계산 가능한 입력 완료 비율 ≥ 60% | Proposed `[Assumption]` | E3 A/B |
 | **REQ-METRIC-004** | 근거 열람률 | 결과 도달 사용자 중 근거 화면 열람 비율 ≥ 50% | Proposed `[Assumption]` | 이벤트 로그 |
-| **REQ-METRIC-005** | 자기보고 이행률 | 완료 자기보고 항목 수 ÷ 유효 응답 항목 수. 무응답과 판정 불가는 분모에서 제외하며 별도 공시 | Derived — 기준선 측정 | E7b |
+| **REQ-METRIC-005** | 실행 완주율 | 조합안 선택 후 30일 시점의 완주·미완주·미응답을 분리 집계. 초기 목표 없음 | Derived — 기준선 측정 | E7b |
 | **REQ-METRIC-006** | 이벤트 비종속 진입률 | 이벤트 선택 없이 자유 입력으로 진입한 사용자 비율 ≥ 20% | Proposed `[Assumption]` | 이벤트 로그 |
 | **REQ-METRIC-007** | D+90 재방문율 | 최초 결과 후 90일 이내 재방문 사용자 비율. 검증 기간 내 합격 판정에서 제외 | Deferred | 장기 코호트 |
-| **REQ-METRIC-008** | 관측 검증 행동 완주율 | High 신뢰도로 발급·해지를 판정할 수 있는 행동형 항목 중 `VERIFIED_COMPLETED` 비율. 유지 항목은 제외 | Derived — 기준선 측정 | E7b·마이데이터 관측 |
-| **REQ-METRIC-009** | 유지 준수율 | High 신뢰도로 판정 가능한 유지 항목 중 관측 종료 시 보유 상태가 유지된 비율. 행동 완주율과 합산하지 않음 | Derived — 기준선 측정 | E7b·마이데이터 관측 |
-| **REQ-METRIC-010** | 조합안 이행률 | 필수 항목이 모두 `VERIFIED_COMPLETED` 또는 `VERIFIED_MAINTAINED`인 조합안 수 ÷ High 신뢰도로 전체 필수 항목을 판정할 수 있는 조합안 수. 부분 이행은 별도 집계 | Derived — 기준선 측정 | E7b·OutcomeAggregator |
-| **REQ-METRIC-011** | 검증 가능률·판정 불가율·불일치율 | 검증 가능 대상/전체 대상, `INCONCLUSIVE|UNAVAILABLE` 대상/전체 대상, 자기보고와 관측이 충돌한 대상/양쪽 증거 보유 대상을 각각 분리 보고 | Derived — 데이터 품질 Guardrail | E7b·데이터 품질 대시보드 |
 
 | ID | Guardrail | 중단·합격 기준 | 상태 | 책임자 |
 | --- | --- | --- | --- | --- |
@@ -513,52 +493,6 @@ flowchart TD
 > 노란색 상자의 "TBD #1~#6"은 8.5 체크리스트의 항목 번호와 같다. 이 흐름도는 로직의 **순서**만 확정하며, 노란 상자 안의 **계산식 자체는 아직 정의되지 않았다** — 임의로 공식을 만들지 않고 도형으로만 그 존재와 위치를 표시했다.
 
 ---
-
-### 4.5 추천안 이행 판정 모델
-
-자기보고는 사용자의 주장이고 마이데이터 관측은 시스템의 증거다. 두 결과는 서로 덮어쓰지 않는다. 사용자가 완료했다고 응답했더라도 마이데이터 조회가 불가능하면 `자기보고 완료 / 검증 불가`로 유지하며, 데이터 부재를 미완료 증거로 사용하지 않는다.
-
-| 자기보고 | 관측 검증 | 최종 해석 | 지표 처리 |
-| --- | --- | --- | --- |
-| 완료 | `VERIFIED_COMPLETED` 또는 `VERIFIED_MAINTAINED` | 확인된 이행 | 자기보고·관측 지표 모두 포함 |
-| 완료 | `PENDING` | 자기보고 완료·검증 대기 | 자기보고만 포함 |
-| 완료 | `INCONCLUSIVE` 또는 `UNAVAILABLE` | 자기보고 완료·검증 불가 | 자기보고만 포함, 판정 불가율에 포함 |
-| 완료 | `VERIFIED_NOT_COMPLETED` | 증거 불일치 | 자기보고만 포함, 불일치율에 포함 |
-| 미완료 | 검증 완료·유지 | 증거 불일치 | 관측 지표만 포함, 불일치율에 포함 |
-| 무응답 | 검증 완료·유지 | 관측 기반 이행 | 관측 지표만 포함 |
-| 무응답 | 판정 불가 | 미측정 | 완주·미완주 분모에서 제외 |
-
-**관측 신뢰도와 판정 규칙**
-
-- `HIGH`: 기준 스냅샷이 유효하고 카드 식별이 Exact/Strong이며, 24시간 이상 간격의 정상·완전 동기화 2회에서 같은 결과가 이어진다. 마이데이터가 명시적인 발급·해지 상태를 제공하면 1회로 확정할 수 있다.
-- `MEDIUM`: 식별은 강하지만 발급일이 없거나 정상 관측이 1회뿐이다. 자동 확정하지 않고 `PENDING`으로 유지한다.
-- `LOW`: 상품명 유사도만 일치하거나 데이터가 오래됐다. 자동 판정하지 않고 `INCONCLUSIVE`로 전환한다.
-- `NONE`: 동의 철회·만료, 범위 부족, 부분 응답, 기준 스냅샷 부재로 검증할 수 없다. `UNAVAILABLE`로 전환한다.
-- 판정 불가 사유는 `CONSENT_EXPIRED`, `CONSENT_WITHDRAWN`, `SCOPE_INSUFFICIENT`, `PROVIDER_TIMEOUT`, `PARTIAL_RESPONSE`, `STALE_DATA`, `IDENTITY_WEAK`, `CARD_REPLACED`, `PRODUCT_CONVERTED`, `CONFLICTING_EVIDENCE`, `OBSERVATION_INSUFFICIENT`, `WINDOW_EXPIRED`, `BASELINE_MISSING`, `ALREADY_HELD`, `MULTIPLE_MATCHES` 중 하나 이상으로 기록한다.
-
-**항목 및 조합안 판정**
-
-- 발급 추천은 기준 스냅샷에 없던 대상 카드가 후속 관측에서 확인되어야 `VERIFIED_COMPLETED`가 된다.
-- 해지 추천은 기준 스냅샷에 있던 대상 카드가 정상·완전 동기화에서 연속 미관측되어야 `VERIFIED_COMPLETED`가 된다.
-- 유지 추천은 관측 종료 시 대상 카드 보유가 확인되어야 `VERIFIED_MAINTAINED`가 되며 행동 완주율에는 포함하지 않는다.
-- 복합 조합안은 필수 항목이 모두 검증되면 `FULLY_ADHERED`, 일부만 이행되면 `PARTIALLY_ADHERED`, 판정 가능한 모든 필수 항목이 미이행이면 `NOT_ADHERED`로 판정한다. 하나라도 대기 중이면 `PENDING`, 판정 불가 항목 때문에 전체 판정을 확정할 수 없으면 `INCONCLUSIVE`로 판정한다.
-
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING: 선택·기준 스냅샷 저장
-    PENDING --> PENDING: 정상 관측 1회 / MEDIUM
-    PENDING --> VERIFIED_COMPLETED: 발급·해지 High 증거
-    PENDING --> VERIFIED_MAINTAINED: 유지 High 증거
-    PENDING --> VERIFIED_NOT_COMPLETED: 관측창 종료 + High 미이행 증거
-    PENDING --> INCONCLUSIVE: 약한 식별·충돌·관측 부족
-    PENDING --> UNAVAILABLE: 동의·범위·기준선·응답 문제
-    INCONCLUSIVE --> PENDING: 판정 가능 데이터 추가 확보
-    UNAVAILABLE --> PENDING: 유효 동의·완전 데이터 복구
-    note right of VERIFIED_NOT_COMPLETED
-      데이터가 없다는 사실만으로
-      미완료를 확정하지 않는다.
-    end note
-```
 
 ## 5. 추적성 매트릭스
 
@@ -617,22 +551,7 @@ classDiagram
     }
     class OutcomeLog {
         +selection_id string
-        +self_report_status enum
-        +verification_status enum
-        +verification_confidence enum
-        +adherence_status enum
-    }
-    class SelectionBaseline {
-        +selection_id string
-        +captured_at datetime
-        +completeness_status enum
-    }
-    class OutcomeObservation {
-        +observation_id string
-        +observed_at datetime
-        +sync_status enum
-        +match_method enum
-        +card_presence boolean
+        +completion_status enum
     }
 
     CalculationEngine --> MyDataConnector : 데이터 조회
@@ -644,10 +563,6 @@ classDiagram
     EvidenceDisclosureService --> Calculation : 조회
     DefaultSuggestionEngine --> MyDataConnector : 과거이력 조회
     OutcomeTracker ..> OutcomeLog : 관리
-    OutcomeTracker ..> SelectionBaseline : 기준선 고정
-    OutcomeTracker ..> OutcomeObservation : 관측 기록
-    SelectionBaseline --> OutcomeLog : 검증 기준
-    OutcomeObservation --> OutcomeLog : 검증 증거
     TieredTransitionRanker --> PlanCandidate : 조회
     TieredTransitionRanker --> Allocation : 조회
 ```
@@ -669,7 +584,7 @@ classDiagram
 | US-B / F-06 | REQ-FUNC-007 | EvidenceDisclosureService | TC-FUNC-007 | 미실시 |
 | US-D / F-11 | REQ-FUNC-008 | DefaultSuggestionEngine | TC-FUNC-008 | 미실시(③은 TBD, 4.1 참조) |
 | US-C / F-12 | REQ-FUNC-009 | ScopeNoticeGuard | TC-FUNC-009 | 미실시 |
-| US-C / F-13 | REQ-FUNC-010 | OutcomeTracker·SelectionBaseline·OutcomeObservation | TC-FUNC-010A~G | 미실시 |
+| US-C / F-13 | REQ-FUNC-010 | OutcomeTracker | TC-FUNC-010 | 미실시 |
 | F-07 | REQ-FUNC-011 | TieredTransitionRanker | TC-FUNC-011 | 미실시 |
 | PRD §5 성능 | REQ-NF-001 | PerformanceMonitor | TC-NF-001 | 미실시 |
 | PRD §5 성능 | REQ-NF-002 | ValidationResponseMonitor | TC-NF-002 | 미실시 |
@@ -693,8 +608,8 @@ classDiagram
 | US-B | AC-US-B-01 | 근거 6항목 이상 공개 | REQ-FUNC-007 | TC-AC-B-01 | 미실시 |
 | US-B | AC-US-B-02 | 미반영 비용 고지 누락 0% | REQ-FUNC-007 | TC-AC-B-02 | 미실시 |
 | US-B | AC-US-B-03 | 6항목 미달 시 응답 거부 | REQ-FUNC-007, REQ-GR-003 | TC-AC-B-03 | 미실시 |
-| US-C | AC-US-C-01 | 선택 후 30일에 이행 여부 집계 | REQ-FUNC-010, REQ-METRIC-005/008~011 | TC-AC-C-01 | 미실시 |
-| US-C | AC-US-C-02 | 추천안 이행 지표를 북극성과 병렬 보고, 격차 20%p 경보 | REQ-FUNC-010, REQ-METRIC-001/005/008~011 | TC-AC-C-02 | 미실시 |
+| US-C | AC-US-C-01 | 선택 후 30일에 완주 여부 집계 | REQ-FUNC-010, REQ-METRIC-005 | TC-AC-C-01 | 미실시 |
+| US-C | AC-US-C-02 | 완주율을 북극성과 병렬 보고, 격차 20%p 경보 | REQ-FUNC-010, REQ-METRIC-001/005 | TC-AC-C-02 | 미실시 |
 | US-C | AC-US-C-03 | 미완주 사유는 집계만 하고 자동 개입 금지 | REQ-FUNC-010, REQ-GR-004 | TC-AC-C-03 | 미실시 |
 | US-C | AC-US-C-04 | 실행 대행 범위 인지율 90% 이상 | REQ-FUNC-009 | TC-AC-C-04 | 미실시 |
 | US-F | AC-US-F-01 | 이벤트 종류 필수 선택 단계 0개 | REQ-FUNC-001B | TC-AC-F-01 | 미실시 |
@@ -710,7 +625,7 @@ classDiagram
 | --- | --- | --- | --- | --- |
 | p30 북극성 | REQ-METRIC-001 | ProductAnalytics | E2 | 목표값 Assumption |
 | p30 전환 KPI | REQ-METRIC-002~004 | FunnelAnalytics | E2·E3·이벤트 로그 | 목표값 Assumption |
-| p30 유지 KPI | REQ-METRIC-005~011 | OutcomeTracker·OutcomeAggregator·CohortAnalytics | E7b·장기 코호트 | 005·008~011 기준선 측정, 007 Deferred |
+| p30 유지 KPI | REQ-METRIC-005~007 | OutcomeTracker·CohortAnalytics | E7b·장기 코호트 | 005 기준선 측정, 007 Deferred |
 | p30 GR1 | REQ-GR-001 | RegressionTestRunner | TC-NF-003 | 미실시 |
 | p30 GR2 | REQ-GR-002 | NetBenefitGate | TC-FUNC-005 | D2 TBD |
 | p30 GR3 | REQ-GR-003 | EvidenceDisclosureService | TC-FUNC-007 | 미실시 |
@@ -728,8 +643,7 @@ classDiagram
 | --- | --- | --- | --- | --- |
 | POST | `/calculate` | 미래지출·제약조건 | 조합안 또는 "현재 조합 유지" 결론 | p95 ≤ 5초, 미래 입력 0건이면 400 |
 | GET | `/calculations/{id}/evidence` | calculation_id | 근거 항목 목록(≥6개) | 6항목 미달 시 응답 거부 |
-| POST | `/outcomes/{id}/self-report` | selection_id, 항목별 이행 여부 자기보고 | 자기보고 저장 확인 | 측정 전용, 중복 제출은 멱등 처리 |
-| POST | `/internal/outcomes/observe` | Cron 검증 대상 배치 | 관측·검증 상태 갱신 결과 | `CRON_SECRET`, 동의 범위, 조회량 제한, 멱등 처리 |
+| POST | `/outcomes/{id}/completion` | selection_id, 완주 여부 자기신고 | 집계 확인 | 측정 전용, 중복 제출은 멱등 처리 |
 
 ### 6.2 데이터 모델 정의 (ERD)
 
@@ -746,10 +660,7 @@ erDiagram
     BenefitRule ||--o{ Calculation : "규칙 적용"
     Calculation ||--o{ PlanCandidate : "후보 생성"
     PlanCandidate ||--o{ Allocation : "배분 산출"
-    PlanCandidate ||--o| OutcomeLog : "추천안 이행 계측"
-    OutcomeLog ||--|| SelectionBaseline : "선택 시 기준선"
-    OutcomeLog ||--o{ OutcomeItem : "필수 항목"
-    OutcomeItem ||--o{ OutcomeObservation : "후속 관측"
+    PlanCandidate ||--o| OutcomeLog : "선택·완주 계측"
 ```
 
 > 아래 6.2.1~6.2.4는 ISO/IEC/IEEE 29148:2018 §9.6.15(Logical database requirements — 정보 유형, 엔터티·관계, 무결성 제약, 보안, 보존 요건)의 항목 구성을 따라 6장(부록) 안에서 확장했다. 필드 타입은 PRD에 명시된 값에서 직접 추론했으며, PRD가 값을 정하지 않은 항목은 창작하지 않고 "미정"으로 표시했다.
@@ -767,10 +678,7 @@ erDiagram
 | Calculation | calculation_id:string(PK), input_snapshot:json, applied_rule_versions:array\<string\>, as_of_date:date, unreflected_items:array\<string\>, status:enum(성공\|실패\|부분) | 규칙 엔진 |
 | PlanCandidate | plan_id:string(PK), calculation_id:string(FK), composition:json, gross_benefit:decimal, conversion_cost_annual_fee:decimal, conversion_cost_reenrollment_loss:decimal, conversion_cost_issuance_wait:decimal, net_benefit:decimal, threshold_passed:boolean, status:enum(제시\|선택\|미선택\|만료) | 규칙 엔진 |
 | Allocation | plan_id:string(FK), category:string, amount:decimal | 규칙 엔진 |
-| OutcomeLog | outcome_id:string(PK), plan_id:string(FK), selection_id:string(Unique), selected_at:datetime, self_report_status:enum(NOT_ASKED\|COMPLETED\|NOT_COMPLETED\|NO_RESPONSE), verification_status:enum(PENDING\|VERIFIED_COMPLETED\|VERIFIED_MAINTAINED\|VERIFIED_NOT_COMPLETED\|INCONCLUSIVE\|UNAVAILABLE), verification_confidence:enum(HIGH\|MEDIUM\|LOW\|NONE), adherence_status:enum(FULLY_ADHERED\|PARTIALLY_ADHERED\|NOT_ADHERED\|PENDING\|INCONCLUSIVE), inconclusive_reason:array\<enum\>, verified_at:datetime? | 자체(F-13) |
-| SelectionBaseline | baseline_id:string(PK), outcome_id:string(FK,Unique), captured_at:datetime, provider_data_as_of:datetime, consent_scope:string, completeness_status:enum(COMPLETE\|PARTIAL\|STALE), held_card_snapshot:json | 자체+마이데이터(F-13) |
-| OutcomeItem | outcome_item_id:string(PK), outcome_id:string(FK), action_type:enum(ACQUIRE_CARD\|CANCEL_CARD\|MAINTAIN_CARD), target_card_product_id:string, required:boolean, self_report_status:enum, verification_status:enum, confidence:enum | 자체(F-13) |
-| OutcomeObservation | observation_id:string(PK), outcome_item_id:string(FK), observed_at:datetime, provider_data_as_of:datetime, sync_status:enum(SUCCESS\|PARTIAL\|FAILED), consent_status:enum, target_match_status:enum(EXACT\|STRONG\|WEAK\|CONFLICT\|NONE), match_method:string, card_presence:boolean?, card_status:string?, evidence_hash:string, rule_version:string | 자체+마이데이터(F-13) |
+| OutcomeLog | plan_id:string(FK), selection_id:string(중복 방지 키), selected_at:datetime, completion_sent_at:datetime, completion_status:enum(미발송\|발송\|응답\|무응답) | 자체(F-13) |
 
 #### 6.2.2 무결성 제약 (Integrity Constraints)
 
@@ -778,10 +686,6 @@ erDiagram
 - `PlanCandidate.status=만료`인 레코드는 실행(선택) 대상이 될 수 없다.
 - `Calculation.status=부분`(필수 데이터 누락)인 레코드는 결과로 노출되지 않으며 `result_viewed` 집계에서 제외된다.
 - `OutcomeLog.selection_id`는 유일해야 하며, 동일 값으로 중복 제출되면 최초 1건만 유효 처리된다(REQ-FUNC-010 AC4).
-- `OutcomeLog.self_report_status`와 `verification_status`는 서로를 덮어쓸 수 없다. 자기보고 완료이면서 검증 불가인 상태를 허용한다.
-- `OutcomeLog.verification_status=VERIFIED_NOT_COMPLETED`는 동의·범위·완전성이 유효한 High 신뢰도 증거가 있을 때만 허용한다. 조회 실패나 데이터 부재만으로 생성할 수 없다.
-- `OutcomeItem.action_type=MAINTAIN_CARD`는 `VERIFIED_MAINTAINED`로 판정하며 행동 완주율 분자·분모에서 제외한다.
-- 단순 미관측 기반 발급·해지 확정에는 24시간 이상 간격의 정상·완전 관측 2건이 필요하다. 명시적 상태가 제공되면 정상 관측 1건을 허용한다.
 - `User.mydata_consent_status`가 `만료` 또는 `철회`인 동안에는 신규 `Calculation` 생성이 거부된다(400).
 - `GET /evidence` 응답은 근거 항목이 6개 미만인 `Calculation`에 대해 생성되지 않는다(REQ-FUNC-007).
 - `Calculation.input_snapshot`은 계산 시점의 `FutureSpendPlan`·`PastSpend` 값을 복사한 스냅샷이며 라이브 참조가 아니다. 따라서 동일한 `FutureSpendPlan`·`PastSpend` 레코드가 이후 재계산에서 다시 읽혀 다른 `Calculation`의 스냅샷에 포함될 수 있다(ERD의 `}o--||`는 "다건 입력이 1건 계산에 반영됨"을 뜻하며, 동일 입력의 재사용을 배제하지 않는다).
@@ -790,12 +694,10 @@ erDiagram
 
 - `HeldCard`·`PastSpend`는 마이데이터 API로 수집되는 개인신용정보로 분류되며, 접근 범위는 `User.mydata_consent_scope`를 벗어날 수 없다(REQ-NF-005, 오조회 방지).
 - `User.mydata_consent_status=철회` 시 `HeldCard`·`PastSpend`는 즉시 파기된다.
-- 후속 이행 관측은 사용자에게 고지되고 승인된 목적·범위·기간 안에서만 수행한다. 이 목적이 기존 동의에 포함되는지는 컴플라이언스 승인 전까지 `[TBD]`이며, 미승인 상태에서는 자동 관측을 활성화하지 않는다.
-- `OutcomeObservation`에는 판정에 필요한 최소 필드와 `evidence_hash`만 저장하며 마이데이터 원본 응답 전체를 장기 보관하지 않는다. 구체적인 보존기간과 삭제 주기는 REQ-NF-008 정책 승인 시 함께 확정한다.
 - `Calculation`의 입력 스냅샷·적용 `rule_version`·마이데이터 응답 코드는 감사 목적으로 전건 로그 보존된다(REQ-NF-008).
 - **미해결 항목**: 위 감사 로그의 구체적 보존 기간(예: N개월/N년)이 PRD에 명시되어 있지 않다. 임의로 정하지 않고 8.3 리스크에 확정 필요 항목으로 별도 등재할 것을 권고한다.
 
-#### 6.2.4 엔터티 상태 전이 — 6개 객체
+#### 6.2.4 엔터티 상태 전이 — 4개 객체
 
 > 읽는 법: 동그라미/상자는 "상태"(예: 미동의, 동의)이고, 화살표는 "무엇을 하면 다음 상태로 바뀌는지"를 뜻한다. 아래는 마이데이터 동의 상태가 시간에 따라 어떻게 바뀌는지를 보여준다.
 
@@ -815,9 +717,7 @@ stateDiagram-v2
 | 마이데이터 동의 | 미동의 → 동의 → (만료/철회) | 만료·철회 시 계산 요청 400. 철회 시 데이터 파기 |
 | 계산(Calculation) | 요청 → (성공/실패/부분) | 부분 = 필수 데이터 누락 → 결과로 취급하지 않고 추천 중단 |
 | 조합안(PlanCandidate) | 제시 → (선택/미선택) → 만료 | `rule_version` 변경 또는 기준일 +30일 경과 시 만료 — 재계산 없이 실행 대상 아님 |
-| 자기보고(OutcomeLog) | NOT_ASKED → (COMPLETED/NOT_COMPLETED/NO_RESPONSE) | 재방문 시 in-app 1회 노출. 최초 응답만 유효하며 무응답을 미완료로 바꾸지 않음 |
-| 관측 검증(OutcomeItem) | PENDING → (VERIFIED_COMPLETED/VERIFIED_MAINTAINED/VERIFIED_NOT_COMPLETED/INCONCLUSIVE/UNAVAILABLE) | 자기보고와 독립 전이. 데이터 부재만으로 미완료 확정 금지. 세부 흐름은 4.5 참조 |
-| 조합안 이행(OutcomeLog) | PENDING → (FULLY_ADHERED/PARTIALLY_ADHERED/NOT_ADHERED/INCONCLUSIVE) | 필수 항목 판정 집계. 유지 항목은 유지 준수로 분리 |
+| 완주 응답(OutcomeLog) | 예정 → 대상생성 → 노출 → (응답/무응답) | Vercel Cron이 선택 +30일에 대상을 생성하고 재방문 시 in-app 1회 노출. 무응답은 별도 집계하며 재노출·외부 발송 없음 |
 
 #### 6.2.5 계산 가용성 조건 구분
 
@@ -838,12 +738,9 @@ GPT 검토는 "마이데이터 장애 시 계산 지속"·"부분 계산은 결�
 3. **근거 공개 최소 기준**: 근거 항목이 6개 미만이면 응답 자체를 거부한다.
 4. **이벤트 비종속 원칙**: 이벤트 종류를 사전 정의해 선택하게 하지 않는다. 증가·감소 양방향과 자유 입력 카테고리를 모두 계산에 반영한다.
 5. **조합안 만료**: `rule_version` 변경 또는 제시 후 30일 경과 시 조합안은 만료되며 재계산 없이 실행 대상이 되지 않는다.
-6. **추천안 이행 계측은 측정 전용**: Vercel Cron은 선택 +30일 검증 대상 생성·제한된 후속 관측만 수행하고, 사용자 재방문 시 in-app 질의를 1회 노출한다. 외부 발송·재노출·독려는 하지 않는다.
-7. **증거 독립성**: 자기보고와 마이데이터 검증 결과는 독립 저장한다. 자기보고 완료·검증 불가를 허용하고, 불일치를 어느 한쪽의 자동 오류로 간주하지 않는다.
-8. **부정 증거의 엄격성**: 조회 실패·부분 응답·오래된 데이터·동의 문제·약한 식별은 미완료가 아니라 판정 불가다. High 신뢰도 정상 관측만 미완료를 확정할 수 있다.
-9. **유지 준수 분리**: 유지 추천의 지속 보유는 추천 이행으로 인정하지만 행동 완주율과 합산하지 않는다.
-10. **동의 상태 강제**: 마이데이터 동의가 만료·철회된 상태에서는 계산 요청을 400으로 거부한다.
-11. **오조회 최우선 대응**: 오조회 발생 시 PM의 사업적 판단을 거치지 않고 컴플라이언스가 즉시 서비스를 중단하고 신고한다.
+6. **완주 계측은 측정 전용**: Vercel Cron은 선택 +30일에 계측 대상만 생성하고, 사용자 재방문 시 in-app 질의를 1회 노출한다. 외부 발송·재노출·독려는 하지 않는다.
+7. **동의 상태 강제**: 마이데이터 동의가 만료·철회된 상태에서는 계산 요청을 400으로 거부한다.
+8. **오조회 최우선 대응**: 오조회 발생 시 PM의 사업적 판단을 거치지 않고 컴플라이언스가 즉시 서비스를 중단하고 신고한다.
 
 ### 6.4 데이터베이스 스키마 개요
 
@@ -858,10 +755,7 @@ benefit_rules             -- 카드사 약관(rule_version 관리)
 calculations              -- 계산 스냅샷 및 적용 규칙 버전
 plan_candidates           -- 조합 후보(Net Benefit·임계 통과 여부)
 allocations               -- 배분 산출 결과
-outcome_logs              -- 자기보고·검증·조합안 이행 집계
-selection_baselines       -- 선택 시점 보유카드·동의·완전성 기준선
-outcome_items             -- 발급·해지·유지 추천 항목별 상태
-outcome_observations      -- 마이데이터 후속 관측과 증거
+outcome_logs              -- 선택·완주 응답 계측
 ```
 
 ---
@@ -891,7 +785,7 @@ outcome_observations      -- 마이데이터 후속 관측과 증거
 | A4 | 계산상 유리하면 사용자가 선택한다 | 1순위 — 북극성 전제 | 북극성 지표 자체 | E2 |
 | A2 | 사용자가 미래 지출을 숫자로 표현할 수 있다 | 2순위 | REQ-FUNC-001A 입력 설계(REQ-FUNC-008로 완화) | E1·E3 |
 | A3 | 근거 공개가 신뢰를 만든다 | 2순위 | 차별점 ③ | E2(2군 비교) |
-| A6 | 추천안 이행률이 낮다 | 3순위 — 참고 가설 | REQ-FUNC-010의 존재 이유 | E7 |
+| A6 | 실행 완주율이 낮다 | 3순위 — 참고 가설 | REQ-FUNC-010의 존재 이유 | E7 |
 
 ### 8.2 주요 설계 결정 (ADR, Architecture Decision Record)
 
@@ -987,7 +881,7 @@ Master Deck은 제품 의도와 의사결정 근거로 사용하되, 미확정 �
 | 마이데이터 연동 | 적합 | Route Handler에서 외부 마이데이터 API 호출 | 별도 중계 Backend를 신설하면 C-TEC-001·002 위반 |
 | 카드 조합 최적화 | 적합 | 요청 시간 안에 끝나는 결정론적 TypeScript 로직 | 장시간 분산 계산·상시 Worker가 필요하면 범위 밖 |
 | AI 근거 설명 | 적합 | Vercel AI SDK + Gemini, 실패 시 기존 근거 유지 | 자체 AI 서버나 Gemini 직접 REST 호출은 C-TEC-005·006 위반 |
-| 30일 후 추천안 이행 산출 | 조건부 적합 | Supabase에 due date·기준선을 저장하고 Vercel Cron이 보안 Route Handler를 호출해 조회량 제한 안에서 후속 관측 | 프로세스 내 타이머·상시 Queue Worker는 C-TEC-001·007 위반. 마이데이터 호출 예산·동의 목적 승인 필요 |
+| 30일 후 완주 상태 산출 | 적합 | Supabase에 due date 저장 후 Vercel Cron이 보안 Route Handler를 호출 | 프로세스 내 타이머·상시 Queue Worker 사용은 C-TEC-001·007 위반 |
 | 30일 후 사용자에게 알림 발송 | **조건부** | 재방문 시 in-app 안내는 지정 스택으로 구현 가능 | 이메일·SMS·모바일 Push를 능동 발송하려면 외부 알림 사업자가 필요하므로 현재 스택 밖 |
 | Rule 최신성 일간 점검 | 적합 | Vercel Cron + Route Handler + Prisma 상태 갱신 | 장시간 Headless Browser 크롤링·상시 수집 Worker는 현재 스택 밖 |
 | 카드 약관 자동 수집 | **조건부** | 관리자 업로드 또는 실행시간 내 제한된 HTTP 수집은 가능 | CAPTCHA, 브라우저 자동화, 장시간 대량 크롤링이 필요하면 별도 실행 인프라가 필요함 |
@@ -995,7 +889,7 @@ Master Deck은 제품 의도와 의사결정 근거로 사용하되, 미확정 �
 | F-10 정기 재진단 알림 | **Deferred·조건부** | in-app 재진단 표시는 가능 | 외부 채널 알림은 현재 기술 스택만으로 구현 불가 |
 | WebSocket 기반 실시간 처리 | **범위 밖** | 현재 요구사항에는 필요하지 않음 | Vercel 함수의 장기 연결을 전제로 하면 별도 실시간 서비스가 필요함 |
 
-현재 MVP에서 기술 스택을 벗어날 가능성이 있는 항목은 세 가지다. 첫째, F-13의 “발송”을 이메일·SMS·모바일 Push로 해석하는 경우 외부 알림 사업자가 필요하다. 둘째, 카드 약관을 Headless Browser로 장시간 자동 수집하면 Vercel 함수 실행 제약과 충돌한다. 셋째, 향후 F-10을 능동 알림으로 구현하면 같은 외부 알림 의존성이 생긴다. 따라서 v1.3 MVP는 F-13을 **Vercel Cron으로 검증 대상을 생성하고, 비용 상한 안에서 마이데이터 후속 관측을 수행하며, 사용자 재방문 시 in-app으로 자기보고를 1회 수집하는 방식**으로 확정한다. 이는 기존 C-TEC-001~007 안에서 구현 가능하지만 마이데이터 호출 비용·동의 목적·보존정책의 승인이 필요하다. 외부 채널 발송은 별도 기술 제약 변경이 승인될 때까지 구현하지 않는다.
+현재 MVP에서 기술 스택을 벗어날 가능성이 있는 항목은 세 가지다. 첫째, F-13의 “발송”을 이메일·SMS·모바일 Push로 해석하는 경우 외부 알림 사업자가 필요하다. 둘째, 카드 약관을 Headless Browser로 장시간 자동 수집하면 Vercel 함수 실행 제약과 충돌한다. 셋째, 향후 F-10을 능동 알림으로 구현하면 같은 외부 알림 의존성이 생긴다. 따라서 v1.2 MVP는 F-13을 **Vercel Cron으로 응답 대상을 생성하고, 사용자 재방문 시 in-app으로 1회 노출하는 방식**으로 확정한다. 외부 채널 발송은 별도 기술 제약 변경이 승인될 때까지 구현하지 않는다.
 
 ### 8.8 기술 아키텍처
 
@@ -1098,11 +992,10 @@ flowchart LR
 | 근거 조회 | Route Handler | `GET /api/calculations/{id}/evidence` |
 | AI 근거 설명 | Route Handler | `POST /api/calculations/{id}/explanation` |
 | 조합 선택 | Server Action | `selectPlan` |
-| 이행 자기보고 | Route Handler | `POST /api/outcomes/{id}/self-report` |
-| 이행 관측 배치 | Route Handler + Vercel Cron | `POST /api/internal/outcomes/observe` |
+| 완주 응답 | Route Handler | `POST /api/outcomes/{id}/completion` |
 | Rule 관리 | 관리자 Server Actions | `upsertBenefitRule` |
 | 상태 확인 | Route Handler | `GET /api/health` |
-| 30일 이행 대상·Rule 최신성 점검 | Vercel Cron → Route Handler | `GET /api/cron/outcomes`, `GET /api/cron/rules` |
+| 30일 완주 대상·Rule 최신성 점검 | Vercel Cron → Route Handler | `GET /api/cron/outcomes`, `GET /api/cron/rules` |
 
 모든 Route Handler와 Server Action은 사용자 세션과 리소스 소유권을 다시 검증한다. 클라이언트 검증 결과는 신뢰하지 않으며 서버에서 동일한 schema validation을 수행한다.
 
@@ -1171,11 +1064,7 @@ Preview와 Production은 서로 다른 `DATABASE_URL`, `DIRECT_URL`, Gemini key�
 | 결론 도달 소요시간 p95 | ≤ 5분 | `onboarding_started`~`result_viewed` 타임스탬프 차 |
 | 온보딩 완료율 | ≥ 60% | `onboarding_started`/`onboarding_completed` 이벤트 로그 |
 | 근거 열람률 | ≥ 50% | `evidence_panel_opened` 클릭 로그 |
-| 자기보고 이행률 | 목표 없음 — 기준선 측정 | `POST /outcomes/{id}/self-report` 응답 로그 |
-| 관측 검증 행동 완주율 | 목표 없음 — 기준선 측정 | High 신뢰도 발급·해지 `OutcomeItem` |
-| 유지 준수율 | 목표 없음 — 행동 완주와 분리 | High 신뢰도 유지 `OutcomeItem` |
-| 조합안 이행률 | 목표 없음 — 기준선 측정 | `OutcomeLog.adherence_status` |
-| 검증 가능률·판정 불가율·불일치율 | 목표 없음 — 데이터 품질 병렬 보고 | `OutcomeObservation`·사유코드 |
+| 실행 완주율(측정 전용) | 목표 없음 — 실태 파악 | `POST /outcomes/{id}/completion` 응답 로그 |
 | 이벤트 비종속 진입률 | ≥ 20% | `FutureSpendPlan.category` 자유입력 플래그 집계 |
 
 **Guardrail** — REQ-NF-003·005·006·009 및 PRD 1장 참조. 하나라도 초과 시 롤아웃을 즉시 중단한다.
@@ -1190,7 +1079,7 @@ Preview와 Production은 서로 다른 `DATABASE_URL`, `DIRECT_URL`, Gemini key�
 | E3 A/B | REQ-FUNC-008이 온보딩 이탈을 줄인다 | n=500(250/250) | B군 ≥ 60% 및 A군 대비 +15%p |
 | E4 회귀 | 규칙 엔진이 경계값에서 정확하다 | 경계값 케이스 ≥ 200건 | 오류율 ≤ 0.1%, 재계산 불일치 0건 |
 | E5 벤치마크 | 조합 단위 계산이 경쟁 대안보다 정확하다 | 동일 스냅샷 n=20, 뱅크샐러드 vs CardFit | 3축 전부 우위, 순혜택 차액 > 0 케이스 ≥ 70% |
-| E7a/E7b | 추천안 이행과 관측 가능성을 안다 | 선택자/베타 선택자, 기준 스냅샷과 30일 후 자기보고·마이데이터 후속 관측(개입 없음) | 행동 완주·유지 준수·조합안 이행·검증 가능·판정 불가·불일치의 기준선 확보 |
+| E7a/E7b | 미완주 사유·비율을 안다 | 선택자/베타 선택자, 30일 후(개입 없음) | 목표 없음 — 실태 파악 |
 
 ### 9.3 중단 조건
 
@@ -1205,7 +1094,7 @@ Preview와 Production은 서로 다른 `DATABASE_URL`, `DIRECT_URL`, Gemini key�
 
 ## 10. 결론
 
-CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건)·제품 측정(REQ-METRIC 11건)·Guardrail(REQ-GR 6건)과 구현 기술 요구사항 38건으로 구분했다. PRD의 Story·AC는 5.3에서 요구사항과 테스트까지 추적하며, C-TEC-001~007은 8.7~8.12에서 기존 기능을 Next.js·Prisma·Supabase·Tailwind·shadcn/ui·Vercel AI SDK·Gemini·Vercel 배포 구조로 구현하는 의무 기준과 연결한다. F-13은 자기보고와 마이데이터 관측을 독립 증거로 저장하고, 행동 완주·유지 준수·조합안 이행을 분리한다. 조회 실패나 데이터 부재를 미완료로 간주하지 않으며 판정 불가·불일치·검증 가능률을 함께 보고한다. 현재 스택 밖으로 판정된 외부 알림과 장시간 자동 수집은 구현 범위에서 제외한다.
+CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건)·제품 측정(REQ-METRIC 7건)·Guardrail(REQ-GR 6건)과 구현 기술 요구사항 38건으로 구분했다. PRD의 Story·AC는 5.3에서 요구사항과 테스트까지 추적하며, C-TEC-001~007은 8.7~8.12에서 기존 기능을 Next.js·Prisma·Supabase·Tailwind·shadcn/ui·Vercel AI SDK·Gemini·Vercel 배포 구조로 구현하는 의무 기준과 연결한다. 현재 스택 밖으로 판정된 외부 알림과 장시간 자동 수집은 구현 범위에서 제외하고, F-13은 Vercel Cron과 in-app 1회 노출로 구체화했다.
 
 다만 베타 착수를 위해서는 세 가지가 선결되어야 한다 — ① 마이데이터 인가·제휴 확정(가정 A5, 8.4 의존성), ② Net Benefit 임계값(D2)과 계산식 세부 규칙 9개 항목 확정(8.5 체크리스트, ADR-003), ③ 감사 로그 보존정책·비용 예산 임계치 등 TBD로 표시된 항목의 승인(REQ-NF-007·008, REQ-FUNC-008 AC③). 이 조건이 충족되면 9장의 실험 로드맵(E0→E2)을 순서대로 진행해 북극성 KPI(조합안 선택률 ≥ 40%)를 검증하고, 이후 정식 개발에 착수한다.
 
@@ -1222,7 +1111,6 @@ CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건)·�
 | 1.0 | 2026-08-24 | 초기 확정 SRS 구조, 기능·비기능 요구사항과 핵심 다이어그램 작성 |
 | 1.1 | 2026-08-24 | Mermaid Use Case, AC·KPI·Guardrail 추적성 및 C-TEC-001~007 구현 제약 통합 |
 | 1.2 | 2026-08-24 | C-TEC-001~007을 의무 스택으로 명시하고 기능별 적합성·예외 및 Vercel Cron 기반 F-13 구현 확정 |
-| 1.3 | 2026-08-24 | 자기보고·마이데이터 관측을 독립 모델링하고 행동 완주·유지 준수·조합안 이행, 신뢰도·판정 불가·불일치 규칙을 추가 |
 
 > 본 챕터는 예시 SRS 포맷의 범위를 벗어나는 PRD 내용을 다룬다. ISO/IEC/IEEE 29148:2018 §9.2.4(References) 및 §9.6.20(Supporting information) — "참조 문서 목록을 포함하고, 독자에게 도움이 되는 배경 정보를 제공한다"는 규정을 근거로 추가했다.
 
@@ -1241,14 +1129,14 @@ CardFit MVP의 요구사항은 기능(REQ-FUNC 13건)·비기능(REQ-NF 9건)·�
 
 ### 11.2 출처 목록
 
-- 원천 PRD: `PRD/PRD_CardFit_v1.0.md`
+- 원천 PRD: `PRD/archive/PRD_CardFit_v1.0.md`
 - 인터뷰/실험: E0~E7b(PRD 8장), E2 Concierge Test 결과 로그
 - 로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계
 - 벤치마크: 경쟁사 유저플로우 실측 자료, E5 동일 스냅샷 n=20 비교표
-- 다이어그램: `PRD/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
+- 다이어그램: `PRD/archive/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
 - Master Deck 제품 흐름: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p21-23_To-Be_%EC%82%AC%EC%9A%A9%EC%9E%90%ED%9D%90%EB%A6%84_%ED%95%B5%EC%8B%AC%ED%99%94%EB%A9%B4.md>
 - Master Deck 데이터·시스템: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p24-25_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%8B%9C%EC%8A%A4%ED%85%9C_%EC%A0%95%EC%B1%85_%EC%83%81%ED%83%9C_%EC%98%88%EC%99%B8_%EC%9A%B4%EC%98%81%EC%97%AD%ED%95%A0.md>
-- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/PRD/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
+- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/PRD/archive/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
 - Next.js App Router·Route Handlers: <https://nextjs.org/docs/app/getting-started/route-handlers>
 - Next.js Server Actions·Backend for Frontend: <https://nextjs.org/docs/app/guides/backend-for-frontend>
 - Supabase 로컬 개발: <https://supabase.com/docs/guides/local-development/cli/getting-started>

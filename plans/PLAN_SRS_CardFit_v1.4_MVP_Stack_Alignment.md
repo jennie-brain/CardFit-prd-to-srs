@@ -4,9 +4,9 @@
 | --- | --- |
 | 계획 ID | PLAN-SRS-CARDFIT-STACK-001 |
 | 작성일 | 2026-08-25 |
-| 제품 기준선 | `PRD/PRD_CardFit_v1.2.md` |
-| SRS 기준선 | `SRS-Drafts/SRS_CardFit_v1.3.md`, `.html` |
-| 목표 산출물 | `SRS-Drafts/SRS_CardFit_v1.4.md`, `.html` |
+| 제품 기준선 | `PRD/archive/PRD_CardFit_v1.2.md` |
+| SRS 기준선 | `SRS-Drafts/archive/SRS_CardFit_v1.3.md` |
+| 목표 산출물 | `SRS-Drafts/archive/SRS_CardFit_v1.4.md` |
 | 적용 범위 | 뱅크샐러드 내부 기능 확장을 제안하는 독립 실행형 MVP 프로토타입 |
 | 문서 상태 | 실행 계획 확정안 |
 
@@ -41,7 +41,7 @@ MVP는 비식별 샘플 데이터와 Platform Adapter를 사용해 전체 사용
 
 ### 1.1 목표
 
-1. SRS 원천 문서를 `PRD/PRD_CardFit_v1.2.md`로 교체한다.
+1. SRS 원천 문서를 `PRD/archive/PRD_CardFit_v1.2.md`로 교체한다.
 2. CardFit을 뱅크샐러드 내부 확장 기능의 독립 MVP로 명확히 정의한다.
 3. C-TEC-001~007을 독립 MVP의 의무 기술 제약으로 연결한다.
 4. 뱅크샐러드 플랫폼 기능과 CardFit 신규 기능의 책임을 분리한다.
@@ -479,8 +479,8 @@ PRD v1.2 Story/AC
 
 ## 14. 출처
 
-- 제품 기준선: `PRD/PRD_CardFit_v1.2.md`
-- SRS 기준선: `SRS-Drafts/SRS_CardFit_v1.3.md`, `.html`
+- 제품 기준선: `PRD/archive/PRD_CardFit_v1.2.md`
+- SRS 기준선: `SRS-Drafts/archive/SRS_CardFit_v1.3.md`
 - 저장소 변환 원칙: `README.md`
 - 기준 SRS 예시: [SRS AD-Core-Platform](https://wildmental.notion.site/SRS-AD-Core-Platform-5f1d03212bd4823ba8428142bc22ef76)
 - 요구사항 표준: [ISO/IEC/IEEE 29148:2018 공식 개요](https://committee.iso.org/standard/72089.html)
