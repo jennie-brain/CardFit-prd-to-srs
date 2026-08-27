@@ -16,7 +16,7 @@
 - **작업 대상**: 저장소 루트의 Next.js App Router 앱 — 아래 셋을 모두 포함한다.
   - 직접 작성하는 코드: `app/`, `components/`, `features/cardfit-prototype/lib/`, `features/cardfit-prototype/fixtures/`
   - 부트스트랩 산출물: `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts`, 그리고 사용 중인 템플릿이 생성하는 그 밖의 루트 설정 파일
-  - shadcn/ui 산출물: `components.json`, `features/cardfit-prototype/ui/`, `features/cardfit-prototype/features/cardfit-prototype/lib/utils.ts`
+  - shadcn/ui 산출물: `components.json`, `features/cardfit-prototype/ui/`, `features/cardfit-prototype/lib/utils.ts`
   - 기존 루트 `.gitignore`에는 **줄 추가만** 허용하고 기존 줄을 지우거나 바꾸지 않는다.
 - **구현 범위 — 라우트 2개** (`prototype-visual-spec.md` §3.1 확정안):
 
@@ -55,7 +55,7 @@
   4. `./.scaffold-tmp`를 삭제한다.
   5. 저장소 루트에서 `npm install` 을 실행해 `node_modules/`를 복원한다. **이 단계를 건너뛰면 `npx tsc --noEmit`·`npm run lint`·`npm run build`가 매 라운드 전부 실패한다.**
   6. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
-  7. shadcn/ui는 `npx shadcn@latest init -d -y` 로 초기화하고, 컴포넌트는 `npx shadcn@latest add <name> -y` 로 필요한 것만 추가한다. **`create-next-app`과 같은 이유로 비대화형 플래그를 반드시 붙인다** — `init`은 base color 등을 대화형으로 묻기 때문에 플래그가 없으면 1단계에서 경고한 첫 턴 정지가 그대로 발생한다. 이때 생성되는 `components.json`·`features/cardfit-prototype/ui/`·`features/cardfit-prototype/features/cardfit-prototype/lib/utils.ts`는 1)의 작업 대상에 포함된다.
+  7. shadcn/ui는 `npx shadcn@latest init -d -y` 로 초기화하고, 컴포넌트는 `npx shadcn@latest add <name> -y` 로 필요한 것만 추가한다. **`create-next-app`과 같은 이유로 비대화형 플래그를 반드시 붙인다** — `init`은 base color 등을 대화형으로 묻기 때문에 플래그가 없으면 1단계에서 경고한 첫 턴 정지가 그대로 발생한다. 이때 생성되는 `components.json`·`features/cardfit-prototype/ui/`·`features/cardfit-prototype/lib/utils.ts`는 1)의 작업 대상에 포함된다.
 
 ## 3) 종료 조건 및 종료 방법
 
