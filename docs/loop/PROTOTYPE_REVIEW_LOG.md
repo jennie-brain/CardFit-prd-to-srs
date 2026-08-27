@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 9
+ROUND: 10
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -685,6 +685,69 @@ NOTES:
 
 `NOTES`의 `public/*.svg` 5개는 이번 라운드에서 손대지 않았다. 평가자가 `next.svg`·`vercel.svg`를
 서드파티 로고 자산으로 지적해 완료 기준 8과 닿는다고 판단한 만큼, 다음 `TOP_FIX`로 올라오면 처리한다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:P
+
+TOP_FIX: `public/{next,vercel,file,globe,window}.svg` 5개를 삭제하십시오(`git rm`). 검증: `git ls-files public` 빈 출력 · `grep -rn "\.svg" app features` 0건 · `npm run build` exit 0.
+
+EVIDENCE:
+- 게이트 3종 현재 트리 실측: `npx tsc --noEmit` exit 0 / `npm run lint` exit 0 / `npm run build` exit 0 (라우트 3개=`/_not-found`·`/plan`·`/result`).
+- 완료 기준 1~9 전부 근거 확인. 기준 3~6은 `.next/server/app/result.html` 실렌더 텍스트와 근거 6종으로 확인. 산술 정합: LOW 48,000=48,000→KEEP Δ0 / BASE 13,500×12−9,000=153,000 Δ93,000 / HIGH 20,000×12−9,000=231,000 Δ147,000.
+- 기준 9: `gh issue list --state closed` 빈 출력, `git diff HEAD~3 -- TASK/`는 경로 문자열 교체뿐 `Done` 승격 0건.
+- Round 9 TOP_FIX 반영 확인: `guardResultNavigation`이 `feeCapError !== null`에서 `preventDefault`+Alert+`feeCapRef.focus()`로 차단.
+
+NOTES:
+- T/K: `git ls-files public`의 svg 5개가 tracked·미참조. `next.svg`·`vercel.svg`는 배포 시 공개 경로로 서빙되는 서드파티 로고 자산이라 기준 8·rules 006 「로고 금지」의 문자적 경계에 닿는다.
+- T: 2단계 고지가 `카드 조건의 기본값은 … 계산에 반영하지 않습니다`로 한정돼, 입력한 미래지출도 결과에 반영되지 않는다는 사실은 결과 화면의 예시 고지에만 의존한다.
+- T: 기준 1은 충족되나 `/`가 404(spec §3.2·rules 006 준수)이고 진입 URL 안내가 워크스루 밖에 없다(README는 범위 밖).
+```
+
+**판정 해석**: `A`·`Z`·`S`가 `P`를 유지하고 `T`·`K`가 `C`로 남았다. 두 축의 `C` 근거가 같은 항목
+(미참조 서드파티 로고 자산)으로 수렴했다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 10
+
+### 배치 충돌 해소
+
+다른 세션이 마이그레이션을 커밋했다(`e705b80 refactor: consolidate visual prototype code`).
+워킹트리가 깨끗해졌고 `features/cardfit-prototype/` 배치가 커밋된 정본이 됐다. Round 8 `CONFLICT:`에
+적었던 "어느 트리를 판정한 것인지 확정할 수 없다"는 꼬리가 사라졌다. 이후 라운드와 종료 판정은
+이 커밋된 배치를 대상으로 한다.
+
+### 처리한 TOP_FIX
+
+`create-next-app` 잔재인 `public/` svg 5개를 `git rm`으로 삭제했다.
+
+평가자가 제시한 검증을 그대로 실행했다.
+
+```
+git ls-files public          → 빈 출력
+grep -rn "\.svg" app features → 0건
+npm run build                → exit 0 (라우트 3개 정적 prerender)
+```
+
+- `next.svg`·`vercel.svg`는 화면에 렌더되지 않아도 배포 시 공개 경로로 서빙되는 **서드파티 로고
+  자산**이다. 완료 기준 8과 rules 006 「로고 금지」의 문자적 경계에 닿으므로 삭제가 맞는 정리다.
+- `public/`이 비어 git에서 사라졌다. `app/favicon.ico`는 App Router 규약으로 쓰이므로 영향이 없고,
+  Next.js는 `public/` 없이도 빌드된다.
+- 삭제 후 흐름 실측을 다시 돌려 Round 9 가드와 전체 완주 경로가 그대로임을 확인했다
+  (오류 상태 차단 `url=/plan` 유지, 수정 후 `/result` 이동, `/result` 직접 접근, 375px 무스크롤).
+
+`NOTES`의 나머지 둘은 이번 라운드에서 손대지 않았다.
+- 2단계 고지가 "카드 조건 기본값"에 한정돼 미래지출 미반영 사실이 결과 화면 고지에만 의존한다는 지적.
+- `/`가 404여서 진입 URL 안내가 워크스루 밖에 없다는 지적(README는 이 목표의 수정 범위 밖).
 
 ### 검증
 
