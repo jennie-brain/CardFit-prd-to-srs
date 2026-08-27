@@ -41,8 +41,14 @@
   - `NOGO_STREAK: N` — `NO-GO`면 +1, `GO`면 즉시 `0`으로 리셋
   - `FULL_PASS: 0|1` — 5축 전부 `P`인 `GO`를 받은 순간에만 `1`
 - **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다.
-- **도구**: 패키지 매니저는 `npm`. 부트스트랩은 `npx create-next-app@latest . --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 로 실행한다. **대화형 프롬프트가 하나라도 뜨면 자율 루프가 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 함께 명시한다. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다.
-- **부트스트랩 직후 정리**: `create-next-app`이 생성한 `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. 프로토타입 진입 URL은 `/plan`이며 `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다.
+- **도구**: 패키지 매니저는 `npm`.
+- **부트스트랩 — 루트에 직접 실행하지 않는다**: 저장소 루트에는 `AGENTS.md`·`PRD/`·`TASK/`·`SRS-Drafts/`·`plans/`·`reports/`·`landing/` 등 문서 자산이 20개 넘게 있고, `create-next-app`은 대상 디렉터리에 화이트리스트 밖 파일이 있으면 "contains files that could conflict"로 **중단한다**(`--yes`는 프롬프트만 없앨 뿐 이 검사를 건너뛰지 않는다). 따라서 아래 순서로 진행한다.
+  1. `npx create-next-app@latest ../cardfit-scaffold --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 를 실행한다. **대화형 프롬프트가 하나라도 뜨면 자율 루프가 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 명시한다.
+  2. 생성물 중 `app/`, `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts` 만 저장소 루트로 옮긴다.
+  3. 기존 파일을 **덮어쓰지 않는다.** 특히 루트 `README.md`와 `.gitignore`는 그대로 두고(현 `.gitignore`가 이미 `node_modules/`·`.next/`·`.vercel/`을 제외한다) 필요한 줄만 덧붙인다. 문서 디렉터리는 어떤 경우에도 건드리지 않는다.
+  4. `../cardfit-scaffold`를 삭제한다.
+  5. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
+  6. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다.
 
 ## 3) 종료 조건 및 종료 방법
 
@@ -123,7 +129,7 @@ MODE: EVALUATE
   - 가능한 사용자 행동과 그 결과 이동 지점
   - 사용하는 Fixture 파일과 ViewModel 타입 이름
   - 충족하는 완료 기준 번호(1~9)
-- **실행 증거 (기준 1)** — `npm run dev` 실행 로그에서 서버가 기동한 줄과 접속 URL을 그대로 붙인다.
+- **실행 증거 (기준 1)** — `npm run dev` 실행 로그에서 서버가 기동한 줄을 그대로 붙이고, **프로토타입 진입 URL이 `http://localhost:3000/plan`임을 함께 적는다.** `app/page.tsx`를 두지 않으므로 `http://localhost:3000/`은 404이며 이는 범위 밖 라우트를 만들지 않은 결과다 — 기준 1의 실패가 아니다.
 - **뷰포트 증거 (기준 7)** — 폭 375px 기준으로 각 화면의 최상위 컨테이너 클래스, 가로 스크롤이 발생할 수 있는 요소(표·긴 금액·탭)와 그 처리 방식(`overflow-x-auto` 래핑 또는 줄바꿈), 핵심 CTA의 위치와 최소 터치 영역을 적는다.
 - **완주 경로 (기준 2)** — `/plan` 첫 진입부터 `/result` 근거 disclosure 열람까지 이어지는 클릭 순서를 화살표로 적고, 각 단계에서 새로고침이 필요 없음을 명시한다.
 - **범위 준수 증거 (기준 9)** — 이번 라운드에서 GitHub Issue 상태를 변경하지 않았음을 한 줄로 명시한다(`gh issue` 계열 명령을 실행하지 않았다는 사실 포함). 평가자가 명령으로 확인할 수 없는 항목이므로 이 기록이 유일한 판정 근거다.
