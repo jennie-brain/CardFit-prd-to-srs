@@ -334,6 +334,16 @@ README)은 이번 라운드에서 손대지 않았다.
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 
+### 라운드 진행 중 발생한 외부 이벤트
+
+- `NOTE:` Round 2 NOTE에 적은 `TASK/task1` 문서 번호 재정리가 다른 세션에서 **되돌려졌다**
+  (`c8587af docs: reorganize CardFit repository artifacts` → `e3a71f9 Revert`). 현재 존재하는
+  이름은 원래대로 `prototype-suggestion.md`·`prototype-suggestion-local-visual.md`·`prototype-visual-spec.md`다.
+  재정리 때 새 이름으로 바뀌었던 `lib/prototype/view-model.ts`·`fixtures/prototype/scope-notice.ts`의
+  주석은 revert 대상에 포함되지 않아 존재하지 않는 경로를 가리키고 있었다. 두 주석을 실제 경로로
+  되돌려 저장소 안에 깨진 문서 참조가 남지 않게 했다. 목표 문서와 분리한 실행 프롬프트는 revert로
+  함께 원래 경로로 돌아왔고 본문 동일성(`diff`)도 유지된다.
+
 ### aztks-agent EVALUATE 결과
 
 *(디스패치 후 기록)*
