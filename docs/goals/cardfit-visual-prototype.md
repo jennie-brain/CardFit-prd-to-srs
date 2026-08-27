@@ -34,7 +34,7 @@
 - **미확정 항목 처리 규칙**: spec이 정하지 않은 값·명칭·수치(색상 token, breakpoint, 브랜드 표기, 동률 정렬 규칙 등)를 만나면 새 정책으로 확정하지 말고 (a) 화면에 예시임을 표시하고, (b) 계산에 반영하지 않으며, (c) 근거의 `이 계산에 포함되지 않은 항목`에 적고, (d) `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `ASSUMPTION:` 한 줄로 남긴다.
 - **작업 사이클** — 아래 1라운드를 반복한다.
   1. 구현 또는 직전 라운드의 `TOP_FIX` 반영
-  2. `npx tsc --noEmit` → `npm run lint` → `npm run build` 실행, 세 명령 모두 exit 0 확인
+  2. `npx tsc --noEmit` → `npm run lint` → `npm run build` 실행, 세 명령 모두 exit 0 확인 (Bash 도구로 **각각 따로** 실행한다 — Windows PowerShell 5.1은 `&&` 체이닝을 지원하지 않는다)
   3. `docs/loop/PROTOTYPE_WALKTHROUGH.md` 갱신 (아래 6) 규격)
   4. `aztks-agent` EVALUATE 디스패치 (아래 5) 규격)
   5. 반환된 스코어카드 전문을 `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 라운드 번호와 함께 기록
@@ -53,7 +53,7 @@
   4. `./.scaffold-tmp`를 삭제한다.
   5. 저장소 루트에서 `npm install` 을 실행해 `node_modules/`를 복원한다. **이 단계를 건너뛰면 `npx tsc --noEmit`·`npm run lint`·`npm run build`가 매 라운드 전부 실패한다.**
   6. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
-  7. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다. 이때 생성되는 `components.json`·`components/ui/`·`lib/utils.ts`는 1)의 작업 대상에 포함된다.
+  7. shadcn/ui는 `npx shadcn@latest init -d -y` 로 초기화하고, 컴포넌트는 `npx shadcn@latest add <name> -y` 로 필요한 것만 추가한다. **`create-next-app`과 같은 이유로 비대화형 플래그를 반드시 붙인다** — `init`은 base color 등을 대화형으로 묻기 때문에 플래그가 없으면 1단계에서 경고한 첫 턴 정지가 그대로 발생한다. 이때 생성되는 `components.json`·`components/ui/`·`lib/utils.ts`는 1)의 작업 대상에 포함된다.
 
 ## 3) 종료 조건 및 종료 방법
 
