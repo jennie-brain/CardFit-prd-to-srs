@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 7
+ROUND: 8
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -37,7 +37,7 @@ Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일�
 남긴 dirty 파일이 없다.
 
 ```
- M components/prototype/evidence-disclosure.tsx
+ M features/cardfit-prototype/components/evidence-disclosure.tsx
 ```
 
 따라서 종료 방법 6)은 `git status --porcelain` 출력이 1)의 작업 대상과 `docs/loop/` 안에만
@@ -70,6 +70,59 @@ Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일�
   조합` 기준을 그대로 상한으로 썼고 새 정책을 만들지 않았다.
 - `ASSUMPTION:` 시점 선택의 연 후보는 Fixture `dataAsOf`(2026-08-27)에서 5년을 결정론적으로 만든다.
   `Date.now()`를 쓰지 않아 서버·클라이언트 렌더가 갈리지 않는다.
+- `CONFLICT:` spec §6.2 상태 사전은 `success`의 대표 제목을 `계산이 완료됐어요`, 기본 CTA를
+  `결과 확인하기`로 정하고 §6.3은 "대표 제목·상태 의미·기본 CTA는 이 사전을 따른다"고 한다.
+  `/result` Fixture는 `status: "success"`인데 화면 제목은 `조건별 결과를 확인해요`이고 마지막 CTA는
+  `미래지출 다시 입력하기`다. 사전 문구를 그대로 쓰지 않은 이유는 세 가지다.
+  - `결과 확인하기`는 **결과 화면으로 이동하는** CTA다. 이미 `/result`에 있는 사용자에게 붙이면
+    자기 자신을 가리키는 링크가 되어 다음 행동을 알려주지 못한다.
+  - `계산이 완료됐어요`는 **계산 진행 상태 화면이 완료를 알리는** 제목이다. 그 화면(`UI-004`
+    계산 중·완료 상태)은 이번 범위 밖으로 미뤄져 있어 사전 문구가 놓일 자리가 아직 없다.
+  - 이 구현은 상태 사전을 "상태를 알리는 블록"에 적용한다. `/plan`은 `status: "empty"`의 사전 문구
+    (`아직 입력한 미래지출이 없어요` + `미래지출 입력하기`)를 목록 영역 상태 블록에 그대로 쓴다.
+    `/result`는 상태가 `success`여서 알릴 상태 블록 자체가 없고 결과를 바로 표시한다.
+  - `success` 사전 문구는 `UI-004` 계산 진행·완료 화면을 구현하는 후속 체크포인트에서 그 화면에
+    적용한다. 이번 범위에서 사전 문구를 앞당겨 배치하지 않는다.
+- `CONFLICT:` **Round 8 진행 중 다른 세션이 프로토타입 코드 전체를 `features/cardfit-prototype/`으로
+  옮겼다.** 커밋되지 않은 워킹트리 변경이며 아래 상태다.
+  - `components/prototype/*` → `features/cardfit-prototype/components/*`
+  - `components/ui/*` → `features/cardfit-prototype/ui/*`
+  - `lib/prototype/*`·`lib/utils.ts` → `features/cardfit-prototype/lib/*`
+  - `fixtures/prototype/*` → `features/cardfit-prototype/fixtures/*`
+  - `app/plan/page.tsx`·`app/result/page.tsx` import 경로 재작성, `components.json` alias 재작성
+  - 이동 후에도 `npx tsc --noEmit`·`npm run lint`·`npm run build` 모두 exit 0이다(완전하고 일관된 이동).
+
+  그런데 **근거 문서는 여전히 루트 배치를 지정한다.**
+  - spec §2.2 디렉터리 배치: `app/` · `components/` · `lib/` · `fixtures/`
+  - rules 006 「코드 거처와 실행」: "공통 UI는 `components/`, 타입·로더는 `lib/`, Fixture는 `fixtures/`에 둔다"
+  - rules 006 「ViewModel 타입 규칙」: 단일 진입점은 `lib/prototype/view-model.ts`
+  - 이 목표 §1 작업 대상: `app/`, `components/`, `lib/prototype/`, `fixtures/prototype/`
+  - 이 목표 종료 방법 5): `ls fixtures/prototype lib/prototype` — 현재 두 경로가 존재하지 않아 실패한다.
+
+  목표 문서 §2는 충돌 시 "`CONFLICT:`를 남긴 뒤 spec을 따른다"고 정했지만, spec을 따르려면 다른
+  세션의 커밋되지 않은 이동을 되돌려야 한다. `features/`는 이 목표의 작업 대상이 아니고 다른 세션의
+  작업을 지우는 행위이므로 임의로 실행하지 않았다. 이 목표의 마지막 커밋(`8474711`)에는 루트 배치
+  코드가 그대로 남아 있어 유실된 산출물은 없다.
+
+  **해소 — 사용자 결정(2026-08-27).** 사용자가 "루트 배치로 되돌리고 계속"을 선택했다. 조치는 아래다.
+  - 다른 세션의 이동본 26개 파일을 scratchpad `backup-features-relocation/`에 복사해 복구 가능하게 둔 뒤
+    `features/`를 제거하고, `git checkout`으로 `components/`·`lib/`·`fixtures/`·`app/plan/page.tsx`·
+    `app/result/page.tsx`·`components.json`을 마지막 커밋 상태로 복원했다.
+  - 복원 후 `ls fixtures/prototype lib/prototype`이 정상 출력되고 import 경로가 `@/components/...`로
+    돌아왔음을 확인했다.
+
+  **남은 위험 — 문서 쪽 마이그레이션이 진행 중이다.** 사용자에게 질문한 시점에는 spec §2.2·rules 006이
+  루트 배치를 지정했지만, 그 뒤 확인한 결과 다른 세션이 커밋하지 않은 상태로 아래를 함께 `features/`
+  배치로 고치고 있다.
+  - `.agents/rules/006-prototype-visual-scope.md` — ViewModel 단일 진입점·Fixture 경로
+  - `TASK/task1/prototype-visual-spec.md` — §4.1 단일 진입점, §5.1 Fixture 경로·트리, Decision Log T4
+  - `docs/goals/cardfit-visual-prototype.md`와 분리한 실행 프롬프트 — §1 작업 대상, 종료 방법 5)
+
+  즉 이 목표의 코드는 사용자 결정에 따라 루트 배치이고, 문서 일부는 `features/` 배치를 향해 가는
+  중이다. 이 목표는 사용자 결정을 기준으로 진행하고, 종료 방법 5)는 루트 경로(`ls fixtures/prototype
+  lib/prototype`)와 목표 문서 현재 문구(`ls features/cardfit-prototype`) 양쪽을 실행해 차이를 그대로
+  보고한다. 두 배치 중 무엇을 정본으로 삼을지는 이 목표의 결정 범위가 아니다.
+  이 목표는 `TASK/`·`.agents/` 문서를 수정하지 않는다.
 - `NOTE:` `next dev`가 루트 `AGENTS.md`에 자기 규칙 블록을 덧붙였다. 보호 대상 파일이므로
   `git checkout -- AGENTS.md`로 되돌리고 `next.config.ts`에 `agentRules: false`를 설정해 재발을 막았다.
   이후 재기동에서 `Generated AGENTS.md` 줄이 사라지고 `git status --porcelain AGENTS.md`가 비었음을 확인했다.
@@ -95,12 +148,12 @@ Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일�
 VERDICT: GO
 SCORECARD: A:C Z:P T:C K:C S:P
 
-TOP_FIX: `/plan` 미래지출 항목에 수정(편집) 경로를 추가하라 — 없다면 `components/prototype/plan-flow.tsx:317-318`의 "자유롭게 수정·삭제할 수 있습니다" 문구를 실제 동작(삭제·재입력)으로 맞춰라. spec §8.1·§8.9는 "추가·수정·삭제"를 확정했는데 구현은 `addItem`/`removeItem`만 있다.
+TOP_FIX: `/plan` 미래지출 항목에 수정(편집) 경로를 추가하라 — 없다면 `features/cardfit-prototype/components/plan-flow.tsx:317-318`의 "자유롭게 수정·삭제할 수 있습니다" 문구를 실제 동작(삭제·재입력)으로 맞춰라. spec §8.1·§8.9는 "추가·수정·삭제"를 확정했는데 구현은 `addItem`/`removeItem`만 있다.
 
 EVIDENCE:
 - Z: `npx tsc --noEmit` exit 0, `npm run lint` exit 0, `npm run build` exit 0(`/plan`·`/result` static). 실서버 확인: plan=200, result=200, `?state=partial`=200, root=404. `/result` SSR에 `role=tablist`+`aria-selected="true"` 1건, accordion `h3`+`aria-expanded="false"` 확인 — 완료 기준 1·3·7 근거 성립.
 - 완료 기준 4·6: 렌더 텍스트에 예상 순혜택 연 153,000원 / 총 예상 혜택 / 연회비 / `생활 할인은 월 최대 1만 원까지` / 할부 미반영 고지 / `예시 데이터 result-success-01` 모두 접힌 상태에서 노출.
-- T: `components/prototype/plan-flow.tsx:81-145`(수정 함수 없음), `components/prototype/future-spend-item-card.tsx:19`(`onRemove`만).
+- T: `features/cardfit-prototype/components/plan-flow.tsx:81-145`(수정 함수 없음), `features/cardfit-prototype/components/future-spend-item-card.tsx:19`(`onRemove`만).
 - A: `/result` 어디에도 "카드 신청·발급·해지를 대신 진행하지 않습니다" 경계가 없다(`app/result/page.tsx`, `result-screen.tsx`). PRD US-C AC8은 온보딩과 **결과 화면** 모두 고지를 전제한다. GR2 위반은 없다(delta 0 / 93,000 / 147,000 — 임계 50,000원 구간 회피).
 
 NOTES:
@@ -157,7 +210,7 @@ NOTES:
 VERDICT: GO
 SCORECARD: A:C Z:P T:C K:C S:C
 
-TOP_FIX: `/result`에 스코프 경계 고지를 추가하라 — `ScopeNotice`(또는 §7.2 문구 중 "카드 신청·발급·해지를 대신 진행하지 않습니다")를 `components/prototype/result-screen.tsx`에 렌더해, `/result` 직접 진입·새로고침(spec §3.2)에서도 "계산만 하고 실행은 대행하지 않는다"가 전달되게 하라. 검증: `curl -s localhost:3000/result | grep "대신 진행하지 않습니다"` >= 1.
+TOP_FIX: `/result`에 스코프 경계 고지를 추가하라 — `ScopeNotice`(또는 §7.2 문구 중 "카드 신청·발급·해지를 대신 진행하지 않습니다")를 `features/cardfit-prototype/components/result-screen.tsx`에 렌더해, `/result` 직접 진입·새로고침(spec §3.2)에서도 "계산만 하고 실행은 대행하지 않는다"가 전달되게 하라. 검증: `curl -s localhost:3000/result | grep "대신 진행하지 않습니다"` >= 1.
 
 EVIDENCE
 - Z: 내가 직접 실행 — `npx tsc --noEmit`/`npm run lint`/`npm run build` 모두 exit 0, dev 서버 `/plan`=200 `/result`=200 `/`=404 `?state=partial`=200. `/result` SSR에 `role=tablist` 1·`aria-selected=true` 1·`aria-expanded=false` 1. Fixture 산술 전건 일치(48,000/153,000/231,000, delta 0/93,000/147,000 → GR2 임계 50,000 회피).
@@ -180,7 +233,7 @@ NOTES
 
 `/result`에 스코프 경계 고지를 추가했다.
 
-- 두 화면이 같은 문구를 쓰므로 `fixtures/prototype/scope-notice.ts`에 `SCOPE_NOTICE_CANDIDATE`를
+- 두 화면이 같은 문구를 쓰므로 `features/cardfit-prototype/fixtures/scope-notice.ts`에 `SCOPE_NOTICE_CANDIDATE`를
   두고 `plan.ts`·`result.ts`가 함께 읽게 했다. 문구 중복을 만들지 않고, `COMMAND-008` 승인 문구가
   확정되면 이 파일 한 곳만 교체하면 두 화면이 같이 바뀐다(spec §7.1 후보 지위 관리).
 - `ResultViewModel`에 `scopeNotice: ScopeNoticeViewModel`을 추가하고 `result-screen.tsx`가 결과 아래,
@@ -223,11 +276,11 @@ TOP_FIX: `TabsList`에 명시적 높이(예: `h-11 w-full`)를 주어 `h-10` 트
 EVIDENCE:
 - 게이트 실측: `npx tsc --noEmit`·`npm run lint`·`npm run build` 모두 exit 0 (`/plan`·`/result` 정적 prerender)
 - 런타임 실측(포트 3100 정리 후 `npm run dev`): `plan=200 result=200 root=404 state_unknown=200`, `plan_scope=1 result_scope=1 result_installment=1`, 탭 3종 `role="tab"`·`aria-selected` 1/2, `netbenefit 153,000=1`
-- `components/ui/tabs.tsx:30`(리스트 `group-data-horizontal/tabs:h-8`) vs `components/prototype/result-screen.tsx:44`(트리거 `h-10 flex-1`)
-- Fixture 정합: `fixtures/prototype/result.ts` 6개 조합 모두 월 실적용액×12 = 총 예상 혜택, 총액−연회비 = 순혜택, 차액 0/93,000/147,000 일치
+- `features/cardfit-prototype/ui/tabs.tsx:30`(리스트 `group-data-horizontal/tabs:h-8`) vs `features/cardfit-prototype/components/result-screen.tsx:44`(트리거 `h-10 flex-1`)
+- Fixture 정합: `features/cardfit-prototype/fixtures/result.ts` 6개 조합 모두 월 실적용액×12 = 총 예상 혜택, 총액−연회비 = 순혜택, 차액 0/93,000/147,000 일치
 - PRD 근거 확인: `PRD/PRD_CardFit_v1.3.md:208` US-C AC8 "온보딩 및 결과 화면" — Round 3 `/result` 고지 추가의 근거가 실재함
 NOTES:
-- T: 명세 §8.5 "입력값에 천 단위 구분을 표시한다"가 미구현입니다. `components/prototype/amount-field.tsx`의 `<Input value={value}>`는 `1200`을 그대로 보여주고 §8.2·§8.5 예시(`1,200`)와 어긋납니다(2라운드 이상 이월). 완료 기준 9항목 자체는 모두 충족합니다.
+- T: 명세 §8.5 "입력값에 천 단위 구분을 표시한다"가 미구현입니다. `features/cardfit-prototype/components/amount-field.tsx`의 `<Input value={value}>`는 `1200`을 그대로 보여주고 §8.2·§8.5 예시(`1,200`)와 어긋납니다(2라운드 이상 이월). 완료 기준 9항목 자체는 모두 충족합니다.
 - K: `public/`의 `next.svg`·`vercel.svg` 등 스캐폴딩 SVG 5개가 어디서도 참조되지 않습니다. `BenefitLimitPeriod`/`limitPeriod`, `PlanInputViewModel.inputMode`, `meta.status`는 Fixture에 채우지만 UI가 읽지 않습니다(app·components 내 참조 0건).
 - S: `README.md`에 프로토타입 실행 절차와 진입 URL이 없습니다. `/`가 404이므로 신규 검토자는 `docs/loop/PROTOTYPE_WALKTHROUGH.md`를 먼저 읽어야 `/plan`을 찾을 수 있습니다.
 ```
@@ -285,13 +338,13 @@ TOP_FIX가 두 부분이었고 둘 다 처리했다.
 ```
 VERDICT: GO
 SCORECARD: A:P Z:P T:C K:C S:C
-TOP_FIX: `components/prototype/amount-field.tsx`의 `<Input value={value}>`에 천 단위 구분 표시를 넣어 명세 §8.5·§8.2 예시(`1,200`)와 일치시키십시오(입력 중 caret·`parseManwonInput` 정규화 유지). 구현하지 않기로 한다면 09 문서 「아직 확정하지 않은 사항」에 이월 사유를 기록해 문서-구현 모순을 없애십시오.
+TOP_FIX: `features/cardfit-prototype/components/amount-field.tsx`의 `<Input value={value}>`에 천 단위 구분 표시를 넣어 명세 §8.5·§8.2 예시(`1,200`)와 일치시키십시오(입력 중 caret·`parseManwonInput` 정규화 유지). 구현하지 않기로 한다면 09 문서 「아직 확정하지 않은 사항」에 이월 사유를 기록해 문서-구현 모순을 없애십시오.
 EVIDENCE:
 - Z: 직접 실행 — `npx tsc --noEmit` exit 0 / `npm run lint` exit 0 / `npm run build` exit 0(`/plan`·`/result` 정적 prerender). `npm run dev`(:3111)에서 plan=200, result=200, `?state=partial`=200(동일 Fixture), `/`=404. 렌더 HTML의 `data-slot="tabs-list"` class에 `group-data-horizontal/tabs:h-12`·`w-full`만 남아 Round 4 (a) 수정이 실렌더로 확인됩니다. `aria-selected=true` 1건/false 2건.
-- T 근거: `TASK/task1/10_시각_프로토타입_화면_명세.md:424` "입력값에 천 단위 구분을 표시한다" vs `components/prototype/amount-field.tsx:68-79`(원문 그대로 표시). 3라운드 이월.
-- 완료 기준: 1·3·4·6·8은 실렌더 텍스트로, 5는 `evidence-disclosure.tsx`의 근거 6종 + Fixture로, 9는 이슈 조작·`Done` 기록 없음으로 확인. `fixtures/prototype/result.ts` 6개 조합 전부 월합×12=총혜택, 총혜택−연회비=순혜택, 차액 0/93,000/147,000 일치.
+- T 근거: `TASK/task1/10_시각_프로토타입_화면_명세.md:424` "입력값에 천 단위 구분을 표시한다" vs `features/cardfit-prototype/components/amount-field.tsx:68-79`(원문 그대로 표시). 3라운드 이월.
+- 완료 기준: 1·3·4·6·8은 실렌더 텍스트로, 5는 `evidence-disclosure.tsx`의 근거 6종 + Fixture로, 9는 이슈 조작·`Done` 기록 없음으로 확인. `features/cardfit-prototype/fixtures/result.ts` 6개 조합 전부 월합×12=총혜택, 총혜택−연회비=순혜택, 차액 0/93,000/147,000 일치.
 NOTES:
-- K: `evidence-disclosure.tsx:88`이 `toLocaleString`을 인라인 호출해 `lib/prototype/format.ts` 상단의 "화면은 이 파일만 사용" 규칙과 어긋납니다(`formatMonthlyWon` 사용 가능).
+- K: `evidence-disclosure.tsx:88`이 `toLocaleString`을 인라인 호출해 `features/cardfit-prototype/lib/format.ts` 상단의 "화면은 이 파일만 사용" 규칙과 어긋납니다(`formatMonthlyWon` 사용 가능).
 - K: `public/*.svg` 5개 미참조, `limitPeriod`·`inputMode`·`meta.status`는 UI 참조 0건으로 view-model.ts의 "최소 필드만 둔다" 주석과 상충합니다.
 - S: `README.md`에 실행 절차·진입 URL이 없고 `/`가 404여서 신규 검토자는 `docs/loop/PROTOTYPE_WALKTHROUGH.md`를 먼저 읽어야 합니다(이번 목표 범위 밖).
 ```
@@ -306,7 +359,7 @@ NOTES:
 spec §8.5 "입력값에 천 단위 구분을 표시한다"를 구현했다. 이월 사유를 문서에 적는 대안 대신
 명세를 구현하는 쪽을 골랐다 — 명세가 확정한 사항이고 §8.2·§8.5 예시가 `1,200`을 그대로 보여준다.
 
-- `lib/prototype/plan-input.ts`에 `formatManwonInputDisplay`와 `caretIndexAfterDigits`를 추가하고
+- `features/cardfit-prototype/lib/plan-input.ts`에 `formatManwonInputDisplay`와 `caretIndexAfterDigits`를 추가하고
   `AmountField`가 표시값만 포맷하도록 했다. 상태에는 사용자 입력 원문이 그대로 남고
   `parseManwonInput`이 쉼표·공백을 정리하므로 정규화 경로는 바뀌지 않는다.
 - **비숫자 입력에는 구분자를 넣지 않는다.** 숫자 외 문자를 지우면 `NOT_NUMERIC` 오류 상태에
@@ -357,7 +410,7 @@ README)은 이번 라운드에서 손대지 않았다.
 - `NOTE:` Round 2 NOTE에 적은 `TASK/task1` 문서 번호 재정리가 다른 세션에서 **되돌려졌다**
   (`c8587af docs: reorganize CardFit repository artifacts` → `e3a71f9 Revert`). 현재 존재하는
   이름은 원래대로 `prototype-suggestion.md`·`prototype-suggestion-local-visual.md`·`prototype-visual-spec.md`다.
-  재정리 때 새 이름으로 바뀌었던 `lib/prototype/view-model.ts`·`fixtures/prototype/scope-notice.ts`의
+  재정리 때 새 이름으로 바뀌었던 `features/cardfit-prototype/lib/view-model.ts`·`features/cardfit-prototype/fixtures/scope-notice.ts`의
   주석은 revert 대상에 포함되지 않아 존재하지 않는 경로를 가리키고 있었다. 두 주석을 실제 경로로
   되돌려 저장소 안에 깨진 문서 참조가 남지 않게 했다. 목표 문서와 분리한 실행 프롬프트는 revert로
   함께 원래 경로로 돌아왔고 본문 동일성(`diff`)도 유지된다.
@@ -368,7 +421,7 @@ README)은 이번 라운드에서 손대지 않았다.
 VERDICT: GO
 SCORECARD: A:P Z:P T:P K:C S:C
 
-TOP_FIX: `components/prototype/evidence-disclosure.tsx:69`의 인라인 `월 ${area.limitAdjustmentMonthlyWon.toLocaleString("ko-KR")}원`을 `formatMonthlyWon(area.limitAdjustmentMonthlyWon)`으로 교체하라. 두 식의 출력이 `월 -2,500원`으로 완전히 동일해 화면 변화 0이며, `lib/prototype/format.ts:2`가 스스로 선언한 "화면은 이 파일만 사용" 규칙 위반을 없앤다. 검증: `grep -rn toLocaleString components/` 결과가 0건, 그 뒤 `npx tsc --noEmit` + `npm run build` exit 0.
+TOP_FIX: `features/cardfit-prototype/components/evidence-disclosure.tsx:69`의 인라인 `월 ${area.limitAdjustmentMonthlyWon.toLocaleString("ko-KR")}원`을 `formatMonthlyWon(area.limitAdjustmentMonthlyWon)`으로 교체하라. 두 식의 출력이 `월 -2,500원`으로 완전히 동일해 화면 변화 0이며, `features/cardfit-prototype/lib/format.ts:2`가 스스로 선언한 "화면은 이 파일만 사용" 규칙 위반을 없앤다. 검증: `grep -rn toLocaleString components/` 결과가 0건, 그 뒤 `npx tsc --noEmit` + `npm run build` exit 0.
 
 EVIDENCE:
 - Z 게이트 3종 실측: `npx tsc --noEmit` exit 0 / `npm run lint` exit 0 / `npm run build` exit 0 (`/plan`·`/result` 정적 prerender).
@@ -390,7 +443,7 @@ NOTES:
 ### 처리한 TOP_FIX
 
 `evidence-disclosure.tsx`의 인라인 `toLocaleString`을 `formatMonthlyWon`으로 교체했다.
-`lib/prototype/format.ts` 상단이 "화면은 이 파일만 사용하고 컴포넌트에서 금액을 다시 계산하지
+`features/cardfit-prototype/lib/format.ts` 상단이 "화면은 이 파일만 사용하고 컴포넌트에서 금액을 다시 계산하지
 않는다"고 선언했는데 이 한 곳만 그 규칙을 우회하고 있었다.
 
 검증 결과다.
@@ -432,10 +485,10 @@ Round 1 기록은 이력으로 남기고 Round 6 기준선을 함께 적었다.
 VERDICT: GO
 SCORECARD: A:P Z:P T:C K:C S:P
 
-TOP_FIX: `lib/prototype/view-model.ts`의 미조회 필드 4개(`CardCombinationViewModel.id`·`cardLabels`, `BenefitAreaViewModel.limitPeriod`+`BenefitLimitPeriod`, `PlanInputViewModel.inputMode`)를 화면에서 읽게 하거나 타입·Fixture에서 함께 삭제한 뒤 tsc·lint·build 재통과를 확인하라.
+TOP_FIX: `features/cardfit-prototype/lib/view-model.ts`의 미조회 필드 4개(`CardCombinationViewModel.id`·`cardLabels`, `BenefitAreaViewModel.limitPeriod`+`BenefitLimitPeriod`, `PlanInputViewModel.inputMode`)를 화면에서 읽게 하거나 타입·Fixture에서 함께 삭제한 뒤 tsc·lint·build 재통과를 확인하라.
 
 EVIDENCE:
-- `lib/prototype/view-model.ts:97,115,131,136,137` — 위 4개 필드가 `app`·`components` 어디에서도 참조 0건(grep). spec §4.1 "화면이 읽고 판단하는 최소 필드만 둔다"와 어긋남 → T·K CONCERN.
+- `features/cardfit-prototype/lib/view-model.ts:97,115,131,136,137` — 위 4개 필드가 `app`·`components` 어디에서도 참조 0건(grep). spec §4.1 "화면이 읽고 판단하는 최소 필드만 둔다"와 어긋남 → T·K CONCERN.
 - 게이트 실측: `npx tsc --noEmit`=0, `npm run lint`=0, `npm run build`=0. `git archive HEAD`로 만든 `.next` 없는 순수 체크아웃에서도 tsc=0 → `app/layout.tsx` 주석 주장 검증됨.
 - `next start` 직접 실측: `/plan` 200, `/result` 200, `/result?state=partial|zzz` 200(대표 Fixture 되돌림), root 404, 스코프 고지 각 화면 1건, 금지어 0건. Fixture 6개 조합 산술 일치(GR2 임계 미달 변경 유도 없음).
 
@@ -493,6 +546,54 @@ spec §4.1 이탈만 가리킨다고 평가자가 명시했다. `NOGO_STREAK`은
 - 조치 후 `npm run build` 실행에도 tracked 파일이 dirty가 되지 않음을 확인했다.
 
 `public/*.svg` 5개 미참조는 이번 라운드에서 손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:P
+
+TOP_FIX: `/result`가 `status: "success"`를 렌더하면서 spec §6.2 대표 제목 `계산이 완료됐어요`·기본 CTA `결과 확인하기`를 쓰지 않는 이유를 `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `CONFLICT:`로 기록하라(`inputMode` 선례와 동일 형식). 기록 대신 카피를 사전에 맞추는 선택도 가능하다.
+
+EVIDENCE:
+- 게이트 실측(직접 실행): `npx tsc --noEmit` exit 0 · `npm run lint` exit 0 · `npm run build` exit 0.
+- 브라우저 실측(375×812, Edge): 9개 기준 전부 재현 — `/plan` 미입력 차단 → `예시 금액 적용하기` 2건 → 주소 이동 없는 2단계(`url=/plan`) → `/result` 탭별 `유지/연 48,000원/연 0원`·`변경/연 153,000원/+93,000원`·`변경/연 231,000원/+147,000원`, `aria-selected` 1개만 true, `계산 근거 보기` 키보드 Enter로 `aria-expanded=false→true`, 근거 6종 전문, 접힌 상태 할부 고지, 4개 상태 전부 `scrollWidth==clientWidth==375`, 금지어 8종 0건, `root=404`.
+- 산술 자체정합: 영역합×12 = 총 예상 혜택, 총−연회비 = 순혜택, 차액 일치(6개 조합 전부).
+
+NOTES:
+- T: spec §6.2~§6.3·rules 006은 상태 사전의 대표 제목·기본 CTA 준수를 요구하는데 `/result`(status `success`)는 `조건별 결과를 확인해요`/`미래지출 다시 입력하기`를 쓴다. 이 편차가 로그·워크스루 어디에도 없다.
+- T/Z: `plan-flow.tsx`의 `feeCapError`가 표시만 되고 `결과 확인하기` Link를 막지 않는다(실측: 연회비 한도 `-5` 오류 표시 상태에서 링크 enabled, `/result`로 이동). 1단계는 차단하는데 2단계만 비차단이다.
+- K: `public/` svg 5개가 tracked인데 참조 0건.
+```
+
+**판정 해석**: `S`가 `P`를 유지하고 `T`·`K`가 `C`로 남았다. 평가자가 `T:C`는 완료 기준 누락이 아니라
+spec §6.2 편차 미기록만 가리킨다고 명시했다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 8
+
+### 처리한 TOP_FIX
+
+`/result`가 `status: "success"`에서 spec §6.2 상태 사전 문구를 쓰지 않는 이유를 위 「CONFLICT /
+ASSUMPTION」 절에 `CONFLICT:`로 기록했다. 카피를 사전에 맞추는 대안은 고르지 않았다 —
+`결과 확인하기`는 결과 화면으로 이동하는 CTA라 `/result`에서는 자기 자신을 가리키는 링크가 되고,
+`계산이 완료됐어요`는 이번 범위 밖인 계산 진행 화면(`UI-004`)의 제목이기 때문이다.
+
+### 라운드 진행 중 발생한 구조 충돌과 사용자 결정
+
+다른 세션이 프로토타입 코드 전체를 `features/cardfit-prototype/`으로 옮기고 근거 문서 일부를 함께
+고치는 마이그레이션을 진행했다. 상세와 사용자 결정(루트 배치 복원)은 위 「CONFLICT / ASSUMPTION」
+절에 기록했다. 복원 후 검증 3종을 다시 실행해 모두 exit 0을 확인했다.
+
+`NOTES`의 나머지(`feeCapError` 비차단, 미참조 `public/*.svg` 5개)는 이번 라운드에서 손대지 않았다.
+`feeCapError`가 2단계 CTA를 막지 않는 것은 실제 결함이므로 다음 `TOP_FIX`로 올라오면 처리한다.
 
 ### 검증
 

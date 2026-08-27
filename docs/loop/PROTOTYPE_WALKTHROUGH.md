@@ -1,6 +1,6 @@
 # CardFit 경량 시각 체크포인트 — 화면 워크스루
 
-라운드: 7 · 기록 시각: 2026-08-27 15:33 실행 세션
+라운드: 8 · 기록 시각: 2026-08-27 15:33 실행 세션
 
 이 문서는 브라우저를 볼 수 없는 검토자가 완료 기준 1~9를 판정할 수 있게, 실제로 렌더되는 텍스트와
 상태 전이·뷰포트 처리·완주 경로를 적은 기록이다. 아래 `/plan`·`/result` 텍스트 전문은
@@ -52,9 +52,9 @@ state_unknown_status=200
 
 - **접근 URL**: `http://localhost:3000/plan`
 - **진입 경로**: 프로토타입 첫 진입. 새로고침·직접 접근에도 같은 대표 Fixture가 표시된다.
-- **Fixture 파일**: `fixtures/prototype/plan.ts` → `PLAN_INPUT_FIXTURE` (`fixtureId: plan-input-01`, `status: "empty"`)
+- **Fixture 파일**: `features/cardfit-prototype/fixtures/plan.ts` → `PLAN_INPUT_FIXTURE` (`fixtureId: plan-input-01`, `status: "empty"`)
 - **ViewModel 타입**: `PlanInputViewModel`, `FutureSpendCategoryViewModel`, `FutureSpendItemViewModel`,
-  `ScopeNoticeViewModel`, `PrototypeMetaViewModel` (`lib/prototype/view-model.ts`)
+  `ScopeNoticeViewModel`, `PrototypeMetaViewModel` (`features/cardfit-prototype/lib/view-model.ts`)
 - **충족 완료 기준**: 1, 2, 6, 7, 8
 
 ### 렌더되는 텍스트 전문
@@ -154,7 +154,7 @@ CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니
 ## 화면 2 — `/plan` 카드 조건 확인 (2단계)
 
 - **접근 URL**: `http://localhost:3000/plan` (1단계에서 `카드 조건 확인하기`로 전환. 별도 URL을 만들지 않는다)
-- **Fixture 파일**: `fixtures/prototype/plan.ts` → `PLAN_INPUT_FIXTURE.constraints`
+- **Fixture 파일**: `features/cardfit-prototype/fixtures/plan.ts` → `PLAN_INPUT_FIXTURE.constraints`
 - **ViewModel 타입**: `CardConstraintViewModel`
 - **충족 완료 기준**: 2, 6, 7, 8
 
@@ -227,7 +227,7 @@ CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니
 ## 화면 4 — `/result` 세 시나리오 결과
 
 - **접근 URL**: `http://localhost:3000/result` (2단계 `결과 확인하기` 또는 직접 접근·새로고침)
-- **Fixture 파일**: `fixtures/prototype/result.ts` → `RESULT_FIXTURE` (`fixtureId: result-success-01`, `status: "success"`)
+- **Fixture 파일**: `features/cardfit-prototype/fixtures/result.ts` → `RESULT_FIXTURE` (`fixtureId: result-success-01`, `status: "success"`)
 - **ViewModel 타입**: `ResultViewModel`, `ScenarioResultViewModel`, `CardCombinationViewModel`,
   `BenefitAreaViewModel`, `EvidenceViewModel`, `ScopeNoticeViewModel`
 - **충족 완료 기준**: 1, 3, 4, 6, 7, 8
@@ -277,7 +277,7 @@ CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니
 ```
 
 결과 아래의 스코프 경계 고지는 spec §7.2 후보 문구를 그대로 쓰며 `/plan` 입력 전 고지와 같은
-`fixtures/prototype/scope-notice.ts` 한 곳에서 온다. `COMMAND-008` 승인 문구가 확정되면 그 파일만
+`features/cardfit-prototype/fixtures/scope-notice.ts` 한 곳에서 온다. `COMMAND-008` 승인 문구가 확정되면 그 파일만
 교체하면 두 화면이 함께 바뀐다. 결과를 보고 실제 카드 행동을 판단하는 지점에 두어 PRD US-C AC8의
 "온보딩 및 결과 화면" 고지 전제를 충족한다.
 
@@ -303,14 +303,14 @@ CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니
 ## 화면 5 — `/result` 계산 근거 disclosure
 
 - **접근 URL**: `http://localhost:3000/result` → `계산 근거 보기` 클릭 (탭별로 독립)
-- **구현 파일**: `components/prototype/evidence-disclosure.tsx`
+- **구현 파일**: `features/cardfit-prototype/components/evidence-disclosure.tsx`
 - **충족 완료 기준**: 4, 5, 6, 8
 
 `계산 근거 보기`는 Base UI Accordion Trigger로 렌더되어 키보드로 열고 닫히며 제목과 연결된
 `aria-expanded`를 제공한다. 접힌 상태에서도 할부 미반영 경계 문구는 바로 위에 노출된다(완료 기준 6).
 
 접힌 상태의 패널은 SSR HTML에 포함되지 않으므로, 아래는 `예상한 만큼` 탭에서 펼쳤을 때 렌더되는
-텍스트를 `components/prototype/evidence-disclosure.tsx`와 `fixtures/prototype/result.ts` 값으로
+텍스트를 `features/cardfit-prototype/components/evidence-disclosure.tsx`와 `features/cardfit-prototype/fixtures/result.ts` 값으로
 그대로 옮긴 것이다.
 
 ```
@@ -497,5 +497,5 @@ http://localhost:3000/plan 진입
   검증되지 않은 사용자 수·절감액·추천 보장 문구, 실제 카드사·플랫폼 실명과 로고를 쓰지 않았다.
   카드는 `예시 카드 A`·`예시 카드 B` 비식별 라벨만 사용한다.
 - 스코프 고지(spec §7.2)는 `/plan` 입력 전과 `/result` 결과 아래 두 곳에 표시된다. 두 화면이
-  `fixtures/prototype/scope-notice.ts`의 같은 후보 문구를 읽는다. 조합 선택(§7.3)·외부 이동(§7.4)
+  `features/cardfit-prototype/fixtures/scope-notice.ts`의 같은 후보 문구를 읽는다. 조합 선택(§7.3)·외부 이동(§7.4)
   고지는 해당 화면을 만들지 않았으므로 함께 미룬다.
