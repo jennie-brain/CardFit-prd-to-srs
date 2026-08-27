@@ -137,7 +137,22 @@ Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일�
 
   유실은 없다. 이 목표의 산출물은 커밋 `8474711`(루트 배치 코드)과 `8e0b680`(기록)에 있고, 상대
   세션의 이동본 26개 파일은 scratchpad `backup-features-relocation/`에 사본이 있으며 워킹트리에도
-  그대로 있다. 배치 정본이 정해지면 그 배치에서 라운드를 재개한다.
+  그대로 있다.
+
+  **재개 판단 — 현재 트리에서 라운드를 이어간다.** 근거 문서가 지금 자기모순 상태여서 어느 한쪽을
+  "정본"으로 확정할 수 없다.
+  - rules 006 17행(「코드 거처와 실행」)은 루트 `components/`·`lib/`·`fixtures/`, 같은 파일 22·38행은
+    `features/cardfit-prototype/`을 지정한다.
+  - spec §2.2 디렉터리 배치는 루트, 같은 문서 §4.1·§5.1은 `features/cardfit-prototype/`을 지정한다.
+  - 이 목표의 실행 프롬프트 §1 작업 대상은 `features/cardfit-prototype/`으로 바뀌었다(상대 세션 편집).
+
+  배치 확정은 이 목표의 결정 범위가 아니고, 남은 작업(`feeCapError` 비차단 결함, 미참조
+  `public/*.svg`)은 **파일이 어느 디렉터리에 있든 동일한 수정**이다. 따라서 배치 복원을 반복하지 않고
+  현재 워킹트리(= `features/cardfit-prototype/` 배치, 실행 프롬프트 §1이 지정하는 위치)에서 라운드를
+  계속한다. 배치가 나중에 확정되면 수정 내용이 그대로 따라간다.
+
+  워크스루의 파일 경로 서술은 현재 트리 실제 위치로 맞췄다. 과거 스코어카드 인용문은 판정 원문이므로
+  그대로 둔다.
 - `NOTE:` `next dev`가 루트 `AGENTS.md`에 자기 규칙 블록을 덧붙였다. 보호 대상 파일이므로
   `git checkout -- AGENTS.md`로 되돌리고 `next.config.ts`에 `agentRules: false`를 설정해 재발을 막았다.
   이후 재기동에서 `Generated AGENTS.md` 줄이 사라지고 `git status --porcelain AGENTS.md`가 비었음을 확인했다.
