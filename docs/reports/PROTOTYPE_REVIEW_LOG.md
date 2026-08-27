@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 19
+ROUND: 20
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -1429,6 +1429,74 @@ FAIL 1건
 | 전문 대조 검사 | 18/18 일치 (fail=0) + 차단 시 URL 미변경 |
 | Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
 | 문서 개수 검사 | PASS (뷰포트 9행=아홉, 제외 항목 7건) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:P
+TOP_FIX: docs/reports/PROTOTYPE_WALKTHROUGH.md 화면 5에 "더 많이" 탭의 3번째 적용 조건("전월 실적에는 예시 카드 B의 연회비 결제분이 포함되지 않습니다.")을 렌더 원문대로 추가하고, 화면 1 전문에 sr-only "다음 단계" h2를 표기한 뒤, 전문 대조 검사(18문구)에 이 두 문구를 넣어 20문구로 확장해 fail=0을 재확인하십시오.
+EVIDENCE:
+- fixtures/result.ts HIGH applicationConditions 3건 vs 워크스루 grep -c "연회비 결제분" = 0 (LOW 변형은 기록됨 → 비대칭)
+- plan-flow.tsx:520 sr-only "다음 단계" h2 vs 워크스루 화면 1 전문 미표기
+- package.json dependencies.shadcn ^4.19.0 (CLI bin) → devDependencies 대상
+NOTES:
+- Round 18 잔여 2건 우선순위: sr-only h2(T) > package.json shadcn(K). 앞 항목은 위 TOP_FIX에 병합(더 큰 누락인 HIGH 조건과 같은 유형·같은 파일). shadcn 이동은 lockfile 재생성이 함께 필요해 다음 라운드 후속으로 두십시오.
+- 완료 기준 9항목은 코드·실측 기준으로 충족. 앞당긴 화면(상태 7종·RANGE·AI 설명·조합 선택), Route Handler·Server Action·Prisma·외부 호출 0건.
+- LOW 시나리오의 조건↔금액 귀속과 3시나리오 산술이 서로 모순되지 않는다.
+```
+
+**판정 해석**: `K`가 `P`에서 `C`로 내려갔다 — `package.json`의 `shadcn`이 CLI인데 `dependencies`에
+있다는 지적이다. `T`는 워크스루 누락 2건이다. 평가자가 잔여 항목의 우선순위를 매기고 `shadcn` 이동은
+lockfile 재생성이 필요하니 다음 라운드로 두라고 명시했다.
+
+## Round 20
+
+### 처리한 TOP_FIX (세 부분)
+
+**(1) `더 많이` 탭의 3번째 적용 조건 누락.** HIGH 시나리오만 적용 조건이 3건인데 워크스루에는
+BASE 기준 2건만 있었다(`grep -c "연회비 결제분"` = 0). LOW의 변형은 기록해 두고 HIGH만 빠뜨린
+비대칭이었다. 화면 5 절에 탭별 차이를 명시했다.
+
+```
+   (탭별 차이 — `더 많이` 탭은 위 두 줄에 아래 한 줄이 더 붙는다)
+   · 전월 실적에는 예시 카드 B의 연회비 결제분이 포함되지 않습니다.
+
+   (`더 적게` 탭의 첫 줄은 화면 4 절에 적은 미충족 문구로 바뀐다)
+```
+
+**(2) sr-only `다음 단계` h2 미표기.** 화면 4 절에는 sr-only 탭 이름을 적었는데 화면 1 전문에는
+`plan-flow.tsx:520`의 sr-only 제목이 빠져 있었다. 화면에 보이지 않고 screen reader만 읽는다는
+설명과 함께 전문에 넣었다.
+
+**(3) 전문 대조 검사 20문구 확장.** HIGH 탭 근거 화면을 따로 수집하는 단계를 추가했다 —
+BASE·LOW만 수집하면 HIGH의 3번째 조건을 검증할 수 없다. sr-only 제목도 `innerText`에 포함되므로
+같은 방식으로 렌더·워크스루 양쪽 대조가 된다.
+
+```
+[blocked-url] /plan (이동 차단됨)
+SYNC_RESULT total=20 fail=0
+```
+
+수집 화면이 일곱 개가 됐다 — `/plan` 1단계 · 2단계 · 2단계 차단 · `/result` BASE · BASE 근거 ·
+HIGH 근거 · LOW 근거 · `/` 404.
+
+### 다음 라운드로 넘긴 것
+
+- `K`: `package.json`의 `shadcn`을 `devDependencies`로 옮긴다. 평가자가 "lockfile 재생성
+  (`npm install --package-lock-only` 후 `node_modules/shadcn`에 `"dev": true` 확인)이 함께 필요해
+  다음 라운드 후속으로 두라"고 명시했다. `package.json`·`package-lock.json`은 이 목표의 작업 대상이다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| 전문 대조 검사 | **20/20** 일치 (fail=0) + 차단 시 URL 미변경 |
+| Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
+| 문서 개수 검사 | PASS |
 
 ### aztks-agent EVALUATE 결과
 
