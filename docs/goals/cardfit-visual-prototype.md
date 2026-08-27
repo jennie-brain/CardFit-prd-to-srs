@@ -64,7 +64,7 @@
   2. `NOGO_STREAK`이 3에 도달 → **STOP REASON: EVAL_STALLED**
   3. 동일한 `TOP_FIX`가 3라운드 연속 반환 → **STOP REASON: FIX_LOOP**
   4. 평가-진행 라운드(turn = `/goal` 평가자가 진행 상태를 한 번 점검하는 메인 에이전트 응답 사이클) 누적 30회 도달 → **STOP REASON: TURN_CAP** (= or stop after 30 turns)
-  5. 착수 첫 명령인 `node -v`·`npm -v`·`npm ping` 중 하나라도 실패 → **STOP REASON: TOOLCHAIN_MISSING** — 이 경우 구현을 시작하지 않았으므로 종료 방법 2)·5)는 건너뛰고, 1)의 기록과 실패한 `node -v`·`npm -v` 출력만 대화에 남긴 뒤 사용자에게 Node.js LTS 설치를 요청한다.
+  5. 착수 첫 명령인 `node -v`·`npm -v`·`npm ping` 중 하나라도 실패 → **STOP REASON: TOOLCHAIN_MISSING** — 이 경우 구현을 시작하지 않았으므로 종료 방법 2)·5)는 건너뛰고, **종료 방법 1)**의 기록과 함께 `node -v`·`npm -v`·`npm ping` 세 명령의 출력을 성공·실패 구분 없이 모두 대화에 남긴 뒤 사용자에게 Node.js LTS 설치를 요청한다.
 - **종료 방법** (아래 명령은 **모두 Bash 도구로 실행한다** — 이 머신의 기본 셸은 PowerShell이라 `find` 등이 Windows 실행 파일로 잡혀 재현되지 않는다):
   1. `docs/loop/PROTOTYPE_REVIEW_LOG.md` 마지막 줄에 `STOP REASON: <코드>` 한 줄을 덧붙이고 상단 카운터 세 줄을 최종값으로 갱신한다.
   2. `npx tsc --noEmit`, `npm run lint`, `npm run build` 를 **각각 따로** 실행해 세 명령 모두 exit 0 인 출력을 대화에 남긴다.
