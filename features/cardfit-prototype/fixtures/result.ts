@@ -56,18 +56,21 @@ export const RESULT_FIXTURE: ResultViewModel = {
         annualFeeWon: 9_000,
         netBenefitAnnualWon: 48_000,
         benefitAreas: [
+          // 적용 조건이 "이 시나리오는 예시 카드 B의 생활 할인 조건을 충족하지 않는다"고 밝히므로
+          // 생활 할인은 현재 조합(예시 카드 A 단독)과 같은 월 4,000원이어야 한다.
+          // 조합이 커지며 늘어난 몫은 예시 카드 B가 제공하는 온라인 쇼핑 할인에만 귀속된다.
           {
             areaLabel: "생활 할인",
-            calculatedMonthlyWon: 4_250,
+            calculatedMonthlyWon: 4_000,
             limitAdjustmentMonthlyWon: 0,
-            effectiveMonthlyWon: 4_250,
+            effectiveMonthlyWon: 4_000,
             limitLabel: "생활 할인 월 최대 1만 원",
           },
           {
             areaLabel: "온라인 쇼핑 할인",
-            calculatedMonthlyWon: 500,
+            calculatedMonthlyWon: 750,
             limitAdjustmentMonthlyWon: 0,
-            effectiveMonthlyWon: 500,
+            effectiveMonthlyWon: 750,
             limitLabel: "온라인 쇼핑 할인 월 최대 2만 원",
           },
         ],

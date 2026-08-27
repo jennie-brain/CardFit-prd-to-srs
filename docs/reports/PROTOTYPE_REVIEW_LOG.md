@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 14
+ROUND: 15
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -1072,6 +1072,90 @@ SYNC_RESULT total=15 fail=0
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 | 전문 대조 검사 | 15/15 일치 (fail=0) |
 | 375px 실측 | 8개 상태 전부 가로 스크롤 없음 |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:C Z:P T:P K:C S:C
+TOP_FIX: fixtures/result.ts LOW candidateCombination 의 생활 할인 250원을 온라인 쇼핑으로 옮기십시오 — 생활 4_250→4_000(계산·실제 동일), 온라인 500→750. 검증: 월 합 4,750 유지 → totalBenefitAnnualWon 57,000 · netBenefitAnnualWon 48,000 · netBenefitDeltaAnnualWon 0 불변, tsc 통과, 워크스루 무영향.
+
+EVIDENCE:
+- LOW applicationConditions[0]은 "예시 카드 B의 생활 할인은 … 이 조건을 충족하지 않아"라고 단정하는데, 같은 시나리오 candidateCombination 의 생활 할인은 현재 조합(A 단독) 4,000원보다 250원 큰 4,250원이다. B의 생활 할인이 0이면 설명되지 않는 증분이다(LOW는 KEEP이라 근거 패널이 현재 조합만 렌더해 화면에는 아직 안 드러나지만, 변경 후보 내역을 펼치는 후속 체크포인트에서 그대로 노출된다).
+- 산술 재검산 결과 그 외 모순 없음: BASE 60,000/162,000-9,000=153,000(Δ93,000), HIGH 84,000/240,000-9,000=231,000(Δ147,000), keyLimitNotice 의 -2,500·-5,000이 limitAdjustmentMonthlyWon 과 일치.
+- 완료 기준 4·5 커버리지: scenario-result-panel.tsx(spec §10.1 순서)와 evidence-disclosure.tsx(spec §10.2 순서). 기준 1·2·6도 각 구현 지점 확인.
+
+NOTES:
+- K(비차단): ui/tabs.tsx tabsListVariants, ui/badge.tsx badgeVariants, ui/alert.tsx AlertAction 소비처 0건(shadcn 생성물). lib·view-model 의 미사용 export는 계약 표면이므로 제외.
+- S(비차단): components/scope-notice.tsx 주석이 /plan 전용으로 적혀 있으나 result-screen.tsx 에서도 사용. 근거는 fixtures/scope-notice.ts 주석에 두 화면 모두로 기록돼 정보 손실은 없음.
+- A(비차단): spec §2.1 "npm run dev 한 번으로 진입 화면"과 §3.2 "/ 후속 연기"의 간극을 app/not-found.tsx 가 메우므로 기준 1은 충족.
+- 미검증(코디네이터 실측 신뢰): 게이트 3종, 375px 뷰포트, 탭 전이 수치, 금지어 0건, 이슈 미종결, 워크스루 15문구 동기화.
+```
+
+**판정 해석**: `T`가 `P`를 유지했고 시간 제한(15분)과 실측 결과 전달이 효과가 있었다(직전 31분 →
+3분 10초). `A`의 `C` 근거는 또 Fixture 모순 한 건이며, 이번에는 **화면에 아직 렌더되지 않는**
+변경 후보 내역의 산술이다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 15
+
+### 처리한 TOP_FIX
+
+LOW 시나리오 변경 후보의 영역별 금액을 조건문과 일치시켰다.
+
+| 영역 | 이전 | 현재 |
+| --- | --- | --- |
+| 생활 할인 | 월 4,250원 | 월 **4,000원** (현재 조합과 동일) |
+| 온라인 쇼핑 할인 | 월 500원 | 월 **750원** |
+| 월 합계 | 4,750원 | 4,750원 (불변) |
+
+LOW의 적용 조건은 "예시 카드 B의 생활 할인은 전월 실적 조건을 충족하지 않아"라고 단정한다.
+그렇다면 후보 조합의 생활 할인은 현재 조합(A 단독)과 같아야 하고, 조합이 커지며 늘어난 몫은
+B가 제공하는 온라인 쇼핑 할인에만 귀속돼야 한다. 월 합계가 그대로이므로 연 총혜택 57,000원·
+순혜택 48,000원·차액 0원은 변하지 않는다.
+
+### 이 유형을 기계가 잡도록 자체 검사 추가
+
+Round 13·14의 `TOP_FIX`가 **둘 다 "사람이 근거를 꼼꼼히 읽어야 드러나는 Fixture 모순"**이었다.
+`tsc`·`lint`·`build`는 이 유형을 잡지 못한다. 표준 라이브러리만 쓰는 검사를 scratchpad에 두고
+매 라운드 실행한다(저장소 의존성 추가 없음).
+
+검사하는 불변식이다.
+
+1. 조합별 `영역 실효금액 합 × 12 == totalBenefitAnnualWon`
+2. `총혜택 − 연회비 == netBenefitAnnualWon`
+3. 영역별 `계산상 + 한도차감 == 실제 적용`, 한도차감은 0 이하
+4. `후보 순혜택 − 현재 순혜택 == netBenefitDeltaAnnualWon`
+5. `conclusion == KEEP` ⟺ `delta == 0`
+6. `conclusion == CHANGE`면 `delta >= 50,000` (PRD GR2 / US-A AC7 임계)
+7. **귀속 점검** — 적용 조건이 특정 영역을 "충족하지 않는다"고 밝히면, 그 영역은 현재 조합과
+   후보 조합에서 금액이 같아야 한다
+
+가드가 실제로 이번 버그를 잡는지 옛 값 사본으로 확인했다.
+
+```
+=== 옛 값(버그 상태) ===
+FAIL 3건
+  - [LOW] 현재 조합 월 실효합×12=51000 != totalBenefitAnnualWon=48000
+  - [LOW] 후보 조합 월 실효합×12=54000 != totalBenefitAnnualWon=57000
+  - [LOW] 적용 조건이 '생활 할인' 미충족이라 했는데 후보 금액 4000 != 현재 4250
+=== 현재 값 ===
+PASS 모든 불변식 통과
+```
+
+세 번째 실패가 7번 귀속 불변식이고, 이번 `TOP_FIX`가 지적한 바로 그 모순이다.
+
+`NOTES`의 비차단 2건(`ui/` 미사용 export 3건, `scope-notice.tsx` 주석 사용처)은 이번 라운드에서
+손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
+| 전문 대조 검사 | 15/15 일치 (fail=0) |
 
 ### aztks-agent EVALUATE 결과
 
