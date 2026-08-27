@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 8
+ROUND: 9
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -624,6 +624,67 @@ ASSUMPTION」 절에 `CONFLICT:`로 기록했다. 카피를 사전에 맞추는 
 
 `NOTES`의 나머지(`feeCapError` 비차단, 미참조 `public/*.svg` 5개)는 이번 라운드에서 손대지 않았다.
 `feeCapError`가 2단계 CTA를 막지 않는 것은 실제 결함이므로 다음 `TOP_FIX`로 올라오면 처리한다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:P
+
+TOP_FIX: `plan-flow.tsx`의 2단계 `결과 확인하기`를 `feeCapError !== null`일 때 차단하십시오(1단계 `goToConstraints`처럼 Alert + focus 이동). 검증: 연회비 한도에 `-5` 입력 후 CTA를 눌러도 `/result`로 이동하지 않고 오류가 유지되는지 확인.
+
+EVIDENCE:
+- `validateFeeCap`은 오류 문구만 세팅하고 `<Link href="/result">`에는 어떤 가드도 없다. 같은 파일의 1단계는 동일 성격의 이동을 차단하므로 두 단계의 오류 처리가 모순이다.
+- 게이트 3종 현재 트리 실측: `npx tsc --noEmit` exit 0 / `npm run lint` exit 0 / `npm run build` exit 0.
+- 완료 기준 1~9 전부 근거 확인. 기준 4 금액 산술 정합(BASE 13,500×12=162,000, −9,000=153,000, Δ93,000; LOW Δ0→KEEP; HIGH 240,000−9,000=231,000). PRD GR2/US-A AC7 임계(50,000원) 위반 조합 없음.
+
+NOTES:
+- K: `public/{next,vercel,file,globe,window}.svg` 5개가 tracked·미참조. `next.svg`·`vercel.svg`는 서드파티 로고 자산이라 화면 렌더는 0건이어도 기준 8·rules 006 「로고 금지」의 문자적 경계에 닿는다. 삭제가 가장 저렴한 정리다.
+- T: 기준 1은 충족되나 `/`가 404이고 앱 내 진입 안내가 없어 진입 URL 지식이 워크스루 밖에는 없다(README는 수정 범위 밖).
+- A/S 확인: 스코프 고지가 두 화면에서 `scope-notice.ts` 한 곳을 읽으며, 미룬 항목을 앞당긴 구현이 없다. 페이지가 Fixture import 한 줄만 Query로 바뀌는 구조라 화면 재작성 없이 교체 가능하다.
+```
+
+**판정 해석**: `A`·`Z`·`S`가 `P`를 유지하고 `T`·`K`가 `C`로 남았다. TOP_FIX는 Round 7 `NOTES`에서
+예고된 실제 결함이 승격한 것이다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 9
+
+### 처리한 TOP_FIX
+
+2단계 `결과 확인하기`가 카드 조건 오류를 무시하고 이동하던 결함을 고쳤다. 1단계는 미입력 시
+이동을 막는데 2단계만 비차단이어서 같은 화면 안에서 오류 처리가 갈리고 있었다.
+
+- `guardResultNavigation`을 추가해 `feeCapError !== null`이면 `preventDefault`로 이동을 막고,
+  2단계에도 차단 사유 Alert(`결과를 확인할 수 없어요`)을 띄우고 연회비 한도 필드로 focus를 옮긴다.
+- `aria-disabled`를 함께 걸어 보조기기에도 상태를 전달한다. `aria-disabled`는 권고 속성이라 실제
+  차단은 `preventDefault`가 담당한다.
+- 값을 고쳐 오류가 사라지면 `validateFeeCap`이 차단 문구를 지우고 이동이 다시 열린다.
+- `미래지출 다시 입력하기`로 1단계로 돌아갈 때 단계 오류 문구가 새지 않게 함께 초기화한다.
+- `/result` 직접 접근은 spec §3.2대로 계속 열어 둔다. 가드는 흐름 CTA에만 걸고 라우트를 잠그지 않는다.
+
+### 실측 검증 (375×812 실브라우저)
+
+| 단계 | 결과 |
+| --- | --- |
+| 정상 상태(`10`) | `aria-disabled=false` |
+| `-5` 입력 | `입력 오류: 0원 이상 금액을 입력해 주세요.` 1건, `aria-disabled=true` |
+| 오류 상태에서 CTA 강제 클릭 | `url=/plan` 유지 — 이동하지 않음. `결과를 확인할 수 없어요` 1건, 차단 본문 1건, focus `annual-fee-cap` |
+| 차단 중 입력 보존 | 오류 문구 1건 유지, 입력값 `-5` 유지 |
+| 차단 중 375px | `scrollWidth === clientWidth === 375` |
+| `12`로 수정 | 차단 문구 0건, `aria-disabled=false` |
+| 수정 후 CTA 클릭 | `/result` 이동, 결과 제목 1건 |
+| `/result` 직접 접근 | 결과 제목 1건 — spec §3.2 유지 |
+
+`NOTES`의 `public/*.svg` 5개는 이번 라운드에서 손대지 않았다. 평가자가 `next.svg`·`vercel.svg`를
+서드파티 로고 자산으로 지적해 완료 기준 8과 닿는다고 판단한 만큼, 다음 `TOP_FIX`로 올라오면 처리한다.
 
 ### 검증
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 
 import { AmountField } from "@/features/cardfit-prototype/components/amount-field";
 import { FutureSpendItemCard } from "@/features/cardfit-prototype/components/future-spend-item-card";
@@ -75,6 +75,7 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
 
   const customLabelRef = useRef<HTMLInputElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
+  const feeCapRef = useRef<HTMLInputElement>(null);
 
   const selectedCategory =
     plan.categories.find((category) => category.id === categoryId) ?? plan.categories[0];
@@ -201,6 +202,18 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
     setFeeCapRaw(raw);
     const parsed = parseManwonInput(raw, { allowZero: true });
     setFeeCapError(parsed.ok ? null : AMOUNT_ERROR_MESSAGE[parsed.reason]);
+    if (parsed.ok) setStepError(null);
+  }
+
+  /**
+   * 2단계에서 결과 화면으로 넘어가기 전 카드 조건 오류를 1단계와 같은 방식으로 차단한다.
+   * 오류가 남아 있으면 이동하지 않고 사유를 알린 뒤 해당 필드로 focus를 옮긴다. (spec §8.6)
+   */
+  function guardResultNavigation(event: MouseEvent<HTMLAnchorElement>) {
+    if (feeCapError === null) return;
+    event.preventDefault();
+    setStepError("카드 조건에 입력 오류가 있어요. 연회비 한도를 고치면 결과를 확인할 수 있습니다.");
+    feeCapRef.current?.focus();
   }
 
   if (step === "constraints") {
@@ -237,6 +250,7 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
             errorMessage={feeCapError}
             allowZero
             hint="연회비 한도는 0원 이상 입력할 수 있습니다."
+            inputRef={feeCapRef}
           />
 
           <div className="flex flex-col gap-2">
@@ -277,9 +291,21 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
         </section>
 
         <div className="flex flex-col gap-2">
+          {stepError ? (
+            <Alert variant="destructive">
+              <AlertTitle>결과를 확인할 수 없어요</AlertTitle>
+              <AlertDescription>{stepError}</AlertDescription>
+            </Alert>
+          ) : null}
           <Link
             href="/result"
-            className={cn(buttonVariants(), "h-11 w-full text-base")}
+            aria-disabled={feeCapError !== null}
+            onClick={guardResultNavigation}
+            className={cn(
+              buttonVariants(),
+              "h-11 w-full text-base",
+              feeCapError !== null && "opacity-60",
+            )}
           >
             결과 확인하기
           </Link>
@@ -287,7 +313,11 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
             type="button"
             variant="outline"
             className="h-11 w-full text-base"
-            onClick={() => setStep("spend")}
+            onClick={() => {
+              // 단계별 이동 오류 문구가 다음 단계로 새지 않게 함께 지운다.
+              setStepError(null);
+              setStep("spend");
+            }}
           >
             미래지출 다시 입력하기
           </Button>
