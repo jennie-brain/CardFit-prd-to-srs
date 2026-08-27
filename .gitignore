@@ -23,3 +23,6 @@ scaffold-tmp/
 
 # TypeScript incremental build 산출물
 *.tsbuildinfo
+
+# Next.js 가 매 build 마다 다시 쓰는 생성 파일
+next-env.d.ts

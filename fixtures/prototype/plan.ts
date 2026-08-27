@@ -59,7 +59,6 @@ export const PLAN_INPUT_FIXTURE: PlanInputViewModel = {
     dataAsOf: "2026-08-27",
     isExample: true,
   },
-  inputMode: "single",
   categories: CATEGORIES,
   constraints: {
     maxCardCount: 3,

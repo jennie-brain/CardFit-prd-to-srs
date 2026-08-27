@@ -91,10 +91,13 @@ export interface CardConstraintViewModel {
   allowsNewIssue: boolean;
 }
 
+/**
+ * spec §4.2 스케치의 `inputMode`는 두지 않는다. 이번 체크포인트는 `SINGLE`만 구현해
+ * 화면이 모드를 분기할 일이 없고, §4.1이 "화면이 읽고 판단하는 최소 필드만 둔다"고 정했다.
+ * `RANGE`를 도입하는 후속 체크포인트에서 §4.2 스케치대로 다시 추가한다.
+ */
 export interface PlanInputViewModel {
   meta: PrototypeMetaViewModel;
-  /** 최초 체크포인트는 `single`만 구현한다. `range`는 후속 체크포인트. */
-  inputMode: "single";
   categories: FutureSpendCategoryViewModel[];
   constraints: CardConstraintViewModel;
   /** 사용자가 명시적으로 선택했을 때만 적용하는 비개인화 예시 항목. (spec §8.1) */
@@ -112,11 +115,12 @@ export type ScenarioKey = "LOW" | "BASE" | "HIGH";
 /** 유지·변경은 같은 위계의 정상 결과다. (spec §9.2) */
 export type ScenarioConclusion = "KEEP" | "CHANGE";
 
-export type BenefitLimitPeriod = "MONTHLY" | "ANNUAL";
-
 /**
  * 영역별 혜택과 한도. 한도는 적용 영역과 기간을 함께 표시하며
  * 카드 전체 한도로 읽히는 포괄 라벨을 쓰지 않는다. (spec §10.1)
+ *
+ * 한도 기간은 `limitLabel`이 문장으로 이미 담으므로(`생활 할인 월 최대 1만 원`)
+ * 별도 enum 필드를 두지 않는다. (spec §4.1 최소 필드)
  */
 export interface BenefitAreaViewModel {
   areaLabel: string;
@@ -126,15 +130,13 @@ export interface BenefitAreaViewModel {
   limitAdjustmentMonthlyWon: number;
   /** 한도 적용 후 실제 월 혜택. */
   effectiveMonthlyWon: number;
-  /** `생활 할인 월 최대 1만 원` 형태의 한도 라벨. 한도가 없으면 null. */
+  /** `생활 할인 월 최대 1만 원` 형태의 적용 영역·한도 기간을 담은 라벨. 한도가 없으면 null. */
   limitLabel: string | null;
-  limitPeriod: BenefitLimitPeriod | null;
 }
 
 export interface CardCombinationViewModel {
-  id: string;
+  /** `예시 카드 A + 예시 카드 B`처럼 화면에 그대로 표시하는 조합 이름. */
   label: string;
-  cardLabels: string[];
   totalBenefitAnnualWon: number;
   annualFeeWon: number;
   netBenefitAnnualWon: number;

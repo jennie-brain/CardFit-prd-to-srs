@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 6
+ROUND: 7
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -42,6 +42,10 @@ Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일�
 
 따라서 종료 방법 6)은 `git status --porcelain` 출력이 1)의 작업 대상과 `docs/loop/` 안에만
 있는지로 판정한다.
+
+**Round 7 추가.** 그 사이 다른 세션이 빈 디렉터리 `features/cardfit-prototype/{components,fixtures,lib,ui}/.gitkeep`를
+만들었다. 이 목표가 만든 것이 아니고 작업 대상 밖이므로 손대지 않는다. 종료 판정에서
+`?? features/`는 이 목표의 변경으로 세지 않는다.
 
 ## CONFLICT / ASSUMPTION
 
@@ -413,6 +417,82 @@ Round 1 기록은 이력으로 남기고 Round 6 기준선을 함께 적었다.
 
 `NOTES`의 나머지(미조회 ViewModel 필드 3건, 미참조 `public/*.svg` 5개, `README.md`)는 이번 라운드에서
 손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:P
+
+TOP_FIX: `lib/prototype/view-model.ts`의 미조회 필드 4개(`CardCombinationViewModel.id`·`cardLabels`, `BenefitAreaViewModel.limitPeriod`+`BenefitLimitPeriod`, `PlanInputViewModel.inputMode`)를 화면에서 읽게 하거나 타입·Fixture에서 함께 삭제한 뒤 tsc·lint·build 재통과를 확인하라.
+
+EVIDENCE:
+- `lib/prototype/view-model.ts:97,115,131,136,137` — 위 4개 필드가 `app`·`components` 어디에서도 참조 0건(grep). spec §4.1 "화면이 읽고 판단하는 최소 필드만 둔다"와 어긋남 → T·K CONCERN.
+- 게이트 실측: `npx tsc --noEmit`=0, `npm run lint`=0, `npm run build`=0. `git archive HEAD`로 만든 `.next` 없는 순수 체크아웃에서도 tsc=0 → `app/layout.tsx` 주석 주장 검증됨.
+- `next start` 직접 실측: `/plan` 200, `/result` 200, `/result?state=partial|zzz` 200(대표 Fixture 되돌림), root 404, 스코프 고지 각 화면 1건, 금지어 0건. Fixture 6개 조합 산술 일치(GR2 임계 미달 변경 유도 없음).
+
+NOTES:
+- 완료 기준 9항목은 코드·워크스루 실측·서버 실측으로 전부 충족 확인. T:C는 기준 누락이 아니라 spec §4.1 이탈만 가리킨다.
+- K: `public/` 스캐폴드 svg 5개 미참조.
+- 위생: 커밋된 `next-env.d.ts`가 `.next/dev/types`를 가리켜 `next build` 실행만으로 tracked 파일이 dirty가 된다.
+```
+
+**판정 해석**: `S`가 `C`에서 `P`로 올라왔다(기준선 재기록 효과). `T`는 완료 기준 누락이 아니라
+spec §4.1 이탈만 가리킨다고 평가자가 명시했다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 7
+
+### 처리한 TOP_FIX
+
+미조회 ViewModel 필드 4개를 타입·Fixture에서 함께 삭제했다. "화면에서 읽게 한다" 쪽은
+읽을 이유가 없는 분기를 만드는 것이라 골라내지 않았다.
+
+| 삭제한 것 | 삭제 근거 |
+| --- | --- |
+| `CardCombinationViewModel.id` | 조합은 목록으로 렌더되지 않아 key·id 용도가 없다 |
+| `CardCombinationViewModel.cardLabels` | `label`이 `예시 카드 A + 예시 카드 B`를 이미 담아 중복이다 |
+| `BenefitAreaViewModel.limitPeriod` · `BenefitLimitPeriod` | 한도 기간은 `limitLabel` 문장(`생활 할인 월 최대 1만 원`)에 이미 들어 있다 |
+| `PlanInputViewModel.inputMode` | 이번 체크포인트는 `SINGLE`만 구현해 화면이 모드를 분기할 일이 없다 |
+
+- `CONFLICT:` spec §4.2 타입 스케치에는 `inputMode`가 있다. 같은 §4.1이 "화면이 읽고 판단하는 최소
+  필드만 둔다"고 정했고 §4.2 스스로 "필드명을 영구 확정하는 API 계약이 아니라 구조의 기준"이라고
+  밝히므로, 이번 범위에서는 §4.1을 따라 제거하고 `RANGE`를 도입하는 후속 체크포인트에서 §4.2
+  스케치대로 다시 추가한다는 주석을 타입 파일에 남겼다.
+- `FutureSpendItemViewModel.id`와 `FutureSpendCategoryViewModel.id`는 목록 key·수정·삭제에서 실제로
+  읽으므로 유지했다.
+
+삭제 후 화면 표시가 그대로인지 실측했다.
+
+| 확인 | 결과 |
+| --- | --- |
+| 근거 disclosure 한도 행 (예상한 만큼) | `월 12,500원` / `월 -2,500원` / `월 10,000원` 각 1건 |
+| 근거 disclosure 한도 행 (더 많이) | `월 15,000원` / `월 -5,000원` / `월 10,000원` 각 1건 |
+| 한도 없는 영역 | `이 영역에는 적용 한도가 없습니다.` 1건 |
+| 탭별 결론·금액 | 유지/연 48,000원/연 0원 · 변경/연 153,000원/연 +93,000원 · 변경/연 231,000원/연 +147,000원 |
+| 8개 상태 375px | 전부 `scrollWidth === clientWidth === 375` |
+| 금지 표현 | 두 화면 0건 |
+
+### 함께 처리한 종료 게이트 정합성
+
+스코어카드 「위생」 지적대로 `next build`가 tracked 파일 `next-env.d.ts`를 매번 다시 써서
+빌드만 해도 워킹트리가 dirty가 됐다. 종료 방법 6)이 `git status --porcelain`으로 판정하므로
+그대로 두면 최종 판정이 이 목표의 변경으로 오인한다.
+
+- `git rm --cached next-env.d.ts` + 루트 `.gitignore`에 `next-env.d.ts` 줄 추가(줄 추가만 허용 규칙 준수).
+  Next.js 기본 템플릿도 이 파일을 추적하지 않는다.
+- 파일이 없어도 `npx tsc --noEmit`이 exit 0임을 먼저 확인한 뒤 untrack했다(갓 clone한 저장소에서
+  build 전에 타입 검사가 통과해야 하기 때문).
+- 조치 후 `npm run build` 실행에도 tracked 파일이 dirty가 되지 않음을 확인했다.
+
+`public/*.svg` 5개 미참조는 이번 라운드에서 손대지 않았다.
 
 ### 검증
 
