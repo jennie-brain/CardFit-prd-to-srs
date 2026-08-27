@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 4
+ROUND: 5
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -253,6 +253,78 @@ TOP_FIX가 두 부분이었고 둘 다 처리했다.
 
 `NOTES`의 항목(천 단위 구분 표시, 미사용 `public/*.svg`, UI가 읽지 않는 ViewModel 필드, README)은
 이번 라운드에서 손대지 않았다. 목표 문서 §2 "한 라운드에는 `TOP_FIX` 하나만 처리한다"를 따른다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:C
+TOP_FIX: `components/prototype/amount-field.tsx`의 `<Input value={value}>`에 천 단위 구분 표시를 넣어 명세 §8.5·§8.2 예시(`1,200`)와 일치시키십시오(입력 중 caret·`parseManwonInput` 정규화 유지). 구현하지 않기로 한다면 09 문서 「아직 확정하지 않은 사항」에 이월 사유를 기록해 문서-구현 모순을 없애십시오.
+EVIDENCE:
+- Z: 직접 실행 — `npx tsc --noEmit` exit 0 / `npm run lint` exit 0 / `npm run build` exit 0(`/plan`·`/result` 정적 prerender). `npm run dev`(:3111)에서 plan=200, result=200, `?state=partial`=200(동일 Fixture), `/`=404. 렌더 HTML의 `data-slot="tabs-list"` class에 `group-data-horizontal/tabs:h-12`·`w-full`만 남아 Round 4 (a) 수정이 실렌더로 확인됩니다. `aria-selected=true` 1건/false 2건.
+- T 근거: `TASK/task1/10_시각_프로토타입_화면_명세.md:424` "입력값에 천 단위 구분을 표시한다" vs `components/prototype/amount-field.tsx:68-79`(원문 그대로 표시). 3라운드 이월.
+- 완료 기준: 1·3·4·6·8은 실렌더 텍스트로, 5는 `evidence-disclosure.tsx`의 근거 6종 + Fixture로, 9는 이슈 조작·`Done` 기록 없음으로 확인. `fixtures/prototype/result.ts` 6개 조합 전부 월합×12=총혜택, 총혜택−연회비=순혜택, 차액 0/93,000/147,000 일치.
+NOTES:
+- K: `evidence-disclosure.tsx:88`이 `toLocaleString`을 인라인 호출해 `lib/prototype/format.ts` 상단의 "화면은 이 파일만 사용" 규칙과 어긋납니다(`formatMonthlyWon` 사용 가능).
+- K: `public/*.svg` 5개 미참조, `limitPeriod`·`inputMode`·`meta.status`는 UI 참조 0건으로 view-model.ts의 "최소 필드만 둔다" 주석과 상충합니다.
+- S: `README.md`에 실행 절차·진입 URL이 없고 `/`가 404여서 신규 검토자는 `docs/loop/PROTOTYPE_WALKTHROUGH.md`를 먼저 읽어야 합니다(이번 목표 범위 밖).
+```
+
+**판정 해석**: Round 3과 같은 `A:P Z:P T:C K:C S:C`다. Round 4 수정(탭 높이·실측)이 실렌더로 확인됐고
+`T`의 지적이 천 단위 구분 하나로 좁혀졌다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 5
+
+### 처리한 TOP_FIX
+
+spec §8.5 "입력값에 천 단위 구분을 표시한다"를 구현했다. 이월 사유를 문서에 적는 대안 대신
+명세를 구현하는 쪽을 골랐다 — 명세가 확정한 사항이고 §8.2·§8.5 예시가 `1,200`을 그대로 보여준다.
+
+- `lib/prototype/plan-input.ts`에 `formatManwonInputDisplay`와 `caretIndexAfterDigits`를 추가하고
+  `AmountField`가 표시값만 포맷하도록 했다. 상태에는 사용자 입력 원문이 그대로 남고
+  `parseManwonInput`이 쉼표·공백을 정리하므로 정규화 경로는 바뀌지 않는다.
+- **비숫자 입력에는 구분자를 넣지 않는다.** 숫자 외 문자를 지우면 `NOT_NUMERIC` 오류 상태에
+  도달할 수 없게 되어 spec §8.10이 정한 검증 대상 하나가 사라진다. 숫자만으로 이뤄진 입력에만
+  구분자를 넣고 그 밖에는 입력 원문을 그대로 표시한다.
+- `Number()`를 거치지 않고 정규식으로 세 자리씩 묶어 앞자리 0이 사라지지 않는다.
+
+**1차 구현에서 caret 복원 버그가 나왔고 실측으로 잡았다.**
+재포맷 여부와 무관하게 caret을 "앞에 있던 숫자 개수" 위치로 되돌린 탓에, 비숫자를 입력하면
+caret이 숫자 뒤로 끌려가 다음 글자가 앞에 끼어들었다.
+
+| 입력 시도 | 1차 구현 표시 | 수정 후 표시 |
+| --- | --- | --- |
+| `12만원` | `12원만` (문자 순서 뒤집힘) | `12만원` |
+| 연회비 한도 `-5` | `5-` → `NOT_NUMERIC` 오류로 오분류 | `-5` → `NEGATIVE` 오류 정상 |
+
+표시값이 입력 문자열과 같으면(=구분자를 넣지도 빼지도 않았으면) 브라우저 caret이 이미 맞으므로
+건드리지 않도록 고쳤다.
+
+### 실측 검증 (375×812 실브라우저)
+
+| 확인 | 결과 |
+| --- | --- |
+| `1200` 타이핑 | 표시 `1,200`, 환산 `12,000,000원 · 1,200만 원` |
+| `120000` 타이핑 | 표시 `120,000`, 환산 `1,200,000,000원 · 120,000만 원 · 12억 원` |
+| `1,234,567` 3번째 자리에 `9` 삽입 | 표시 `12,934,567`, caret 4 — 보던 자리 유지 |
+| ` 1,2 00 ` 붙여넣기 | 표시 `1,200` |
+| `12만원` 타이핑 | 표시 유지 + `숫자만 입력해 주세요.` 오류 1건 |
+| `0` 입력 | `0원보다 큰 금액을 입력해 주세요.` 오류 1건 |
+| 연회비 한도 `-5` | 표시 유지 + `0원 이상 금액을 입력해 주세요.` 오류 1건 |
+| 빠른 금액·실행 취소·금액 지우기 | `1,000` → `1,100` → `1,000` → 빈 값 |
+| `1200` 제출 | 항목 1건 추가, 카드에 `1,200만 원 · 12,000,000원` |
+| 375px 가로 스크롤 | `scrollWidth === clientWidth === 375` |
+
+`NOTES`의 항목(인라인 `toLocaleString`, 미사용 `public/*.svg`, UI가 읽지 않는 ViewModel 필드,
+README)은 이번 라운드에서 손대지 않았다.
 
 ### 검증
 

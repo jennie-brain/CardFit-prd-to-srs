@@ -50,6 +50,35 @@ export function parseManwonInput(
   return { ok: true, won: manwon * MANWON };
 }
 
+/**
+ * 입력 중 표시용 천 단위 구분. (spec §8.5 "입력값에 천 단위 구분을 표시한다")
+ *
+ * 숫자만으로 이뤄진 입력에만 구분자를 넣고, 그렇지 않은 입력은 사용자가 타이핑한 그대로 남긴다.
+ * 비숫자 문자를 지워 버리면 `NOT_NUMERIC` 오류 상태에 도달할 수 없게 되므로 검증 경로를 보존한다.
+ * `Number()`를 거치지 않아 앞자리 0도 사라지지 않는다.
+ */
+export function formatManwonInputDisplay(raw: string): string {
+  const cleaned = raw.replace(/[,\s]/g, "");
+  if (!/^\d+$/.test(cleaned)) return raw;
+  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
+ * 구분자를 넣은 뒤 caret을 되돌릴 위치. `digitCount`번째 숫자 바로 뒤 index를 돌려준다.
+ * 구분자가 앞에 끼어들어도 사용자가 보던 자리를 유지하기 위해 숫자 개수를 기준으로 센다.
+ */
+export function caretIndexAfterDigits(text: string, digitCount: number): number {
+  if (digitCount <= 0) return 0;
+  let seen = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    if (text[index] >= "0" && text[index] <= "9") {
+      seen += 1;
+      if (seen === digitCount) return index + 1;
+    }
+  }
+  return text.length;
+}
+
 /** 빠른 금액 추가 버튼. 현재 값에 더하고 실행 취소·금액 지우기를 함께 제공한다. (spec §8.5) */
 export const QUICK_ADD_MANWON = [10, 100, 1_000] as const;
 
