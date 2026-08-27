@@ -1,10 +1,18 @@
 # CardFit 경량 시각 체크포인트 — 화면 워크스루
 
-라운드: 20 · 기록 시각: 2026-08-27 15:33 실행 세션
+라운드: 20 (최종) · 기록 시각: 2026-08-27 15:33 실행 세션
 
 이 문서는 브라우저를 볼 수 없는 검토자가 완료 기준 1~9를 판정할 수 있게, 실제로 렌더되는 텍스트와
 상태 전이·뷰포트 처리·완주 경로를 적은 기록이다. 아래 `/plan`·`/result` 텍스트 전문은
 `next dev` 기동 후 `curl`로 받은 응답에서 태그를 제거해 옮긴 것이다.
+
+## 부트스트랩 의존성 메모
+
+`package.json`의 `shadcn`은 `dependencies`에 있다. CLI 전용 패키지로 오인하기 쉬우나
+`app/globals.css`가 `@import "shadcn/tailwind.css"`로 읽는 **CSS 진입점**이다
+(`node_modules/shadcn/package.json`의 `exports["./tailwind.css"] → ./dist/tailwind.css`, `files: ["dist"]`).
+`devDependencies`로 옮기면 `npm install --omit=dev` 환경에서 이 import가 해석되지 않아 빌드가 깨진다.
+같은 근거를 `app/globals.css` 해당 줄 위 주석에도 남겼다.
 
 ## 실행 증거 (완료 기준 1)
 

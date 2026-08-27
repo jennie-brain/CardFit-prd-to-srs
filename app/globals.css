@@ -1,5 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/*
+ * `shadcn`은 CLI 전용 패키지가 아니라 이 줄이 읽는 CSS 진입점이다
+ * (`node_modules/shadcn/package.json`의 `exports["./tailwind.css"] → ./dist/tailwind.css`).
+ * 따라서 `package.json`의 `dependencies`에 두는 것이 맞다. `devDependencies`로 옮기면
+ * `npm install --omit=dev` 환경에서 이 import가 해석되지 않아 빌드가 깨진다.
+ */
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));

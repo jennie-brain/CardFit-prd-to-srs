@@ -5,7 +5,7 @@
 
 ROUND: 20
 NOGO_STREAK: 0
-FULL_PASS: 0
+FULL_PASS: 1
 
 ## 사전 조건 게이트 (착수 첫 명령)
 
@@ -1498,6 +1498,81 @@ HIGH 근거 · LOW 근거 · `/` 404.
 | Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
 | 문서 개수 검사 | PASS |
 
-### aztks-agent EVALUATE 결과
+### aztks-agent EVALUATE 결과 — **5축 전부 PASS**
 
-*(디스패치 후 기록)*
+```
+VERDICT: GO
+
+SCORECARD: A:P Z:P T:P K:P S:P
+
+TOP_FIX: app/globals.css:3 위에 "shadcn 는 CLI가 아니라 CSS 진입점(shadcn/tailwind.css)이라 dependencies 에 둔다"는 한 줄 주석을 달고, 같은 근거를 docs/reports/PROTOTYPE_WALKTHROUGH.md 부트스트랩 절에 기록하라. 검증: node -p "require('shadcn/package.json').exports['./tailwind.css']" → ./dist/tailwind.css, npm install --omit=dev && npm run build exit 0.
+
+EVIDENCE:
+- app/globals.css:3 = @import "shadcn/tailwind.css" / node_modules/shadcn/package.json exports "./tailwind.css": "./dist/tailwind.css", files: ["dist"] → 빌드 입력이며 CLI 전용 아님. Round 19의 devDependencies 이관 지시는 전제가 틀렸고, 실행하면 --omit=dev 빌드가 깨진다.
+- fixtures/result.ts 재검산: LOW 4,000×12=48,000 / (4,000+750)×12=57,000−9,000=48,000 → Δ0; BASE (10,000+3,000+500)×12=162,000−9,000=153,000 → Δ93,000; HIGH (10,000+9,000+1,000)×12=240,000−9,000=231,000 → Δ147,000. 워크스루 탭 표와 화면 5 전문 값이 전부 일치.
+- 화면 5 "더 적게" 절의 "근거 1·2번이 현재 조합만 보여주므로 온라인 쇼핑 할인 영역은 화면에 없다"는 서술이 result.ts LOW current(생활 할인 1건)와 일치.
+
+NOTES:
+- (K) shadcn 배치 자체는 결함이 아니다. 결함은 근거가 코드·문서 어디에도 없어 다음 라운드가 잘못된 이관을 실행할 위험이다.
+- (T) 화면 5는 BASE 금액만 전문으로 옮기고 LOW·HIGH 근거 1~3 금액은 산문 설명이다. 완료 기준 5는 항목 존재를 요구하므로 충족이며, 사실 오류는 없다.
+- 판단: 완료 기준 9항목 전부 실측 근거로 충족되고 남은 항목은 근거 주석 한 줄뿐이므로, 현 상태를 AZTKS_FULL_PASS 로 보아도 된다고 판단합니다.
+```
+
+**판정 해석**: 목표 문서 §3 종료 조건 1이 충족됐다 — `VERDICT: GO`이고 `SCORECARD`의 A·Z·T·K·S
+다섯 축이 모두 `P`다. 이 경로로만 목표 완수로 간주하므로 루프를 즉시 멈춘다.
+
+이번 판정은 **Round 19의 지시를 뒤집었다.** Round 19는 `shadcn`을 `devDependencies`로 옮기라고
+지시했으나 Round 20은 그 전제가 틀렸음을 밝혔다 — `shadcn`은 `app/globals.css`가 읽는 CSS 진입점이라
+옮기면 빌드가 깨진다. 평가자 권고대로 다음 라운드로 미뤄 둔 덕분에 잘못된 이관을 실행하지 않았다.
+
+## 완수 후 처리 (Round 20 판정 이후)
+
+5축 전부 `P`를 받은 커밋은 `4560606`이다. 그 뒤 아래 두 가지만 추가했다. 판정 대상 상태와 최종
+커밋 상태의 차이를 남기지 않기 위해 여기 명시한다.
+
+**(1) `shadcn` 배치 근거 기록 (Round 20 `TOP_FIX`).**
+`app/globals.css`의 `@import "shadcn/tailwind.css"` 위와 이 워크스루 「부트스트랩 의존성 메모」 절에
+근거를 남겼다. 다음 세션이 Round 19식 오이관을 반복하지 않게 하는 안전장치다. 사실관계는 직접
+확인했다.
+
+```
+node_modules/shadcn/package.json
+  exports["./tailwind.css"] = ./dist/tailwind.css
+  files = ["dist"]
+  bin = 없음(문자열 단일 bin 아님)
+node_modules/shadcn/dist/tailwind.css 존재
+```
+
+- `CONFLICT:` 평가자가 제시한 검증 명령 두 개는 그대로 쓸 수 없었다.
+  - `node -p "require('shadcn/package.json')..."` — 이 패키지는 `./package.json`을 `exports`로
+    내보내지 않아 `ERR_PACKAGE_PATH_NOT_EXPORTED`가 난다. 파일을 직접 파싱해 확인했다.
+  - `npm install --omit=dev && npm run build` — **이 프로젝트에서는 성립하지 않는다.** 빌드가
+    `tailwindcss`·`@tailwindcss/postcss`·`typescript` 같은 devDependencies를 필요로 하므로
+    `--omit=dev` 환경에서는 `shadcn` 위치와 무관하게 빌드가 실패한다(실제로 실행해 확인했고
+    `npm install`로 복원했다). `shadcn`이 빌드 입력이라는 실질 주장은 위 `exports` 맵으로 확인했다.
+
+**(2) `package-lock.json` 패키지명 정합.** Round 1에서 `package.json`의 `name`을 `scaffold-tmp` →
+`cardfit-prototype`으로 바꿨으나 lockfile에는 스캐폴드 이름이 남아 있었다. `npm install` 복원 과정에서
+lockfile이 현재 이름으로 갱신됐다(변경 2줄). `package-lock.json`은 이 목표의 작업 대상이다.
+
+**(3) 종료 절차 중 발생한 환경 문제와 복구.** 위 `--omit=dev` 실행이 `@tailwindcss/postcss`를
+지웠고 이어진 `npm install`이 그것을 되살리지 못했다. `npm ci`로 lockfile 기준 재설치해 파일은
+복원됐으나 빌드는 같은 오류를 반복했다 — `.next` 빌드 캐시가 이전 해석 그래프를 붙들고 있었고
+청크 해시가 동일했다. `rm -rf .next` 후 빌드가 정상 통과했다.
+
+`npm ci`는 `node_modules`를 비우므로 `--no-save`로 넣었던 측정 도구(`playwright-core`)도 함께
+사라졌다. 같은 방식으로 다시 설치했고 `package.json`은 변경되지 않았다. `package-lock.json`은
+위 (2)의 패키지명 2줄만 바뀐 상태다.
+
+### 최종 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/_not-found`·`/plan`·`/result` 정적 prerender) |
+| 전문 대조 검사 | 20/20 일치 (fail=0) + 차단 시 URL 미변경 |
+| Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
+| 문서 개수 검사 | PASS |
+
+STOP REASON: AZTKS_FULL_PASS
