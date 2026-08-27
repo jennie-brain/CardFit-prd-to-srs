@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 18
+ROUND: 19
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -1351,6 +1351,84 @@ SYNC_RESULT total=18 fail=0
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 | 전문 대조 검사 | 18/18 일치 (fail=0) + 차단 시 URL 미변경 |
 | Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:P S:P
+TOP_FIX: docs/reports/PROTOTYPE_WALKTHROUGH.md:425 의 "여덟 상태 전부"를 표 실측 행 수(9)와 맞춰 "아홉 상태 전부"로 고치고, 같은 문장의 getBoundingClientRect().right 주장도 9개 상태 기준임을 명시해 뷰포트 증거의 자기모순을 없애십시오.
+EVIDENCE:
+- 워크스루 415–423행 — 375px 무스크롤 측정 행이 9건(/plan 1단계·입력오류·2건표시·수정모드·2단계 + /result BASE·LOW·HIGH·disclosure). 425행은 "여덟 상태 전부"라고 요약한다(코디네이터 라운드 보고의 "8상태"도 같은 오카운트).
+- fixtures/result.ts · scenario-result-panel.tsx — 세 탭 결론/순혜택/차액이 월별 영역합×12와 일치하고 화면은 값을 재계산하지 않는다. 완료 기준 3·4 충족.
+- evidence-disclosure.tsx — 근거 1~6이 spec §10.2 순서대로 있고 AccordionPrimitive.Header(h3) 아래 h4로 위계가 끊기지 않는다. 완료 기준 5 충족.
+NOTES:
+- 화면 1 렌더 전문에 sr-only "다음 단계" h2가 빠져 있다(화면 4는 sr-only 탭 이름을 적었다). 판정에 영향 없음.
+- package.json 의 shadcn 이 dependencies 에 있다(CLI이므로 dev 쪽이 맞음). 지정 범위 밖이라 감점하지 않음.
+- LOW 탭 적용 조건 2번에 대응하는 혜택 영역이 화면에 없다는 관찰은 Round 18에 워크스루로 기록돼 후속 체크포인트로 이양됐다.
+```
+
+**판정 해석**: 네 축이 `P`이고 `T`의 근거는 **워크스루 자기모순 1건**이다. 표에 9행을 적어 놓고
+요약 문장은 "여덟 상태"라고 썼다. 라운드 보고에서 "8상태"라고 반복한 것도 같은 오카운트다 —
+드리프트의 네 번째 형태이며, 이번은 렌더와의 불일치가 아니라 **문서 내부 숫자 불일치**다.
+
+## Round 19
+
+### 처리한 TOP_FIX
+
+뷰포트 증거 요약을 표 실측 행 수와 맞췄다.
+
+| 구분 | 내용 |
+| --- | --- |
+| 이전 | `여덟 상태 전부 scrollWidth === clientWidth이고, 문서에서 가장 오른쪽까지 …` |
+| 현재 | `위 표의 **아홉 상태 전부** scrollWidth === clientWidth이고, **같은 아홉 상태에서** 문서의 가장 오른쪽까지 …` |
+
+표는 처음부터 9행이었다(`/plan` 1단계·입력 오류·2건 표시·수정 모드·2단계 + `/result` BASE·LOW·HIGH·
+근거 펼침). 요약만 8로 적혀 있었고, 코디네이터 라운드 보고도 그 숫자를 그대로 옮겨 반복했다.
+`getBoundingClientRect().right` 주장도 같은 아홉 상태 기준임을 문장에 명시했다.
+
+### 문서 내부 개수 검사 추가
+
+전문 대조 검사(18문구)는 **문구가 렌더와 같은지**만 본다. 이번 유형은 렌더와 무관한
+**문서 안 숫자 불일치**여서 그 검사로는 잡히지 않는다. 별도 검사를 만들어 매 라운드 실행한다.
+
+검사 항목이다.
+
+1. 뷰포트 측정 표의 데이터 행 수 vs 요약 문장의 한글 수사(`여덟`·`아홉` 등)
+2. 근거 5번 제외 항목 목록 건수 vs 상호작용 실측표의 `제외 항목 목록 | N개` 서술
+
+가드 유효성을 옛 값 사본으로 확인했다.
+
+```
+=== 현재 문서 ===
+  뷰포트 표 행=9 · 요약 문장=아홉(9)
+  제외 항목 목록=7건
+PASS 문서 내부 개수 일치
+
+=== 옛 값("여덟") 사본 ===
+FAIL 1건
+  - 뷰포트 표 행 9건인데 요약은 '여덟 상태 전부'(8)라고 적었다
+```
+
+만들 때 검사기 자체 버그(헤더 행을 데이터 행으로 세어 10을 출력)도 이 대조 과정에서 드러나 고쳤다.
+
+### 남긴 비차단 항목
+
+- 화면 1 렌더 전문에 sr-only `다음 단계` h2가 빠져 있다. 화면 4는 sr-only 탭 이름을 적었으므로
+  표기 일관성 문제다. 평가자가 판정 영향 없음으로 분류했다.
+- `package.json`의 `shadcn`이 `dependencies`에 있다. CLI이므로 `devDependencies`가 맞지만 평가자가
+  지정 범위 밖으로 감점하지 않았다. `package.json`은 이 목표의 작업 대상이므로 `TOP_FIX`로 오면 옮긴다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| 전문 대조 검사 | 18/18 일치 (fail=0) + 차단 시 URL 미변경 |
+| Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
+| 문서 개수 검사 | PASS (뷰포트 9행=아홉, 제외 항목 7건) |
 
 ### aztks-agent EVALUATE 결과
 
