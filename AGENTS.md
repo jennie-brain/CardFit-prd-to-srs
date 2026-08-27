@@ -6,11 +6,11 @@
 
 충돌 시 `법·규제·보안 → PRD → SRS → 정책 결정 로그 → TASK → 구현` 순서로 판단한다.
 
-- 기술 기준선: `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
-- 작업 기준선: `TASK/task1/01_전체_TASK_목록_및_기준선.md`
-- 실행 순서: `TASK/task1/02_총괄_개발_실행_계획.md`
-- 정책 결정: `TASK/task1/04_정책_결정_로그.md`
-- 검토 기준: `REVIEW_CRITERIA_SRS_TASK_POC.md`
+- 기술 기준선: `docs/technical/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
+- 작업 기준선: `docs/tasks/task1/01_전체_TASK_목록_및_기준선.md`
+- 실행 순서: `docs/tasks/task1/02_총괄_개발_실행_계획.md`
+- 정책 결정: `docs/tasks/task1/04_정책_결정_로그.md`
+- 검토 기준: `docs/technical/REVIEW_CRITERIA_SRS_TASK_POC.md`
 
 현재 TASK 하나의 목적과 완료 조건만 구현한다. SRS의 `TBD`, `UNKNOWN`, M2·M3 승격 조건을 임의로 확정하거나 M1에 앞당기지 않는다.
 
