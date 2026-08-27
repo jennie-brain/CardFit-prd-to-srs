@@ -26,6 +26,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-harness.ps1  # Windows
 | `.agents/rules/003-data-security.md` | 저장 금지 데이터, 인가·소유권, 로그 마스킹 |
 | `.agents/rules/004-testing-quality.md` | TDD 순서와 Unit·Contract·Integration·E2E 구분 |
 | `.agents/rules/005-delivery-operations.md` | 배포·migration·Cron·비용 상한 |
+| `.agents/rules/006-prototype-visual-scope.md` | 로컬 시각 프로토타입 단계 한정 규칙(착수 가능 TASK, ViewModel 타입, 완료 처리) |
 
 ## 슬래시 커맨드
 

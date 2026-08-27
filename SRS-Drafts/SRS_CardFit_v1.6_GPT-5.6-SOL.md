@@ -456,8 +456,8 @@ flowchart TD
 
 | ID | 제목 | 출처 | 우선순위 | 유형 | 검증 방식 | 인수 기준 | 상태 | 담당자 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **REQ-FUNC-001A** | 미래지출 입력(카테고리·금액·시점) | US-A / F-01 | Must | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 카테고리·금액·시점 입력이 계산에 정상 반영된다 ②(실패) 음수·비숫자·상한 초과 입력 시 오류 표시, 계산 반영 0건 | Proposed | 개발 엔지니어 |
-| **REQ-FUNC-001B** | 이벤트 비종속 입력(자유 카테고리·양방향) | US-F / F-08 | Should | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 이벤트 종류 필수 선택 단계 0개 ② 증가·감소 양방향 처리 오류율 0% ③ 자유 카테고리 계산 반영률 100% ④(실패)**[Design Decision]** 특수문자·이모지 등 비정형 텍스트는 크래시 없이 "기타"로 정규화 처리(처리 실패율 0%) — PRD는 자유 입력을 허용한다고만 명시하며, 비정형 텍스트 처리 방식은 PRD에 없어 SRS 작성 시 도출했다 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-001A** | 미래지출 입력(카테고리·지출 형태·금액·시점) | US-A / F-01 | Must | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 카테고리·`ONE_TIME`/`MONTHLY` 지출 형태·금액·시점 입력이 계산 입력에 정상 반영된다 ②(실패) 음수·비숫자·상한 초과 입력 시 오류 표시, 계산 반영 0건 | Proposed | 개발 엔지니어 |
+| **REQ-FUNC-001B** | 이벤트 비종속 입력(자유 카테고리·양방향) | US-F / F-08 | Should | Functional | 1) 단위테스트 2) 경계값 테스트 3) QA 검증 | ① 이벤트 종류 필수 선택 단계 0개 ② 비교 가능한 과거 기준값이 있으면 미래 금액과의 차이로 증가·감소 방향과 차액을 도출하며, 기준값이 없으면 방향을 임의 생성하지 않는다 ③ 자유 카테고리 계산 반영률 100% ④(실패)**[Design Decision]** 특수문자·이모지 등 비정형 텍스트는 크래시 없이 "기타"로 정규화 처리(처리 실패율 0%) | Proposed | 개발 엔지니어 |
 | **REQ-FUNC-002** | 플랫폼 데이터 연동 | US-A / F-02 | Must | Functional | 1) Adapter 계약 테스트 2) Mock·Production 교체 테스트 3) 동의·오류 상태 테스트 | ① Identity·Consent·HeldCard·PastSpend Adapter는 공통 DTO와 `data_as_of`·`sync_status`·`completeness`를 반환한다 ② 독립 MVP는 비식별 Fixture로 정상·부분·오래된 데이터·동의 만료·연결 해제를 재현한다 ③ Adapter 실패를 빈 카드 목록으로 변환하지 않는다 ④ 실제 인증정보·토큰·내부 사용자 ID를 CardFit DB에 저장하지 않는다 | Confirmed — 실제 통합은 계약 조건부 | 개발 엔지니어 |
 | **REQ-FUNC-003A** | 제약조건 입력(최대 카드 수·연회비 상한·신규발급 허용) | US-D / F-02 | Must | Functional | 1) 입력검증 테스트 2) QA 검증 | 제약조건이 계산 요청에 정상 반영되며, 상한을 벗어난 값은 저장 전 거부된다 | Proposed | 개발 엔지니어 |
 | **REQ-FUNC-003B** | 소득·지출 금액 범위 입력 | US-D / F-09 | Could | Functional | 1) 입력검증 테스트 2) 경계값 테스트 | ① 범위(최소·최대) 입력 처리 성공률 100% ②(실패) 최소값이 최대값보다 큰 등 잘못된 범위 입력 시 오류 표시, 계산 반영 0건 | Proposed | 개발 엔지니어 |
@@ -798,6 +798,7 @@ erDiagram
     FutureSpendPlan {
         string input_mode
         string category
+        enum spend_cadence
         decimal expected_amount
         decimal minimum_amount
         decimal maximum_amount
@@ -900,7 +901,7 @@ erDiagram
 | User | user_id:string(PK), mydata_consent_status:enum(미동의\|동의\|만료\|철회), mydata_consent_scope:string, mydata_consent_at:datetime | 자체 |
 | HeldCard | card_id:string(PK), issuer:string, card_name:string, annual_fee:decimal, issued_at:date, billing_cycle_month:int | Platform Adapter(Fixture/실제) |
 | PastSpend | merchant:string, mcc_code:string, amount:decimal, paid_at:date | Platform Adapter(Fixture/실제) |
-| FutureSpendPlan | input_mode:enum(SINGLE\|RANGE), category:string(자유 입력), expected_amount:decimal, minimum_amount:decimal, maximum_amount:decimal(단일값이면 세 금액 동일), planned_at:date, confidence:enum(**값 미정 — PRD 미명시**) | 사용자(F-01) |
+| FutureSpendPlan | input_mode:enum(SINGLE\|RANGE), category:string(선택형 대분류, 기타 직접 입력), spend_cadence:enum(ONE_TIME\|MONTHLY), expected_amount:decimal, minimum_amount:decimal, maximum_amount:decimal(단일값이면 세 금액 동일), planned_at:date, confidence:enum(**값 미정 — PRD 미명시**) | 사용자(F-01) |
 | Constraint | max_card_count:int, annual_fee_cap:decimal, allow_new_card_issuance:boolean | 사용자(F-02) |
 | BenefitRule | card_id:string(FK), tier_threshold:decimal, combined_discount_cap:decimal, excluded_items:array\<string\>, effective_from:date, effective_to:date, rule_version:string | 카드사 약관(수집·버전관리) |
 | Calculation | calculation_id:string(PK), input_snapshot:json, applied_rule_versions:array\<string\>, as_of_date:date, unreflected_items:array\<string\>, status:enum(성공\|실패\|부분) | 규칙 엔진 |

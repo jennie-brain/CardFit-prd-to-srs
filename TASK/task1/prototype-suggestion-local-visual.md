@@ -1,5 +1,7 @@
 # CardFit 로컬 시각 프로토타입 축약안
 
+> **상태: 참고용·대체됨(2026-08-27).** 현재 계획 정본은 [`prototype-suggestion.md`](prototype-suggestion.md)의 19건이며, 최초 시각 실행은 그 문서의 `P-VIS-01~03` 경량 체크포인트를 따른다. 이 문서의 11건 독립 정본화 결정은 더 이상 현재 실행 기준이 아니다.
+
 ## 목적
 
 [`prototype-suggestion.md`](prototype-suggestion.md)의 19건 본 개발 연결형 슬라이스에서, **로컬에서 빠르게 화면의 설득력과 사용 흐름만 확인하는 범위**를 한 차례 더 추린 문서다.
