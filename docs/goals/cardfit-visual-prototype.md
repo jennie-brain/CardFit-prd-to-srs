@@ -30,6 +30,7 @@
 
 ## 2) 작업 세부 규칙
 
+- **사전 조건 — 착수 첫 명령**: Bash 도구로 `node -v` 와 `npm -v` 를 실행하고 두 출력을 대화에 남긴다. **둘 중 하나라도 실패하면 구현에 착수하지 말고 즉시 `STOP REASON: TOOLCHAIN_MISSING` 으로 종료하고 사용자에게 Node.js LTS 설치를 요청한다.** 2026-08-27 확인 기준 이 머신에는 Node.js·npm·npx가 설치돼 있지 않다(`command -v node npm npx` 전부 실패, `C:\Program Files\nodejs` 부재). 설치는 사용자가 `winget install OpenJS.NodeJS.LTS` 등으로 직접 수행하고, 새 셸에서 `node -v`가 응답하는 것을 확인한 뒤에 이 목표를 다시 시작한다.
 - **구현 규약**: `TASK/task1/prototype-visual-spec.md`와 `.agents/rules/006-prototype-visual-scope.md`를 읽고 그대로 적용한다. 두 문서가 이미 확정한 사항은 **재결정하지 않고 그대로 구현한다.** 재해석이 필요해 보이면 구현을 멈추고 `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `CONFLICT:` 한 줄을 남긴 뒤 spec을 따른다.
 - **미확정 항목 처리 규칙**: spec이 정하지 않은 값·명칭·수치(색상 token, breakpoint, 브랜드 표기, 동률 정렬 규칙 등)를 만나면 새 정책으로 확정하지 말고 (a) 화면에 예시임을 표시하고, (b) 계산에 반영하지 않으며, (c) 근거의 `이 계산에 포함되지 않은 항목`에 적고, (d) `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `ASSUMPTION:` 한 줄로 남긴다.
 - **작업 사이클** — 아래 1라운드를 반복한다.
@@ -62,9 +63,10 @@
   2. `NOGO_STREAK`이 3에 도달 → **STOP REASON: EVAL_STALLED**
   3. 동일한 `TOP_FIX`가 3라운드 연속 반환 → **STOP REASON: FIX_LOOP**
   4. 평가-진행 라운드(turn = `/goal` 평가자가 진행 상태를 한 번 점검하는 메인 에이전트 응답 사이클) 누적 30회 도달 → **STOP REASON: TURN_CAP** (= or stop after 30 turns)
+  5. 착수 첫 명령인 `node -v` 또는 `npm -v` 가 실패 → **STOP REASON: TOOLCHAIN_MISSING** — 이 경우 구현을 시작하지 않았으므로 종료 방법 2)·5)는 건너뛰고, 1)의 기록과 실패한 `node -v`·`npm -v` 출력만 대화에 남긴 뒤 사용자에게 Node.js LTS 설치를 요청한다.
 - **종료 방법** (아래 명령은 **모두 Bash 도구로 실행한다** — 이 머신의 기본 셸은 PowerShell이라 `find` 등이 Windows 실행 파일로 잡혀 재현되지 않는다):
   1. `docs/loop/PROTOTYPE_REVIEW_LOG.md` 마지막 줄에 `STOP REASON: <코드>` 한 줄을 덧붙이고 상단 카운터 세 줄을 최종값으로 갱신한다.
-  2. `npx tsc --noEmit && npm run lint && npm run build` 를 실행해 세 명령 모두 exit 0 인 출력을 대화에 남긴다.
+  2. `npx tsc --noEmit`, `npm run lint`, `npm run build` 를 **각각 따로** 실행해 세 명령 모두 exit 0 인 출력을 대화에 남긴다.
   3. 마지막 `aztks-agent` EVALUATE 응답 전문(`VERDICT:`·`SCORECARD:`·`TOP_FIX:`·`EVIDENCE:` 줄 포함)을 대화에 그대로 남긴다.
   4. `cat docs/loop/PROTOTYPE_REVIEW_LOG.md` 를 실행해 카운터 세 줄과 `STOP REASON:` 줄이 보이는 출력을 대화에 남긴다.
   5. `find app -name "page.tsx" | sort` 를 실행해 `app/plan/page.tsx`·`app/result/page.tsx` 두 개만 보이는 출력과, `ls fixtures/prototype lib/prototype` 출력을 대화에 남긴다.
