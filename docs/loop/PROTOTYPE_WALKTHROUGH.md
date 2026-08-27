@@ -1,6 +1,6 @@
 # CardFit 경량 시각 체크포인트 — 화면 워크스루
 
-라운드: 3 · 기록 시각: 2026-08-27 15:33 실행 세션
+라운드: 4 · 기록 시각: 2026-08-27 15:33 실행 세션
 
 이 문서는 브라우저를 볼 수 없는 검토자가 완료 기준 1~9를 판정할 수 있게, 실제로 렌더되는 텍스트와
 상태 전이·뷰포트 처리·완주 경로를 적은 기록이다. 아래 `/plan`·`/result` 텍스트 전문은
@@ -369,34 +369,85 @@ CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니
 
 ---
 
-## 뷰포트 증거 (완료 기준 7)
+## 뷰포트 증거 (완료 기준 7) — 실측
 
-폭 375px 기준이다. 모든 화면이 한 컬럼이고 가로 스크롤을 만드는 고정 폭 요소가 없다.
+폭 375px · 높이 812px · deviceScaleFactor 2 뷰포트에서 실제 브라우저(설치된 Edge를 playwright-core로
+구동)를 띄워 `document.documentElement.scrollWidth`와 `clientWidth`를 상태별로 측정했다.
+측정 스크립트는 저장소에 남기지 않고 scratchpad에서만 실행했으며 `package.json`에 의존성을 추가하지
+않았다(`npm install --no-save playwright-core`).
+
+| 측정 상태 | scrollWidth | clientWidth | body scrollWidth | 가로 스크롤 |
+| --- | ---: | ---: | ---: | --- |
+| `/plan` 1단계 첫 진입 | 375 | 375 | 375 | 없음 |
+| `/plan` 입력 오류 표시 | 375 | 375 | 375 | 없음 |
+| `/plan` 미래지출 2건 표시 | 375 | 375 | 375 | 없음 |
+| `/plan` 항목 수정 모드 | 375 | 375 | 375 | 없음 |
+| `/plan` 2단계 카드 조건 | 375 | 375 | 375 | 없음 |
+| `/result` `예상한 만큼` | 375 | 375 | 375 | 없음 |
+| `/result` `더 적게` | 375 | 375 | 375 | 없음 |
+| `/result` `더 많이` | 375 | 375 | 375 | 없음 |
+| `/result` 근거 disclosure 펼침 | 375 | 375 | 375 | 없음 |
+
+여덟 상태 전부 `scrollWidth === clientWidth`이고, 문서에서 가장 오른쪽까지 뻗은 요소의
+`getBoundingClientRect().right`도 375로 뷰포트를 넘지 않는다.
+
+### 핵심 CTA 실측 크기
+
+| CTA | 측정값 |
+| --- | --- |
+| `미래지출 추가하기` | 343 × 44 px |
+| `카드 조건 확인하기` | 343 × 44 px |
+| `수정 내용 저장하기` | 343 × 44 px |
+| `결과 확인하기` | 343 × 44 px |
+| 시나리오 탭 3개 | 각 112 × 41 px |
+| 항목별 `수정하기` | 78 × 40 px |
+
+시나리오 탭은 이번 라운드에 고쳤다. `TabsList` 기본 높이가 32px인데 트리거에 `h-10`(40px)을 직접
+주어 트리거가 리스트를 8px 넘고 있었다. 접두사 없는 `h-12`는 tailwind-merge가 기본값과 충돌로 보지
+않아 무시되므로 같은 variant 접두사(`group-data-horizontal/tabs:h-12`)로 덮어썼다. 수정 후 실측은
+리스트 343 × 48 px, 트리거 각 112 × 41 px이고 트리거 하단(464)이 리스트 하단(467)을 넘지 않는다.
+
+### 좁은 폭 처리 방식
 
 | 화면 | 최상위 컨테이너 클래스 | 가로 스크롤 위험 요소 | 처리 방식 |
 | --- | --- | --- | --- |
-| `/plan` 1·2단계 | `mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-6 px-4 py-6` (`ScreenShell`) | 미래지출 항목의 긴 금액 문자열 | `dl` 2열 구조에서 라벨은 `w-24 shrink-0`, 값은 `min-w-0 flex-1 break-keep`로 줄바꿈 |
-| `/plan` 항목 카드 | `rounded-lg border` | `수정하기`·`삭제하기` 버튼과 `수정 중`·`예시 금액` 배지 | 버튼 줄은 `flex flex-wrap justify-end gap-2`, 배지 줄은 `flex shrink-0 flex-wrap justify-end gap-1`로 좁은 폭에서 아래로 접힌다 |
+| `/plan` 1·2단계 | `mx-auto flex w-full max-w-screen-sm flex-1 flex-col gap-6 px-4 py-6` (`ScreenShell`) | 미래지출 항목의 긴 금액 문자열 | `dl` 2열에서 라벨 `w-24 shrink-0`, 값 `min-w-0 flex-1 break-keep`로 줄바꿈 |
+| `/plan` 항목 카드 | `rounded-lg border` | `수정하기`·`삭제하기` 버튼과 `수정 중`·`예시 금액` 배지 | 버튼 줄 `flex flex-wrap justify-end gap-2`, 배지 줄 `flex shrink-0 flex-wrap justify-end gap-1` |
 | `/plan` 시점 선택 | `flex gap-2` 안의 두 `SelectField` | 연·월 선택기 나란히 배치 | 각 필드 `flex-1`, native `select`가 폭에 맞춰 축소 |
-| `/result` 탭 | `TabsList`에 `w-full` | 3개 탭 라벨 `whitespace-nowrap` | 각 트리거 `flex-1`. 375px에서 컨테이너 343px → 트리거 약 112px, 가장 긴 라벨 `✓ 예상한 만큼` 약 84px로 넘치지 않는다. 맥락 문구는 `sr-only`라 레이아웃 폭을 차지하지 않는다 |
-| `/result` 결과·근거 | `Card` + `dl` | 금액 행 | `flex justify-between gap-3` + `text-right break-keep`. 표(`table`)를 쓰지 않아 최소 폭 강제가 없다 |
+| `/result` 탭 | `TabsList`에 `w-full group-data-horizontal/tabs:h-12` | 3개 탭 라벨 `whitespace-nowrap` | 각 트리거 `flex-1` → 실측 112px. 맥락 문구는 `sr-only`라 레이아웃 폭을 차지하지 않는다 |
+| `/result` 결과·근거 | `Card` + `dl` | 금액 행 | `flex justify-between gap-3` + `text-right break-keep`. `table`을 쓰지 않아 최소 폭 강제가 없다 |
 
-핵심 CTA의 위치와 터치 영역이다.
-
-| CTA | 위치 | 높이 |
-| --- | --- | --- |
-| `미래지출 추가하기` | `/plan` 1단계 추가 폼 끝 | `h-11 w-full` (44px) |
-| `수정 내용 저장하기` / `수정 취소하기` | `/plan` 1단계 수정 모드 폼 끝 | `h-11 w-full` (44px) |
-| `카드 조건 확인하기` | `/plan` 1단계 마지막 | `h-11 w-full` (44px) |
-| `결과 확인하기` | `/plan` 2단계 마지막 | `h-11 w-full` (44px) |
-| `미래지출 다시 입력하기` | `/plan` 2단계 / `/result` 마지막 | `h-11 w-full` (44px) |
-| 시나리오 탭 3개 | `/result` 상단 | `h-10` (40px), 폭은 화면 1/3 |
-| `계산 근거 보기` | `/result` 결과 카드 안 | `py-2.5` + 전체 폭 트리거 |
-| 빠른 금액·실행 취소·금액 지우기·수정하기·삭제하기 | 입력 폼·항목 카드 | `h-10` (40px) |
-
-금액 입력은 `inputMode="numeric"`으로 모바일 숫자 키패드를 띄우고, 입력값 아래에 원 단위 환산을
-`aria-describedby`로 연결해 표시한다. 환산 표시에 `aria-live`를 걸지 않아 타이핑마다 screen reader가
+금액 입력은 `inputMode="numeric"`으로 모바일 숫자 키패드를 띄우고, 입력값 아래 원 단위 환산을
+`aria-describedby`로 연결한다. 환산 표시에 `aria-live`를 걸지 않아 타이핑마다 screen reader가
 반복하지 않는다(spec §8.6).
+
+서체는 브랜드 token 미확정(spec §11)이라 운영체제 기본 스택을 쓴다. 실측 computed 값은
+`ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif`로
+브랜드 서체를 새로 확정하지 않았음을 확인했다.
+
+---
+
+## 상호작용 실측 (완료 기준 2·3·5)
+
+같은 브라우저 세션에서 클릭으로 흐름을 끝까지 통과시키며 측정했다.
+
+| 확인 항목 | 측정 결과 |
+| --- | --- |
+| 빈 금액으로 `미래지출 추가하기` | `입력 오류: 금액을 입력해 주세요.` 1건 표시, focus가 `spend-amount`로 이동 |
+| `예시 금액 적용하기` | 항목 2건 추가, `월 30만 원 증가` 1건, `비교할 과거 지출이 없어요` 1건 |
+| 항목 `수정하기` | 폼 제목 `미래지출 수정` 1건, `수정 중` 표시 2건(배지·버튼), CTA `수정 내용 저장하기` 표시 |
+| `카드 조건 확인하기` | 제목 `카드 조건 확인` 1건 — 주소 이동 없이 2단계 전환 |
+| `결과 확인하기` | `/result`로 이동 |
+| 탭 `더 적게` | 결론 배지 `유지`, 대표 예상 순혜택 `연 48,000원`, 차액 `연 0원`, `현재 조합을 유지해도 예상 혜택 차이가 없습니다.` 1건 |
+| 탭 `예상한 만큼` | 결론 배지 `변경`, 대표 예상 순혜택 `연 153,000원`, 차액 `연 +93,000원` |
+| 탭 `더 많이` | 결론 배지 `변경`, 대표 예상 순혜택 `연 231,000원`, 차액 `연 +147,000원` |
+| 탭 `aria-selected` | 3개 탭 중 선택된 1개만 `true` |
+| `계산 근거 보기` | 클릭 전 `aria-expanded=false` → 클릭 후 `true` |
+| 펼친 근거 6종 | 계산식·한도 1건, 연회비와 예상 순혜택 계산 1건, 적용 조건 1건, 포함되지 않은 항목 1건, 기준일·규칙 버전 1건, 규칙 버전 값 `prototype-2026.08-r1` 1건 |
+| 금지 표현 스캔 | `/plan`·`/result` 렌더 텍스트에서 `무조건`·`보장`·`대신 해지`·`자동으로 카드를 바꿔`·`신청이 완료` 0건 |
+
+탭 전환은 서버 재호출 없이 클라이언트 상태만 바꾼다. 세 탭의 결론 배지·대표 금액·차액이 모두
+다르게 측정되어 완료 기준 3이 실측으로 확인된다.
 
 ---
 

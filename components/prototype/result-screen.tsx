@@ -31,14 +31,20 @@ export function ResultScreen({ result }: { result: ResultViewModel }) {
           value={activeScenario}
           onValueChange={(value) => setActiveScenario(String(value) as ScenarioKey)}
         >
-          <TabsList className="w-full">
+          {/*
+            TabsList 기본 높이는 32px이고 `group-data-horizontal/tabs:h-8`로 선언돼 있다.
+            트리거에 더 큰 높이를 직접 주면 32px 리스트를 넘치고, 접두사 없는 `h-12`는
+            tailwind-merge가 충돌로 보지 않아 무시된다. 같은 variant 접두사로 덮어써야
+            리스트가 실제로 커지고 트리거가 기본 `h-[calc(100%-1px)]`로 그 높이를 채운다.
+          */}
+          <TabsList className="w-full group-data-horizontal/tabs:h-12">
             {result.scenarios.map((scenario) => {
               const isActive = scenario.key === activeScenario;
               return (
                 <TabsTrigger
                   key={scenario.key}
                   value={scenario.key}
-                  className={cn("h-10 flex-1", isActive && "font-semibold underline")}
+                  className={cn("flex-1", isActive && "font-semibold underline")}
                 >
                   <span aria-hidden="true">{isActive ? "✓ " : ""}</span>
                   {scenario.tabLabel}

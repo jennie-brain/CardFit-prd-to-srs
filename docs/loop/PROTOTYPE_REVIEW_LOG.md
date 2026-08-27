@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 3
+ROUND: 4
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -195,6 +195,72 @@ README 언급)은 이번 라운드에서 손대지 않았다. 목표 문서 §2 
 - `NOTE:` `timeout`으로 `npm run dev`를 끊으면 npm 래퍼만 종료되고 `next dev` 자식이 포트를 계속
   점유한다. 다음 기동이 `Another next dev server is already running.`으로 거부되어 curl이 전부
   `000`을 반환했다. 증거 캡처 스크립트가 기동 전후로 해당 포트를 듣는 PID를 `taskkill`하도록 고쳤다.
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:C S:C
+TOP_FIX: `TabsList`에 명시적 높이(예: `h-11 w-full`)를 주어 `h-10` 트리거가 32px 리스트를 벗어나지 않게 고치고, 375px에서 `document.documentElement.scrollWidth === clientWidth`를 측정해 완료 기준 7을 실측 증거로 남기십시오.
+EVIDENCE:
+- 게이트 실측: `npx tsc --noEmit`·`npm run lint`·`npm run build` 모두 exit 0 (`/plan`·`/result` 정적 prerender)
+- 런타임 실측(포트 3100 정리 후 `npm run dev`): `plan=200 result=200 root=404 state_unknown=200`, `plan_scope=1 result_scope=1 result_installment=1`, 탭 3종 `role="tab"`·`aria-selected` 1/2, `netbenefit 153,000=1`
+- `components/ui/tabs.tsx:30`(리스트 `group-data-horizontal/tabs:h-8`) vs `components/prototype/result-screen.tsx:44`(트리거 `h-10 flex-1`)
+- Fixture 정합: `fixtures/prototype/result.ts` 6개 조합 모두 월 실적용액×12 = 총 예상 혜택, 총액−연회비 = 순혜택, 차액 0/93,000/147,000 일치
+- PRD 근거 확인: `PRD/PRD_CardFit_v1.3.md:208` US-C AC8 "온보딩 및 결과 화면" — Round 3 `/result` 고지 추가의 근거가 실재함
+NOTES:
+- T: 명세 §8.5 "입력값에 천 단위 구분을 표시한다"가 미구현입니다. `components/prototype/amount-field.tsx`의 `<Input value={value}>`는 `1200`을 그대로 보여주고 §8.2·§8.5 예시(`1,200`)와 어긋납니다(2라운드 이상 이월). 완료 기준 9항목 자체는 모두 충족합니다.
+- K: `public/`의 `next.svg`·`vercel.svg` 등 스캐폴딩 SVG 5개가 어디서도 참조되지 않습니다. `BenefitLimitPeriod`/`limitPeriod`, `PlanInputViewModel.inputMode`, `meta.status`는 Fixture에 채우지만 UI가 읽지 않습니다(app·components 내 참조 0건).
+- S: `README.md`에 프로토타입 실행 절차와 진입 URL이 없습니다. `/`가 404이므로 신규 검토자는 `docs/loop/PROTOTYPE_WALKTHROUGH.md`를 먼저 읽어야 `/plan`을 찾을 수 있습니다.
+```
+
+**판정 해석**: `A`가 `C`에서 `P`로 올라왔다(Round 3 `/result` 고지 추가 효과). `T`·`K`·`S` 세 축이
+`C`로 남아 완수가 아니다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 4
+
+### 처리한 TOP_FIX
+
+TOP_FIX가 두 부분이었고 둘 다 처리했다.
+
+**(1) 탭 높이 넘침 수정 — 실제 레이아웃 버그였다.**
+`TabsList` 기본 높이는 32px(`group-data-horizontal/tabs:h-8`)인데 트리거에 `h-10`(40px)을 직접 주어
+트리거가 리스트를 8px 넘고 있었다. 1차 수정으로 리스트에 접두사 없는 `h-12`를 줬으나 실측에서
+리스트가 여전히 32px였다 — `cn()`의 tailwind-merge는 `group-data-horizontal/tabs:h-8`과 `h-12`를
+서로 다른 modifier로 보아 충돌 처리하지 않는다. 같은 접두사(`group-data-horizontal/tabs:h-12`)로
+덮어써서 해결했다.
+
+| 시점 | TabsList 실측 | 트리거 실측 | 넘침 |
+| --- | --- | --- | --- |
+| 수정 전 | 343 × 32 | 112 × 40 | 발생 |
+| 1차 수정(`h-12`) | 343 × 32 | 112 × 25 | 없음(트리거가 눌려 25px) |
+| 2차 수정(variant 접두사) | 343 × 48 | 112 × 41 | 없음 |
+
+**(2) 완료 기준 7 실측 증거 확보.**
+설치된 Edge를 `playwright-core`로 구동해 375×812 뷰포트에서 8개 상태의
+`scrollWidth`/`clientWidth`를 측정했다. 전 상태 `375 === 375`로 가로 스크롤이 없다.
+같은 세션에서 완료 기준 2·3·5의 상호작용도 실측했다(탭별 결론 배지·대표 금액·차액이 모두 다름,
+`aria-expanded` false→true, 근거 6종 전부 1건, 금지 표현 0건).
+측정 결과는 `docs/loop/PROTOTYPE_WALKTHROUGH.md`의 「뷰포트 증거 — 실측」·「상호작용 실측」 절에 있다.
+
+- `ASSUMPTION:` 측정 도구는 저장소 의존성으로 추가하지 않았다. `npm install --no-save playwright-core`로
+  설치해 `package.json`·`package-lock.json`이 바뀌지 않음을 `git status --porcelain`으로 확인했고,
+  측정 스크립트와 스크린샷은 scratchpad에만 두었다. 이 단계의 완료 근거로 자동 테스트 Gate를
+  제시하지 않는다는 rules 006 「완료 처리 규칙」을 지키기 위해, 측정은 시각 검토 증거로만 쓴다.
+- 측정 중 화면 서체가 monospace로 보여 확인했으나 computed `font-family`는 의도한 시스템 스택
+  (`ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Malgun Gothic", …`)이었다. headless 렌더링
+  특성이고 코드 결함이 아니므로 고치지 않았다.
+
+`NOTES`의 항목(천 단위 구분 표시, 미사용 `public/*.svg`, UI가 읽지 않는 ViewModel 필드, README)은
+이번 라운드에서 손대지 않았다. 목표 문서 §2 "한 라운드에는 `TOP_FIX` 하나만 처리한다"를 따른다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 
 ### aztks-agent EVALUATE 결과
 
