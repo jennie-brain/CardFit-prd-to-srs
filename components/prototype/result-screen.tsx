@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { ScenarioResultPanel } from "@/components/prototype/scenario-result-panel";
+import { ScopeNotice } from "@/components/prototype/scope-notice";
 import { buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ResultViewModel, ScenarioKey } from "@/lib/prototype/view-model";
@@ -54,6 +55,8 @@ export function ResultScreen({ result }: { result: ResultViewModel }) {
           ))}
         </Tabs>
       </section>
+
+      <ScopeNotice notice={result.scopeNotice} />
 
       <Link href="/plan" className={cn(buttonVariants({ variant: "outline" }), "h-11 w-full text-base")}>
         미래지출 다시 입력하기

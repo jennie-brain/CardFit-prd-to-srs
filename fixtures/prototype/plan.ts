@@ -8,6 +8,7 @@ import type {
   PlanInputViewModel,
 } from "@/lib/prototype/view-model";
 import { MANWON } from "@/lib/prototype/format";
+import { SCOPE_NOTICE_CANDIDATE } from "@/fixtures/prototype/scope-notice";
 
 /** 선택형 대분류 9종. `기타`에서만 직접 입력을 허용한다. (spec §8.4) */
 const CATEGORIES: FutureSpendCategoryViewModel[] = [
@@ -66,12 +67,5 @@ export const PLAN_INPUT_FIXTURE: PlanInputViewModel = {
     allowsNewIssue: true,
   },
   exampleItems: EXAMPLE_ITEMS,
-  /** spec §7.2 온보딩 고지 후보 문구. `COMMAND-008` 확정 시 교체한다. */
-  scopeNotice: {
-    title: "CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니다.",
-    body: [
-      "계산 결과는 입력한 금액과 최근 확인된 카드 정보를 기준으로 합니다.",
-      "카드 신청·발급·해지를 대신 진행하지 않습니다.",
-    ],
-  },
+  scopeNotice: SCOPE_NOTICE_CANDIDATE,
 };

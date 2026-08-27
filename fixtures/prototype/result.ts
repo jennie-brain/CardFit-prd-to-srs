@@ -4,6 +4,7 @@
  * 금액은 화면에서 다시 계산하지 않으므로 이 파일의 값이 그대로 표시된다. (spec §4.3 / §5.1)
  */
 import type { ResultViewModel } from "@/lib/prototype/view-model";
+import { SCOPE_NOTICE_CANDIDATE } from "@/fixtures/prototype/scope-notice";
 
 const COMPARISON_PERIOD = "2026.09 ~ 2027.08 (12개월)";
 const CURRENCY = "원(KRW)";
@@ -18,6 +19,7 @@ export const RESULT_FIXTURE: ResultViewModel = {
     isExample: true,
   },
   activeScenario: "BASE",
+  scopeNotice: SCOPE_NOTICE_CANDIDATE,
   scenarios: [
     {
       key: "LOW",

@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 2
+ROUND: 3
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -26,7 +26,7 @@ FULL_PASS: 0
  M .agents/issue-tracker.md
  M README.md
  M "TASK/task1/08_GitHub_Project_\354\227\260\353\217\231_\353\205\270\355\212\270.md"
- M reports/cardfit-overseas-benchmark.html
+ M reports/benchmarks/cardfit-overseas-benchmark.html
 ```
 
 ## CONFLICT / ASSUMPTION
@@ -120,6 +120,81 @@ NOTES:
 | `npx tsc --noEmit` | exit 0 |
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### 라운드 진행 중 발생한 외부 이벤트
+
+- `NOTE:` Round 2 EVALUATE 1차 디스패치가 판정 전에 세션 사용 한도(HTTP 429)로 중단됐다.
+  판정이 아니라 실행 실패이므로 `ROUND`·`NOGO_STREAK`을 올리지 않고 같은 라운드를 재디스패치했다.
+- `NOTE:` 같은 시각 다른 세션이 `TASK/task1` 문서 이름을 번호 체계로 바꿨다.
+  `prototype-suggestion.md` → `07_시각_프로토타입_전체_계획.md`,
+  `prototype-suggestion-local-visual.md` → `09_시각_프로토타입_실행_요약.md`,
+  `prototype-visual-spec.md` → `10_시각_프로토타입_화면_명세.md`,
+  `reports/cardfit-overseas-benchmark.html` → `reports/benchmarks/`.
+  완료 기준 9항목 원문은 그대로다. 이 목표의 산출물과 분리한 실행 프롬프트의 참조 경로도 함께
+  갱신되어 있어 추가 수정이 필요하지 않았고, 이름 변경 후 검증 3종을 다시 실행해 모두 exit 0을 확인했다.
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:C Z:P T:C K:C S:C
+
+TOP_FIX: `/result`에 스코프 경계 고지를 추가하라 — `ScopeNotice`(또는 §7.2 문구 중 "카드 신청·발급·해지를 대신 진행하지 않습니다")를 `components/prototype/result-screen.tsx`에 렌더해, `/result` 직접 진입·새로고침(spec §3.2)에서도 "계산만 하고 실행은 대행하지 않는다"가 전달되게 하라. 검증: `curl -s localhost:3000/result | grep "대신 진행하지 않습니다"` >= 1.
+
+EVIDENCE
+- Z: 내가 직접 실행 — `npx tsc --noEmit`/`npm run lint`/`npm run build` 모두 exit 0, dev 서버 `/plan`=200 `/result`=200 `/`=404 `?state=partial`=200. `/result` SSR에 `role=tablist` 1·`aria-selected=true` 1·`aria-expanded=false` 1. Fixture 산술 전건 일치(48,000/153,000/231,000, delta 0/93,000/147,000 → GR2 임계 50,000 회피).
+- A: `curl /result | grep "카드 신청"` = 0건 vs `/plan` 2건. PRD US-C AC8은 온보딩과 **결과 화면** 모두 고지를 전제.
+- T: 완료 기준 1~9 충족(기준 8 금지어 grep 0건, 기준 9 `gh issue list --state closed` = `[]` + `docs/loop/PROTOTYPE_REVIEW_LOG.md` 체크포인트 기록).
+
+NOTES
+- T: spec §8.5 "입력값에 천 단위 구분을 표시한다" 미구현 — `amount-field.tsx`는 원문 그대로 표시하고 구분자는 환산 줄에만 있다.
+- K: `evidence-disclosure.tsx:69` 인라인 `toLocaleString`이 `format.ts` 헬퍼 단일 경로 원칙을 우회. `amount-field.tsx:57-63` `undo()`가 setState 업데이터 안에서 `onValueChange` 호출(비순수). 3개 파일이 import 없이 `React.ReactNode` 참조.
+- S: `README.md`에 앱·`npm run dev`·진입 URL(`/plan`) 언급이 0건 — 기준 1 근거가 `docs/loop/PROTOTYPE_WALKTHROUGH.md:23`에만 존재. 기준 7은 측정값이 아니라 클래스 구조 기반 분석 증거뿐(브라우저 미사용).
+```
+
+**판정 해석**: `VERDICT: GO`이지만 `A`·`T`·`K`·`S` 네 축이 `C`다. Round 1 대비 `S`가 `P`에서 `C`로
+내려갔고 `T`의 지적 내용이 바뀌었다(수정 경로 → 천 단위 구분 표시). 완수가 아니므로 `TOP_FIX`
+하나만 처리하고 다음 라운드로 간다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 3
+
+### 처리한 TOP_FIX
+
+`/result`에 스코프 경계 고지를 추가했다.
+
+- 두 화면이 같은 문구를 쓰므로 `fixtures/prototype/scope-notice.ts`에 `SCOPE_NOTICE_CANDIDATE`를
+  두고 `plan.ts`·`result.ts`가 함께 읽게 했다. 문구 중복을 만들지 않고, `COMMAND-008` 승인 문구가
+  확정되면 이 파일 한 곳만 교체하면 두 화면이 같이 바뀐다(spec §7.1 후보 지위 관리).
+- `ResultViewModel`에 `scopeNotice: ScopeNoticeViewModel`을 추가하고 `result-screen.tsx`가 결과 아래,
+  `미래지출 다시 입력하기` 위에 렌더한다. 결과를 보고 실제 카드 행동을 판단하는 지점이다.
+- 새 문구를 만들지 않고 spec §7.2 후보 문구를 그대로 썼다(rules 006 스코프 고지 규칙).
+
+평가자가 제시한 검증 명령을 그대로 실행해 확인했다.
+
+```
+result_scope_grep=1      (curl -s localhost:3000/result | grep -c "대신 진행하지 않습니다")
+plan_scope_grep=1
+result_status=200  plan_status=200  root_status=404  state_unknown_status=200
+```
+
+`NOTES`의 항목(천 단위 구분 표시, 인라인 `toLocaleString`, 비순수 `undo`, `React.ReactNode` import,
+README 언급)은 이번 라운드에서 손대지 않았다. 목표 문서 §2 "한 라운드에는 `TOP_FIX` 하나만
+처리한다"를 따른다. `README.md`는 이 목표의 작업 대상이 아니고 부트스트랩 3단계가 "루트 README.md는
+그대로 둔다"고 정했으므로, `S` 축의 README 지적은 이 목표 범위에서 처리할 수 없다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### 라운드 진행 중 발생한 환경 문제
+
+- `NOTE:` `timeout`으로 `npm run dev`를 끊으면 npm 래퍼만 종료되고 `next dev` 자식이 포트를 계속
+  점유한다. 다음 기동이 `Another next dev server is already running.`으로 거부되어 curl이 전부
+  `000`을 반환했다. 증거 캡처 스크립트가 기동 전후로 해당 포트를 듣는 PID를 `taskkill`하도록 고쳤다.
 
 ### aztks-agent EVALUATE 결과
 

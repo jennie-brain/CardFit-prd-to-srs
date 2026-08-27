@@ -1,7 +1,7 @@
 /**
  * CardFit 로컬 시각 프로토타입 후보(candidate) ViewModel.
  *
- * 이 파일은 `SPEC-001` 승인 계약이 아니다. `TASK/task1/prototype-visual-spec.md` §4의
+ * 이 파일은 `SPEC-001` 승인 계약이 아니다. `TASK/task1/10_시각_프로토타입_화면_명세.md` §4의
  * 타입 스케치를 구현한 **후보**이며, `SPEC-001`이 확정되면 화면보다 이 파일과
  * `fixtures/prototype/`을 먼저 계약에 맞춘다.
  *
@@ -182,6 +182,11 @@ export interface ScenarioResultViewModel {
 export interface ResultViewModel {
   meta: PrototypeMetaViewModel;
   activeScenario: ScenarioKey;
+  /**
+   * 결과를 보고 실제 행동을 판단하는 지점의 스코프 경계 고지.
+   * PRD US-C AC8은 온보딩과 결과 화면 모두에서 고지를 전제한다.
+   */
+  scopeNotice: ScopeNoticeViewModel;
   scenarios: ScenarioResultViewModel[];
   evidence: EvidenceViewModel;
 }

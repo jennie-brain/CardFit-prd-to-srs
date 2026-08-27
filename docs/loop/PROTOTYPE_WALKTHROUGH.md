@@ -1,6 +1,6 @@
 # CardFit 경량 시각 체크포인트 — 화면 워크스루
 
-라운드: 2 · 기록 시각: 2026-08-27 15:33 실행 세션
+라운드: 3 · 기록 시각: 2026-08-27 15:33 실행 세션
 
 이 문서는 브라우저를 볼 수 없는 검토자가 완료 기준 1~9를 판정할 수 있게, 실제로 렌더되는 텍스트와
 상태 전이·뷰포트 처리·완주 경로를 적은 기록이다. 아래 `/plan`·`/result` 텍스트 전문은
@@ -16,7 +16,7 @@
 ▲ Next.js 16.3.3 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.35.101:3000
-✓ Ready in 1976ms
+✓ Ready in 2.1s
 ```
 
 로그가 출력한 실제 포트는 `3000`이므로 진입 URL은 **`http://localhost:3000/plan`** 이다.
@@ -29,6 +29,18 @@ result=200
 result_state_unknown=200      (http://localhost:3000/result?state=partial)
 root=404
 ```
+
+같은 기동에서 스코프 경계 고지 노출을 grep으로 확인했다.
+
+```
+result_scope_grep=1      (curl /result | grep -c "대신 진행하지 않습니다")
+plan_scope_grep=1        (curl /plan   | grep -c "대신 진행하지 않습니다")
+state_unknown_status=200
+```
+
+`npm run dev`를 `timeout`으로 끊으면 npm 래퍼만 죽고 `next dev` 자식이 포트를 계속 점유해
+다음 기동이 `Another next dev server is already running.`으로 거부된다. 증거 캡처 스크립트는
+기동 전후로 해당 포트를 듣는 PID를 `taskkill`로 정리한다.
 
 루트 경로 `/`의 404는 범위 밖 라우트를 만들지 않은 결과다(spec §3.2, rules 006). 기준 1의 실패가 아니다.
 `?state=partial`처럼 이번 체크포인트가 화면으로 만들지 않은 값이 와도 대표 Fixture가 그대로 렌더된다
@@ -217,7 +229,7 @@ CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니
 - **접근 URL**: `http://localhost:3000/result` (2단계 `결과 확인하기` 또는 직접 접근·새로고침)
 - **Fixture 파일**: `fixtures/prototype/result.ts` → `RESULT_FIXTURE` (`fixtureId: result-success-01`, `status: "success"`)
 - **ViewModel 타입**: `ResultViewModel`, `ScenarioResultViewModel`, `CardCombinationViewModel`,
-  `BenefitAreaViewModel`, `EvidenceViewModel`
+  `BenefitAreaViewModel`, `EvidenceViewModel`, `ScopeNoticeViewModel`
 - **충족 완료 기준**: 1, 3, 4, 6, 7, 8
 
 ### 렌더되는 텍스트 전문 (기본 진입 = `예상한 만큼`)
@@ -257,8 +269,17 @@ CardFit 시각 프로토타입
 할부 수수료와 월별 실적 반영 차이, 카드사별 무이자 할부 조건은 이 계산에 포함되지 않았습니다.
 [계산 근거 보기]
 
+CardFit은 예상 지출을 바탕으로 카드 조합별 혜택을 비교합니다.
+계산 결과는 입력한 금액과 최근 확인된 카드 정보를 기준으로 합니다.
+카드 신청·발급·해지를 대신 진행하지 않습니다.
+
 [미래지출 다시 입력하기]
 ```
+
+결과 아래의 스코프 경계 고지는 spec §7.2 후보 문구를 그대로 쓰며 `/plan` 입력 전 고지와 같은
+`fixtures/prototype/scope-notice.ts` 한 곳에서 온다. `COMMAND-008` 승인 문구가 확정되면 그 파일만
+교체하면 두 화면이 함께 바뀐다. 결과를 보고 실제 카드 행동을 판단하는 지점에 두어 PRD US-C AC8의
+"온보딩 및 결과 화면" 고지 전제를 충족한다.
 
 ### 탭 전환의 상태 전이 (완료 기준 3)
 
@@ -413,5 +434,6 @@ http://localhost:3000/plan 진입
 - 금지 표현이 없다: 자동 카드 변경·대행 해지·`무조건 가장 유리`·`혜택을 보장`·외부 처리 완료 암시 문구,
   검증되지 않은 사용자 수·절감액·추천 보장 문구, 실제 카드사·플랫폼 실명과 로고를 쓰지 않았다.
   카드는 `예시 카드 A`·`예시 카드 B` 비식별 라벨만 사용한다.
-- 스코프 고지(spec §7.2)는 `/plan` 입력 전에 표시된다. 조합 선택·외부 이동 고지는 해당 화면을 만들지
-  않았으므로 함께 미룬다.
+- 스코프 고지(spec §7.2)는 `/plan` 입력 전과 `/result` 결과 아래 두 곳에 표시된다. 두 화면이
+  `fixtures/prototype/scope-notice.ts`의 같은 후보 문구를 읽는다. 조합 선택(§7.3)·외부 이동(§7.4)
+  고지는 해당 화면을 만들지 않았으므로 함께 미룬다.
