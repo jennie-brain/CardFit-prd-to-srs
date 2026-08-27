@@ -274,7 +274,8 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
           </div>
 
           <p className="rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
-            카드 조건의 기본값은 화면 확인용 예시이며 이 프로토타입의 계산에 반영하지 않습니다.
+            이 프로토타입은 입력값으로 계산하지 않습니다. 1단계에서 입력한 미래지출과 이 단계의 카드
+            조건은 모두 화면 확인용이며 결과에 반영하지 않고, 결과 화면은 고정된 예시 값을 보여줍니다.
             계산에 포함되지 않은 항목은 결과 화면의 계산 근거에서 확인할 수 있습니다.
           </p>
         </section>
