@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-import { PlanFlow } from "@/components/prototype/plan-flow";
-import { ScreenShell } from "@/components/prototype/screen-shell";
-import { PLAN_INPUT_FIXTURE } from "@/fixtures/prototype/plan";
+import { PlanFlow } from "@/features/cardfit-prototype/components/plan-flow";
+import { ScreenShell } from "@/features/cardfit-prototype/components/screen-shell";
+import { PLAN_INPUT_FIXTURE } from "@/features/cardfit-prototype/fixtures/plan";
 
 export const metadata: Metadata = {
   title: "미래지출 입력 · CardFit 시각 프로토타입",

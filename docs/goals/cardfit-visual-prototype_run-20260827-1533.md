@@ -12,9 +12,9 @@
   3. `TASK/task1/prototype-suggestion-local-visual.md` — 「프로토타입 완료 기준」 9항목과 「아직 확정하지 않은 사항」
   4. `PRD/PRD_CardFit_v1.3.md` 1~4장 — 목표 G1~G6, 고객 여정, 차별 가치, US-A/B/D/F의 AC, Guardrail GR1~GR5
 - **작업 대상**: 저장소 루트의 Next.js App Router 앱 — 아래 셋을 모두 포함한다.
-  - 직접 작성하는 코드: `app/`, `components/`, `lib/prototype/`, `fixtures/prototype/`
+  - 직접 작성하는 코드: `app/`, `components/`, `features/cardfit-prototype/lib/`, `features/cardfit-prototype/fixtures/`
   - 부트스트랩 산출물: `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts`, 그리고 사용 중인 템플릿이 생성하는 그 밖의 루트 설정 파일
-  - shadcn/ui 산출물: `components.json`, `components/ui/`, `lib/utils.ts`
+  - shadcn/ui 산출물: `components.json`, `features/cardfit-prototype/ui/`, `features/cardfit-prototype/features/cardfit-prototype/lib/utils.ts`
   - 기존 루트 `.gitignore`에는 **줄 추가만** 허용하고 기존 줄을 지우거나 바꾸지 않는다.
 - **구현 범위 — 라우트 2개** (`prototype-visual-spec.md` §3.1 확정안):
 
@@ -53,7 +53,7 @@
   4. `./.scaffold-tmp`를 삭제한다.
   5. 저장소 루트에서 `npm install` 을 실행해 `node_modules/`를 복원한다. **이 단계를 건너뛰면 `npx tsc --noEmit`·`npm run lint`·`npm run build`가 매 라운드 전부 실패한다.**
   6. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
-  7. shadcn/ui는 `npx shadcn@latest init -d -y` 로 초기화하고, 컴포넌트는 `npx shadcn@latest add <name> -y` 로 필요한 것만 추가한다. **`create-next-app`과 같은 이유로 비대화형 플래그를 반드시 붙인다** — `init`은 base color 등을 대화형으로 묻기 때문에 플래그가 없으면 1단계에서 경고한 첫 턴 정지가 그대로 발생한다. 이때 생성되는 `components.json`·`components/ui/`·`lib/utils.ts`는 1)의 작업 대상에 포함된다.
+  7. shadcn/ui는 `npx shadcn@latest init -d -y` 로 초기화하고, 컴포넌트는 `npx shadcn@latest add <name> -y` 로 필요한 것만 추가한다. **`create-next-app`과 같은 이유로 비대화형 플래그를 반드시 붙인다** — `init`은 base color 등을 대화형으로 묻기 때문에 플래그가 없으면 1단계에서 경고한 첫 턴 정지가 그대로 발생한다. 이때 생성되는 `components.json`·`features/cardfit-prototype/ui/`·`features/cardfit-prototype/features/cardfit-prototype/lib/utils.ts`는 1)의 작업 대상에 포함된다.
 
 ## 3) 종료 조건 및 종료 방법
 
@@ -68,7 +68,7 @@
   2. `npx tsc --noEmit`, `npm run lint`, `npm run build` 를 **각각 따로** 실행해 세 명령 모두 exit 0 인 출력을 대화에 남긴다.
   3. 마지막 `aztks-agent` EVALUATE 응답 전문(`VERDICT:`·`SCORECARD:`·`TOP_FIX:`·`EVIDENCE:` 줄 포함)을 대화에 그대로 남긴다.
   4. `cat docs/loop/PROTOTYPE_REVIEW_LOG.md` 를 실행해 카운터 세 줄과 `STOP REASON:` 줄이 보이는 출력을 대화에 남긴다.
-  5. `find app -name "page.tsx" | sort` 를 실행해 `app/plan/page.tsx`·`app/result/page.tsx` 두 개만 보이는 출력과, `ls fixtures/prototype lib/prototype` 출력을 대화에 남긴다.
+  5. `find app -name "page.tsx" | sort`를 실행해 `app/plan/page.tsx`·`app/result/page.tsx` 두 개만 보이는 출력과, `ls features/cardfit-prototype` 출력을 대화에 남긴다.
   6. `git log --oneline -n 10` 과 `git status --porcelain` 을 실행해 커밋 이력을 대화에 남기고, **이 목표가 만든 변경**만 1)의 작업 대상과 `docs/loop/` 안에 있음을 확인한다. 착수 전부터 수정 상태였던 다른 세션 파일은 판정 대상이 아니다 — 2)의 `BASELINE_DIRTY:` 기록과 대조해 차이만 본다.
 
 ## 4) 기타 제약조건
@@ -102,7 +102,7 @@ MODE: EVALUATE
 9. 계획 정본 19건 중 어떤 TASK도 Done으로 닫지 않고 시각 검토 체크포인트만 기록한다.
 
 대상:
-- 코드: app/plan, app/result, components/, lib/prototype/, fixtures/prototype/
+- 코드: app/plan, app/result, components/, features/cardfit-prototype/lib/, features/cardfit-prototype/fixtures/
 - 화면 워크스루: docs/loop/PROTOTYPE_WALKTHROUGH.md (화면별 카피 전문·상태 전이·뷰포트 증거·완주 경로)
 
 근거 소스:
@@ -113,7 +113,7 @@ MODE: EVALUATE
 
 판정할 때 특히 확인할 것:
 - A(알아서): PRD 고객 여정의 이탈 지점과 "계산·측정만 하고 실행은 대행하지 않는다"는 경계가 두 화면 안에서 전달되는가. 이번 범위에서 미룬 항목을 앞당겨 구현하지 않았는가.
-- Z(잘): npx tsc --noEmit / npm run lint / npm run build 가 실제로 통과하는가. fixtures/prototype 의 Fixture가 lib/prototype/view-model.ts 타입을 만족하는가.
+- Z(잘): npx tsc --noEmit / npm run lint / npm run build가 실제로 통과하는가. `features/cardfit-prototype/fixtures`의 Fixture가 `features/cardfit-prototype/lib/view-model.ts` 타입을 만족하는가.
 - T(딱): 위 9개 완료 기준에 누락·미완·모순이 있는가. prototype-visual-spec.md 확정 사항과 어긋나는 구현이 있는가.
 - K(깔끔): 죽은 코드·중복 컴포넌트·임의 인라인 타입·불필요한 복잡도가 있는가.
 - S(센스): 다음 개발자가 실제 Query/Command로 교체할 때 화면을 다시 짜지 않아도 되는 구조인가.

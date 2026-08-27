@@ -1,5 +1,5 @@
-import { formatDataAsOf } from "@/lib/prototype/format";
-import type { PrototypeMetaViewModel } from "@/lib/prototype/view-model";
+import { formatDataAsOf } from "@/features/cardfit-prototype/lib/format";
+import type { PrototypeMetaViewModel } from "@/features/cardfit-prototype/lib/view-model";
 
 /**
  * Fixture 예시 고지. 모든 Fixture는 `isExample: true`이며 실제 사용자 데이터처럼

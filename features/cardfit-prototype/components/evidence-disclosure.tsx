@@ -5,18 +5,18 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/features/cardfit-prototype/ui/accordion";
 import {
   formatAnnualWon,
   formatDataAsOf,
   formatKoreanReading,
   formatMonthlyWon,
-} from "@/lib/prototype/format";
+} from "@/features/cardfit-prototype/lib/format";
 import type {
   CardCombinationViewModel,
   EvidenceViewModel,
   ScenarioResultViewModel,
-} from "@/lib/prototype/view-model";
+} from "@/features/cardfit-prototype/lib/view-model";
 
 interface EvidenceDisclosureProps {
   scenario: ScenarioResultViewModel;

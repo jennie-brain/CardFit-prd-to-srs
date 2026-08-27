@@ -131,7 +131,7 @@ CardFit-prd-to-srs/
 
 ### 4.1 타입 원천과 지위
 
-화면 데이터 타입의 단일 진입점은 `lib/prototype/view-model.ts`다. 이 파일은 `SPEC-001` 승인 계약이 아니라 로컬 시각 프로토타입용 **후보 ViewModel**이며, 파일 상단에 그 지위를 주석으로 명시한다.
+화면 데이터 타입의 단일 진입점은 `features/cardfit-prototype/lib/view-model.ts`다. 이 파일은 `SPEC-001` 승인 계약이 아니라 로컬 시각 프로토타입용 **후보 ViewModel**이며, 파일 상단에 그 지위를 주석으로 명시한다.
 
 - 컴포넌트와 Fixture는 이 파일에서 타입을 import한다.
 - 컴포넌트 파일 안에 화면 전용 데이터 타입을 다시 정의하지 않는다.
@@ -196,16 +196,16 @@ interface ResultViewModel {
 
 ### 5.1 Fixture 위치와 형식
 
-정적 예시 데이터는 `fixtures/prototype/` 아래의 TypeScript 모듈로 관리한다.
+정적 예시 데이터는 `features/cardfit-prototype/fixtures/` 아래의 TypeScript 모듈로 관리한다.
 
 ```text
-fixtures/prototype/
+features/cardfit-prototype/fixtures/
 ├─ onboarding.ts
 ├─ plan.ts
 └─ result.ts
 ```
 
-- 각 Fixture는 `lib/prototype/view-model.ts`의 대응 ViewModel 타입을 만족해야 한다.
+- 각 Fixture는 `features/cardfit-prototype/lib/view-model.ts`의 대응 ViewModel 타입을 만족해야 한다.
 - 정상·부분·오래됨·실패뿐 아니라 유지·변경처럼 시각 검토에 필요한 결과 변형을 이름 있는 Fixture로 둔다.
 - 실제 사용자·카드 데이터와 실제 절감액을 사용하지 않는다.
 - 모든 Fixture에는 §4의 `fixtureId`, `status`, `isExample: true` 메타데이터를 포함한다.
@@ -593,7 +593,7 @@ CardFit은 신청서 작성·제출 또는 카드 해지를 대신하지 않습�
 | 2026-08-26 | T1 | 11건 로컬 시각안 + 최소 ViewModel 타입 스케치로 실행 | 화면 산출 속도를 유지하면서 임의 타입 결합 위험만 차단하기 위해서 |
 | 2026-08-26 | T2 | 저장소 루트에 Next.js App Router 앱을 부트스트랩하고 `npm run dev`로 실행 | 프로토타입 코드가 본 개발이 이어받는 같은 앱이어야 T1의 타입 스케치 결정이 의미를 갖기 때문 |
 | 2026-08-26 | T3 | 4개 주요 라우트(`/`, `/onboarding`, `/plan`, `/result`)와 라우트 내부 상태 전환을 결합 | 연속된 사용자 흐름과 단계별 직접 접근·본 개발 확장성을 함께 확보하기 위해서 |
-| 2026-08-26 | T4 | `lib/prototype/view-model.ts`를 단일 진입점으로 두고 기능별 ViewModel과 공통 상태 타입을 조합 | 화면별 임의 데이터 구조를 막으면서 기능 경계를 읽기 쉽게 유지하기 위해서 |
+| 2026-08-26 | T4 | `features/cardfit-prototype/lib/view-model.ts`를 단일 진입점으로 두고 기능별 ViewModel과 공통 상태 타입을 조합 | 화면별 임의 데이터 구조를 막으면서 기능 경계를 읽기 쉽게 유지하기 위해서 |
 | 2026-08-26 | T5 | 타입 적용 Fixture + 상태별 URL + `review=1` 검토자 전용 패널 | 사용자가 상태를 선택하는 오해 없이 상태별 화면을 빠르게 재현·공유하기 위해서 |
 | 2026-08-27 | T6 | 상태 제목·일반 안내는 차분한 해요체, 계산 사실·조건·고지는 합니다체, CTA는 행동형 명사구 | 뱅크샐러드의 문맥별 문체와 금융 판단의 정확한 책임 표현을 함께 반영하기 위해서 |
 | 2026-08-27 | T7 | PRD 기반 후보 고지 3종과 금지 표현을 고정하고 `COMMAND-008` 승인 시 교체 | 11건 시각 범위를 넓히지 않으면서 GR4와 외부 이동 경계를 검토하기 위해서 |

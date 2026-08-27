@@ -1,5 +1,5 @@
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { Label } from "@/features/cardfit-prototype/ui/label";
+import { cn } from "@/features/cardfit-prototype/lib/utils";
 
 export interface SelectFieldOption {
   value: string;

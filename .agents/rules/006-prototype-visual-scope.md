@@ -19,7 +19,7 @@
 
 ## ViewModel 타입 규칙
 
-- 화면이 바인딩하는 데이터 모양은 `lib/prototype/view-model.ts`를 단일 진입점으로 삼고, `prototype-visual-spec.md` §4의 **ViewModel 타입 스케치**를 따른다.
+- 화면이 바인딩하는 데이터 모양은 `features/cardfit-prototype/lib/view-model.ts`를 단일 진입점으로 삼고, `prototype-visual-spec.md` §4의 **ViewModel 타입 스케치**를 따른다.
 - 컴포넌트 파일 안에 화면 전용 데이터 타입을 인라인으로 정의하지 않는다.
 - 이 타입 스케치는 `SPEC-001` 승인 계약이 아니라 **후보**다. 파일 상단에 그 사실을 주석으로 남긴다.
 - Fixture와 화면이 어긋나면 화면이 아니라 타입 스케치와 Fixture를 먼저 고친다.
@@ -35,7 +35,7 @@
 
 ## Fixture와 검토 모드 규칙
 
-- Fixture는 `fixtures/prototype/`의 TypeScript 모듈로 두고 `lib/prototype/view-model.ts`의 타입을 만족시킨다.
+- Fixture는 `features/cardfit-prototype/fixtures/`의 TypeScript 모듈로 두고 `features/cardfit-prototype/lib/view-model.ts`의 타입을 만족시킨다.
 - 상태별 직접 접근은 허용된 `state` query로 재현하며, 알 수 없는 값은 대표 Fixture로 되돌린다.
 - 일반 사용자 UI에는 데이터 상태 선택기를 노출하지 않는다.
 - `review=1` 검토 패널은 최초 체크포인트에서 구현하지 않는다.

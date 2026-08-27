@@ -1,4 +1,4 @@
-import type { ScopeNoticeViewModel } from "@/lib/prototype/view-model";
+import type { ScopeNoticeViewModel } from "@/features/cardfit-prototype/lib/view-model";
 
 /**
  * 스코프 고지. 입력 전에 확인할 수 있도록 `/plan` 첫 단계 위에 둔다.

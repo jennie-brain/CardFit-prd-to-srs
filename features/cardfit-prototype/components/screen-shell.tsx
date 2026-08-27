@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-import { FixtureExampleNotice } from "@/components/prototype/fixture-example-notice";
-import type { PrototypeMetaViewModel } from "@/lib/prototype/view-model";
+import { FixtureExampleNotice } from "@/features/cardfit-prototype/components/fixture-example-notice";
+import type { PrototypeMetaViewModel } from "@/features/cardfit-prototype/lib/view-model";
 
 interface ScreenShellProps {
   title: string;

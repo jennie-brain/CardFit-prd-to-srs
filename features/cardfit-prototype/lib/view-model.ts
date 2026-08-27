@@ -3,7 +3,7 @@
  *
  * 이 파일은 `SPEC-001` 승인 계약이 아니다. `TASK/task1/prototype-visual-spec.md` §4의
  * 타입 스케치를 구현한 **후보**이며, `SPEC-001`이 확정되면 화면보다 이 파일과
- * `fixtures/prototype/`을 먼저 계약에 맞춘다.
+ * `features/cardfit-prototype/fixtures/`을 먼저 계약에 맞춘다.
  *
  * 규칙(`.agents/rules/006-prototype-visual-scope.md`)
  * - 화면이 바인딩하는 데이터 모양의 단일 진입점은 이 파일이다.

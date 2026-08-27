@@ -1,18 +1,18 @@
 "use client";
 
-import { EvidenceDisclosure } from "@/components/prototype/evidence-disclosure";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EvidenceDisclosure } from "@/features/cardfit-prototype/components/evidence-disclosure";
+import { Badge } from "@/features/cardfit-prototype/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/features/cardfit-prototype/ui/card";
 import {
   formatAnnualWon,
   formatDataAsOf,
   formatKoreanReading,
   formatSignedWon,
-} from "@/lib/prototype/format";
+} from "@/features/cardfit-prototype/lib/format";
 import type {
   EvidenceViewModel,
   ScenarioResultViewModel,
-} from "@/lib/prototype/view-model";
+} from "@/features/cardfit-prototype/lib/view-model";
 
 interface ScenarioResultPanelProps {
   scenario: ScenarioResultViewModel;

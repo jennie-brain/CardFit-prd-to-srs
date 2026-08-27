@@ -1,14 +1,14 @@
 /**
  * `/plan` 대표 Fixture. 비식별 정적 예시이며 실제 사용자·카드 데이터가 아니다.
- * 타입은 `lib/prototype/view-model.ts`를 만족해야 한다. (spec §5.1)
+ * 타입은 `features/cardfit-prototype/lib/view-model.ts`를 만족해야 한다. (spec §5.1)
  */
 import type {
   FutureSpendCategoryViewModel,
   FutureSpendItemViewModel,
   PlanInputViewModel,
-} from "@/lib/prototype/view-model";
-import { MANWON } from "@/lib/prototype/format";
-import { SCOPE_NOTICE_CANDIDATE } from "@/fixtures/prototype/scope-notice";
+} from "@/features/cardfit-prototype/lib/view-model";
+import { MANWON } from "@/features/cardfit-prototype/lib/format";
+import { SCOPE_NOTICE_CANDIDATE } from "@/features/cardfit-prototype/fixtures/scope-notice";
 
 /** 선택형 대분류 9종. `기타`에서만 직접 입력을 허용한다. (spec §8.4) */
 const CATEGORIES: FutureSpendCategoryViewModel[] = [

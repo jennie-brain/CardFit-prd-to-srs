@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-import { ResultScreen } from "@/components/prototype/result-screen";
-import { ScreenShell } from "@/components/prototype/screen-shell";
-import { RESULT_FIXTURE } from "@/fixtures/prototype/result";
+import { ResultScreen } from "@/features/cardfit-prototype/components/result-screen";
+import { ScreenShell } from "@/features/cardfit-prototype/components/screen-shell";
+import { RESULT_FIXTURE } from "@/features/cardfit-prototype/fixtures/result";
 
 export const metadata: Metadata = {
   title: "결과와 계산 근거 · CardFit 시각 프로토타입",

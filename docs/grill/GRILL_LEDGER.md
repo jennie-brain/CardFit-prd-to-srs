@@ -17,8 +17,8 @@ RESOLVED: 15 / TOTAL: 17
 - [x] T1 | CORE  | 실행 슬라이스 확정 | status:RESOLVED | decision:11건 로컬 시각안 + 최소 ViewModel 타입 스케치 | superseded-by:T17
 - [x] T2 | CORE  | 프로토타입 코드 거처와 실행 방식 | status:RESOLVED | decision:저장소 루트 Next.js App Router 앱 + npm run dev | applied:prototype-visual-spec.md §2, .agents/rules/006
 - [x] T3 | CORE  | 8개 화면의 라우팅 구조 — 단일 라우트 상태전환 vs 라우트 분리 | status:RESOLVED | decision:4개 주요 라우트(`/`, `/onboarding`, `/plan`, `/result`) + 라우트 내부 상태 전환 | superseded-by:T17
-- [x] T4 | CORE  | UI가 바인딩할 타입 원천 — SPEC-001 미확정 상태의 ViewModel 처리 | status:RESOLVED | decision:`lib/prototype/view-model.ts` 단일 진입점 + 기능별 ViewModel + 공통 상태 타입 | applied:TASK/task1/prototype-visual-spec.md §4, .agents/rules/006
-- [x] T5 | CORE  | Fixture 위치·형식과 상태 전환 조작 수단(상태 스위처) | status:RESOLVED | decision:`fixtures/prototype/*.ts` + 상태별 URL + `review=1` 검토자 전용 패널 | applied:TASK/task1/prototype-visual-spec.md §5, .agents/rules/006
+- [x] T4 | CORE  | UI가 바인딩할 타입 원천 — SPEC-001 미확정 상태의 ViewModel 처리 | status:RESOLVED | decision:`features/cardfit-prototype/lib/view-model.ts` 단일 진입점 + 기능별 ViewModel + 공통 상태 타입 | applied:TASK/task1/prototype-visual-spec.md §4, .agents/rules/006
+- [x] T5 | CORE  | Fixture 위치·형식과 상태 전환 조작 수단(상태 스위처) | status:RESOLVED | decision:`features/cardfit-prototype/fixtures/*.ts` + 상태별 URL + `review=1` 검토자 전용 패널 | applied:TASK/task1/prototype-visual-spec.md §5, .agents/rules/006
 - [x] T6 | CORE  | 상태 언어 7종(loading·empty·partial·stale·error·unavailable·success) 한글 카피 확정 범위 | status:RESOLVED | decision:대표 제목·의미·CTA 확정 + 일반 안내 해요체/조건·고지 합니다체 | applied:TASK/task1/prototype-visual-spec.md §6, TASK/task2/UX-001 Decision Log, .agents/rules/006
 - [x] T7 | CORE  | 스코프 고지·금지어 문구 원천 (COMMAND-008 미포함 상태, GR4 직결) | status:RESOLVED | decision:PRD 기반 후보 고지 3종 + 금지 표현 고정, `COMMAND-008` 승인 시 교체 | applied:TASK/task1/prototype-visual-spec.md §7, TASK/task2/UI-002·UX-004·UI-007 Decision Log, .agents/rules/006
 - [x] T8 | CORE  | 입력 초기값 정책 충돌 — PRD US-D AC4(업계 평균) vs UI-003 AC3(빈 폼) | status:RESOLVED | decision:빈 값 시작 + 사용자 선택 시 수정 가능한 비개인화 예시 적용, 업계 평균은 승인 후 M2 | applied:PRD v1.3 US-D AC4, prototype-visual-spec.md §8, TASK 정책 로그 DECISION-004, UX-002·UI-003 Decision Log, .agents/rules/006
@@ -56,13 +56,13 @@ RESOLVED: 15 / TOTAL: 17
 
 ### T4 — ViewModel 타입 원천 (CORE)
 
-- 결정: `lib/prototype/view-model.ts`를 화면 데이터 타입의 단일 진입점으로 사용하고, 온보딩·입력·결과 기능별 ViewModel에 7종 공통 상태 타입을 조합한다.
+- 결정: `features/cardfit-prototype/lib/view-model.ts`를 화면 데이터 타입의 단일 진입점으로 사용하고, 온보딩·입력·결과 기능별 ViewModel에 7종 공통 상태 타입을 조합한다.
 - 이유: 화면마다 데이터 이름과 구조가 달라지는 것을 막으면서 하나의 거대한 타입이 모든 화면 책임을 뒤섞는 문제를 피한다.
 - 반영: `TASK/task1/prototype-visual-spec.md` §4 신설 · `.agents/rules/006`의 ViewModel 경로·구성 규칙 구체화
 
 ### T5 — Fixture와 상태 전환 수단 (CORE)
 
-- 결정: 타입이 적용된 Fixture를 `fixtures/prototype/`에 두고, 허용된 `state` query로 상태를 재현한다. 상태 선택 패널은 `review=1`에서 개발자·검토자에게만 표시한다.
+- 결정: 타입이 적용된 Fixture를 `features/cardfit-prototype/fixtures/`에 두고, 허용된 `state` query로 상태를 재현한다. 상태 선택 패널은 `review=1`에서 개발자·검토자에게만 표시한다.
 - 이유: 사용자가 데이터 상태를 선택하는 잘못된 경험을 만들지 않으면서 정상·부분·오래됨·실패 등 모든 시각 상태를 빠르게 재현하고 공유한다.
 - 반영: `TASK/task1/prototype-visual-spec.md` §5 신설 · `.agents/rules/006`에 Fixture·검토 모드 규칙 추가
 

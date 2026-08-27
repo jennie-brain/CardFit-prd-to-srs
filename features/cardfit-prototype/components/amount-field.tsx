@@ -2,10 +2,10 @@
 
 import { useLayoutEffect, useRef, useState, type RefObject } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { formatAmountConversion } from "@/lib/prototype/format";
+import { Button } from "@/features/cardfit-prototype/ui/button";
+import { Input } from "@/features/cardfit-prototype/ui/input";
+import { Label } from "@/features/cardfit-prototype/ui/label";
+import { formatAmountConversion } from "@/features/cardfit-prototype/lib/format";
 import {
   applyQuickAdd,
   caretIndexAfterDigits,
@@ -13,7 +13,7 @@ import {
   parseManwonInput,
   QUICK_ADD_MANWON,
   quickAddLabel,
-} from "@/lib/prototype/plan-input";
+} from "@/features/cardfit-prototype/lib/plan-input";
 
 interface AmountFieldProps {
   id: string;

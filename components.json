@@ -13,11 +13,11 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "@/features/cardfit-prototype/components",
+    "utils": "@/features/cardfit-prototype/lib/utils",
+    "ui": "@/features/cardfit-prototype/ui",
+    "lib": "@/features/cardfit-prototype/lib",
+    "hooks": "@/features/cardfit-prototype/hooks"
   },
   "menuColor": "default",
   "menuAccent": "subtle",

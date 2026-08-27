@@ -3,16 +3,16 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-import { AmountField } from "@/components/prototype/amount-field";
-import { FutureSpendItemCard } from "@/components/prototype/future-spend-item-card";
-import { ScopeNotice } from "@/components/prototype/scope-notice";
-import { SelectField, type SelectFieldOption } from "@/components/prototype/select-field";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { MANWON } from "@/lib/prototype/format";
+import { AmountField } from "@/features/cardfit-prototype/components/amount-field";
+import { FutureSpendItemCard } from "@/features/cardfit-prototype/components/future-spend-item-card";
+import { ScopeNotice } from "@/features/cardfit-prototype/components/scope-notice";
+import { SelectField, type SelectFieldOption } from "@/features/cardfit-prototype/components/select-field";
+import { Alert, AlertDescription, AlertTitle } from "@/features/cardfit-prototype/ui/alert";
+import { Button, buttonVariants } from "@/features/cardfit-prototype/ui/button";
+import { Input } from "@/features/cardfit-prototype/ui/input";
+import { Label } from "@/features/cardfit-prototype/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/features/cardfit-prototype/ui/radio-group";
+import { MANWON } from "@/features/cardfit-prototype/lib/format";
 import {
   AMOUNT_ERROR_MESSAGE,
   SELECTABLE_MONTHS,
@@ -21,14 +21,14 @@ import {
   spendAmountLabel,
   spendKindLabel,
   spendTimingLabel,
-} from "@/lib/prototype/plan-input";
+} from "@/features/cardfit-prototype/lib/plan-input";
 import type {
   FutureSpendCategoryId,
   FutureSpendItemViewModel,
   FutureSpendKind,
   PlanInputViewModel,
-} from "@/lib/prototype/view-model";
-import { cn } from "@/lib/utils";
+} from "@/features/cardfit-prototype/lib/view-model";
+import { cn } from "@/features/cardfit-prototype/lib/utils";
 
 type PlanStep = "spend" | "constraints";
 

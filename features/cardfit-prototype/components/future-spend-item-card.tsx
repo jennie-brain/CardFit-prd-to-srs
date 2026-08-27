@@ -1,17 +1,17 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { formatManwon, formatWon, formatYearMonth } from "@/lib/prototype/format";
+import { Badge } from "@/features/cardfit-prototype/ui/badge";
+import { Button } from "@/features/cardfit-prototype/ui/button";
+import { formatManwon, formatWon, formatYearMonth } from "@/features/cardfit-prototype/lib/format";
 import {
   categoryDisplayLabel,
   describeSpendChange,
   spendAmountLabel,
   spendKindLabel,
   spendTimingLabel,
-} from "@/lib/prototype/plan-input";
+} from "@/features/cardfit-prototype/lib/plan-input";
 import type {
   FutureSpendCategoryViewModel,
   FutureSpendItemViewModel,
-} from "@/lib/prototype/view-model";
+} from "@/features/cardfit-prototype/lib/view-model";
 
 interface FutureSpendItemCardProps {
   item: FutureSpendItemViewModel;

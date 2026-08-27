@@ -32,8 +32,8 @@
 
 ### 로컬 대체 방식
 
-- 화면 데이터는 별도 서버 없이 `fixtures/prototype/`의 **비식별 TypeScript Fixture**로 제공한다.
-- 화면 타입은 `lib/prototype/view-model.ts`를 단일 진입점으로 사용하고 컴포넌트 안에 임의 타입을 만들지 않는다.
+- 화면 데이터는 별도 서버 없이 `features/cardfit-prototype/fixtures/`의 **비식별 TypeScript Fixture**로 제공한다.
+- 화면 타입은 `features/cardfit-prototype/lib/view-model.ts`를 단일 진입점으로 사용하고 컴포넌트 안에 임의 타입을 만들지 않는다.
 - 입력 제출은 실제 저장·계산이 아니라 미리 준비한 결과 상태를 전환한다.
 - 상태별 직접 진입은 허용된 `state` query로 재현하며 일반 사용자에게 상태 선택기를 노출하지 않는다.
 - 금액·카드명·혜택은 예시임을 표시하고, 실제 추천·절감액·정확도처럼 보이는 주장은 넣지 않는다.

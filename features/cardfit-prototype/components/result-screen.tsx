@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { ScenarioResultPanel } from "@/components/prototype/scenario-result-panel";
-import { ScopeNotice } from "@/components/prototype/scope-notice";
-import { buttonVariants } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { ResultViewModel, ScenarioKey } from "@/lib/prototype/view-model";
-import { cn } from "@/lib/utils";
+import { ScenarioResultPanel } from "@/features/cardfit-prototype/components/scenario-result-panel";
+import { ScopeNotice } from "@/features/cardfit-prototype/components/scope-notice";
+import { buttonVariants } from "@/features/cardfit-prototype/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/features/cardfit-prototype/ui/tabs";
+import type { ResultViewModel, ScenarioKey } from "@/features/cardfit-prototype/lib/view-model";
+import { cn } from "@/features/cardfit-prototype/lib/utils";
 
 /**
  * 세 시나리오 결과. 탭 전환은 미리 준비된 결과를 바꿔 보여줄 뿐 서버를 다시 호출하지 않는다.
