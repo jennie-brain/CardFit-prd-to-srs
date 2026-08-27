@@ -47,10 +47,10 @@
 - **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다.
 - **도구**: 패키지 매니저는 `npm`.
 - **부트스트랩 — 루트에 직접 실행하지 않는다**: 저장소 루트에는 `AGENTS.md`·`PRD/`·`TASK/`·`SRS-Drafts/`·`plans/`·`reports/`·`landing/` 등 문서 자산이 20개 넘게 있고, `create-next-app`은 대상 디렉터리에 화이트리스트 밖 파일이 있으면 "contains files that could conflict"로 **중단한다**(`--yes`는 프롬프트만 없앨 뿐 이 검사를 건너뛰지 않는다). 따라서 아래 순서로 진행한다.
-  1. `npx create-next-app@latest ../cardfit-scaffold --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 를 실행한다. **대화형 프롬프트가 하나라도 뜨면 자율 루프가 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 명시한다.
+  1. 먼저 루트 `.gitignore`에 `.scaffold-tmp/` 한 줄을 덧붙인 뒤, `npx create-next-app@latest ./.scaffold-tmp --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 를 실행한다. **스캐폴드 위치는 저장소 안이어야 한다** — 저장소 밖(`../`) 쓰기는 도구 권한 경계 밖이라 승인 프롬프트로 자율 루프가 멈출 수 있다. 또한 **대화형 프롬프트가 하나라도 뜨면 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 명시한다.
   2. 생성물 중 `app/`, `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts` 를 저장소 루트로 옮긴다. 생성물에 이 목록 밖의 설정 파일(`tailwind.config.ts`, `.npmrc` 등 템플릿 버전에 따라 달라지는 것)이 있으면 함께 옮긴다. **`node_modules/`는 옮기지 않는다.**
   3. 기존 파일을 **덮어쓰지 않는다.** 특히 루트 `README.md`와 `.gitignore`는 그대로 두고(현 `.gitignore`가 이미 `node_modules/`·`.next/`·`.vercel/`을 제외한다) 필요한 줄만 덧붙인다. 문서 디렉터리는 어떤 경우에도 건드리지 않는다.
-  4. `../cardfit-scaffold`를 삭제한다.
+  4. `./.scaffold-tmp`를 삭제한다.
   5. 저장소 루트에서 `npm install` 을 실행해 `node_modules/`를 복원한다. **이 단계를 건너뛰면 `npx tsc --noEmit`·`npm run lint`·`npm run build`가 매 라운드 전부 실패한다.**
   6. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
   7. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다. 이때 생성되는 `components.json`·`components/ui/`·`lib/utils.ts`는 1)의 작업 대상에 포함된다.
@@ -62,7 +62,7 @@
   2. `NOGO_STREAK`이 3에 도달 → **STOP REASON: EVAL_STALLED**
   3. 동일한 `TOP_FIX`가 3라운드 연속 반환 → **STOP REASON: FIX_LOOP**
   4. 평가-진행 라운드(turn = `/goal` 평가자가 진행 상태를 한 번 점검하는 메인 에이전트 응답 사이클) 누적 30회 도달 → **STOP REASON: TURN_CAP** (= or stop after 30 turns)
-- **종료 방법**:
+- **종료 방법** (아래 명령은 **모두 Bash 도구로 실행한다** — 이 머신의 기본 셸은 PowerShell이라 `find` 등이 Windows 실행 파일로 잡혀 재현되지 않는다):
   1. `docs/loop/PROTOTYPE_REVIEW_LOG.md` 마지막 줄에 `STOP REASON: <코드>` 한 줄을 덧붙이고 상단 카운터 세 줄을 최종값으로 갱신한다.
   2. `npx tsc --noEmit && npm run lint && npm run build` 를 실행해 세 명령 모두 exit 0 인 출력을 대화에 남긴다.
   3. 마지막 `aztks-agent` EVALUATE 응답 전문(`VERDICT:`·`SCORECARD:`·`TOP_FIX:`·`EVIDENCE:` 줄 포함)을 대화에 그대로 남긴다.
