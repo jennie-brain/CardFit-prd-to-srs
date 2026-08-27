@@ -1,6 +1,6 @@
 # CardFit 경량 시각 체크포인트 — 화면 워크스루
 
-라운드: 11 · 기록 시각: 2026-08-27 15:33 실행 세션
+라운드: 12 · 기록 시각: 2026-08-27 15:33 실행 세션
 
 이 문서는 브라우저를 볼 수 없는 검토자가 완료 기준 1~9를 판정할 수 있게, 실제로 렌더되는 텍스트와
 상태 전이·뷰포트 처리·완주 경로를 적은 기록이다. 아래 `/plan`·`/result` 텍스트 전문은
@@ -43,6 +43,25 @@ state_unknown_status=200
 기동 전후로 해당 포트를 듣는 PID를 `taskkill`로 정리한다.
 
 루트 경로 `/`의 404는 범위 밖 라우트를 만들지 않은 결과다(spec §3.2, rules 006). 기준 1의 실패가 아니다.
+`app/not-found.tsx`(404 처리기, `page.tsx`가 아니므로 라우트 수는 그대로)가 그 404 응답에서 진입 화면을
+안내한다. 실측 렌더 텍스트다.
+
+```
+CardFit 시각 프로토타입
+찾는 화면이 없어요
+이 프로토타입에는 미래지출 입력 화면과 결과 화면 두 개만 있습니다.
+진입 화면은 /plan 이고 결과 화면은 /result 입니다.
+[미래지출 입력하기]
+```
+
+```
+root_status=404            (/ 는 계속 404를 반환한다)
+root_plan_links=1          (curl / | grep -c "/plan")
+unknown_status=404         (/zzz-does-not-exist)
+unknown_plan_links=1
+plan_status=200  result_status=200
+find app -name "page.tsx" → app/plan/page.tsx · app/result/page.tsx (두 개 유지)
+```
 `?state=partial`처럼 이번 체크포인트가 화면으로 만들지 않은 값이 와도 대표 Fixture가 그대로 렌더된다
 (spec §5.2의 안전한 되돌림).
 

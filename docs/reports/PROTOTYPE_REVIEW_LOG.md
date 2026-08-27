@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 11
+ROUND: 12
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -852,6 +852,78 @@ NOTES:
 | `npx tsc --noEmit` | exit 0 |
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:C Z:P T:P K:P S:C
+
+TOP_FIX: app/not-found.tsx 를 추가해 404 응답에서 "미래지출 입력 화면(/plan)으로 이동" 링크와 한국어 안내를 제공하라 — page.tsx 가 아니므로 / 라우트 금지(spec §3.2 · rules 006)를 위반하지 않고 / 는 계속 404를 반환한다. 검증: curl / → 404 유지 + curl / | grep -c "/plan" >= 1.
+
+EVIDENCE
+- 게이트 3종 재실행: npx tsc --noEmit exit 0 / npm run lint exit 0 / npm run build exit 0. Fixture는 PlanInputViewModel·ResultViewModel 로 선언돼 tsc가 타입 만족을 검증한다.
+- next dev 실측: /plan 200, /result 200, /result?state=bogus 200(대표 Fixture 되돌림, spec §5.2), / 404 — 본문은 Next 기본 영문 "This page could not be found"로 진입 안내가 없다.
+- 렌더 텍스트 grep: /plan·/result 모두 스코프 고지·Fixture 예시 고지 노출, /result 에 예상 순혜택·총 예상 혜택·연회비·생활 할인 월 최대 1만 원·할부 수수료·계산 근거 보기·prototype-2026.08-r1 전부 존재. 금지 표현 0건.
+- 범위 준수: app/api 없음, use server·Prisma·Supabase·process.env·fetch( 0건, 워킹트리 clean. /·/onboarding·검토 패널·RANGE·AI 미구현. 완료 기준 9 유지.
+- 완료 기준 1~9 전부 충족(코드 경로 + 워크스루 실측 375px 8상태·CTA 343×44px).
+
+NOTES
+- A(비차단): LOW 탭 정합 흠 — 적용 조건에 "예시 카드 A의 온라인 쇼핑 할인"이 있으나 같은 탭 헤드라인 조합(카드 A 단독)의 근거 1·2에는 해당 영역이 없고 변경 후보(A+B)에서만 월 500원으로 나타난다.
+- S(비차단): components/scope-notice.tsx 주석이 "/plan 첫 단계 위에 둔다"고만 적혀 있으나 실제로는 /result 에서도 사용된다.
+- K(비차단): ui/tabs.tsx 의 tabsListVariants export 미사용(shadcn 생성물), plan-flow.tsx 535줄·useState 18개는 크지만 죽은 코드·중복 컴포넌트·인라인 ViewModel 타입은 없다.
+```
+
+**판정 해석**: `Z`·`T`·`K`가 `P`를 유지했다. `S`의 `C` 근거가 README(수정 불가)에서 **이 목표가 실행
+가능한 대안**으로 옮겨졌다 — 평가자가 앞선 라운드에 전달한 `app/not-found.tsx` 방안을 그대로 `TOP_FIX`로
+채택했다. `A`의 `C`는 Round 11에서 처리한 입력 미반영 고지가 반영된 뒤의 상태이고 남은 `A` 지적은
+비차단 `NOTES`(LOW 탭 정합)로 내려갔다. `NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 12
+
+### 처리한 TOP_FIX
+
+`app/not-found.tsx`를 추가해 404 응답에서 진입 화면을 안내한다.
+
+- `page.tsx`가 아니므로 라우트 수는 `/plan`·`/result` 두 개 그대로다. `find app -name "page.tsx"`가
+  여전히 두 개만 출력하므로 종료 방법 5)의 기대값을 깨지 않는다.
+- `/`는 계속 404를 반환한다. spec §3.2·rules 006의 `/` 라우트 금지를 위반하지 않는다.
+- 문체는 spec §6.1을 따랐다 — 상태 제목은 해요체(`찾는 화면이 없어요`), 사실 전달은 합니다체,
+  CTA는 행동형 명사구(`미래지출 입력하기`).
+- 진입 URL 지식이 워크스루 문서 밖(=앱 자체)에도 존재하게 된다. `README.md`는 부트스트랩 규칙상
+  수정 금지이므로 이 경로가 이 목표에서 실행 가능한 유일한 해소책이다.
+
+### 실측 검증 (평가자 제시 검증 그대로)
+
+```
+root_status=404            (/ 는 계속 404)
+root_plan_links=1          (curl / | grep -c "/plan")
+unknown_status=404         (/zzz-does-not-exist)
+unknown_plan_links=1
+plan_status=200  result_status=200
+find app -name "page.tsx" → app/plan/page.tsx · app/result/page.tsx (두 개 유지)
+```
+
+렌더 텍스트다.
+
+```
+CardFit 시각 프로토타입
+찾는 화면이 없어요
+이 프로토타입에는 미래지출 입력 화면과 결과 화면 두 개만 있습니다.
+진입 화면은 /plan 이고 결과 화면은 /result 입니다.
+[미래지출 입력하기]
+```
+
+`NOTES`의 비차단 항목 세 건(LOW 탭 적용 조건 정합, `scope-notice.tsx` 주석 사용처 표기,
+`tabsListVariants` 미사용 export)은 이번 라운드에서 손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender, `/_not-found` 포함) |
 
 ### aztks-agent EVALUATE 결과
 
