@@ -66,7 +66,7 @@ export function EvidenceDisclosure({
                     <dd>
                       {area.limitAdjustmentMonthlyWon === 0
                         ? "적용된 차감 없음"
-                        : `월 ${area.limitAdjustmentMonthlyWon.toLocaleString("ko-KR")}원`}
+                        : formatMonthlyWon(area.limitAdjustmentMonthlyWon)}
                     </dd>
                   </div>
                   <div className="flex justify-between gap-3 py-0.5">

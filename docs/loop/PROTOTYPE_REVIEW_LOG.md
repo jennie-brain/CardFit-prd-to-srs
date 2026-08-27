@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/goals/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/goals/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 5
+ROUND: 6
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -28,6 +28,20 @@ FULL_PASS: 0
  M "TASK/task1/08_GitHub_Project_\354\227\260\353\217\231_\353\205\270\355\212\270.md"
  M reports/benchmarks/cardfit-overseas-benchmark.html
 ```
+
+**Round 6 재기록.** 위 기록은 착수 첫 턴(Round 1) 시점이다. 그 사이 다른 세션이 해당 파일들을
+커밋하고 문서 재정리를 넣었다가 revert했다. `reports/benchmarks/cardfit-overseas-benchmark.html`은
+revert로 사라진 경로이므로 낡은 기준선과 비교하면 종료 게이트가 틀린 판정을 낸다.
+
+Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일만** 출력한다. 즉 다른 세션이
+남긴 dirty 파일이 없다.
+
+```
+ M components/prototype/evidence-disclosure.tsx
+```
+
+따라서 종료 방법 6)은 `git status --porcelain` 출력이 1)의 작업 대상과 `docs/loop/` 안에만
+있는지로 판정한다.
 
 ## CONFLICT / ASSUMPTION
 
@@ -343,6 +357,70 @@ README)은 이번 라운드에서 손대지 않았다.
   주석은 revert 대상에 포함되지 않아 존재하지 않는 경로를 가리키고 있었다. 두 주석을 실제 경로로
   되돌려 저장소 안에 깨진 문서 참조가 남지 않게 했다. 목표 문서와 분리한 실행 프롬프트는 revert로
   함께 원래 경로로 돌아왔고 본문 동일성(`diff`)도 유지된다.
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:P K:C S:C
+
+TOP_FIX: `components/prototype/evidence-disclosure.tsx:69`의 인라인 `월 ${area.limitAdjustmentMonthlyWon.toLocaleString("ko-KR")}원`을 `formatMonthlyWon(area.limitAdjustmentMonthlyWon)`으로 교체하라. 두 식의 출력이 `월 -2,500원`으로 완전히 동일해 화면 변화 0이며, `lib/prototype/format.ts:2`가 스스로 선언한 "화면은 이 파일만 사용" 규칙 위반을 없앤다. 검증: `grep -rn toLocaleString components/` 결과가 0건, 그 뒤 `npx tsc --noEmit` + `npm run build` exit 0.
+
+EVIDENCE:
+- Z 게이트 3종 실측: `npx tsc --noEmit` exit 0 / `npm run lint` exit 0 / `npm run build` exit 0 (`/plan`·`/result` 정적 prerender).
+- Fixture 산술 자체 검증: 6개 조합 전부 `benefitAreas` 합 × 12 = `totalBenefitAnnualWon`, `net = total − fee`, 차액 3건(0 / +93,000 / +147,000) 일치.
+- 빌드 산출 HTML 직접 grep: `대신 진행하지 않습니다` 두 화면 각 1건, 근거 6종·`prototype-2026.08-r1`·`생활 할인은 월 최대 1만 원` 존재, `role="tab"`×3 / `aria-selected="true"`×1 / `aria-expanded="false"`×1, 금지어 0건.
+- 기준 9: `git diff --stat HEAD -- TASK/`가 빈 출력, `Done` 승격 0건. 앞당김 없음은 라우트 3개와 `review=1`·RANGE·AI·Route Handler·Prisma 미존재로 확인.
+
+NOTES:
+- K: 미조회 ViewModel 필드 3건 — `cardLabels`, `limitPeriod`, `CardCombinationViewModel.id`. `meta.status`·`isExample`·`inputMode` 미조회는 spec §4.3이 존재를 강제하므로 죽은 코드로 보지 않는다. 별도로 create-next-app 잔여 `public/*.svg` 5개가 미참조.
+- S: `PROTOTYPE_REVIEW_LOG.md`의 BASELINE_DIRTY가 revert 후 존재하지 않는 경로를 기록해 종료 게이트가 낡은 기준선과 비교한다. 다음 라운드 첫 턴에 재기록 필요.
+- T(비차단): `/`는 404이고 진입은 `/plan`이다. spec §3.2·rules 006이 `/` 생성을 금지하므로 위반이 아니다. `README.md` 실행 절차 부재는 부트스트랩 규칙상 수정 불가로 잔여 위험으로만 남긴다.
+```
+
+**판정 해석**: `T`가 `C`에서 `P`로 올라왔다(천 단위 구분 구현 효과). 남은 것은 `K`·`S` 두 축이다.
+`NOGO_STREAK`은 `GO`이므로 0을 유지한다.
+
+## Round 6
+
+### 처리한 TOP_FIX
+
+`evidence-disclosure.tsx`의 인라인 `toLocaleString`을 `formatMonthlyWon`으로 교체했다.
+`lib/prototype/format.ts` 상단이 "화면은 이 파일만 사용하고 컴포넌트에서 금액을 다시 계산하지
+않는다"고 선언했는데 이 한 곳만 그 규칙을 우회하고 있었다.
+
+검증 결과다.
+
+```
+grep -rn toLocaleString app components   → 0건 (format.ts 단일 경로 유지)
+```
+
+브라우저에서 근거 disclosure를 펼쳐 표시값이 교체 전과 같은지 확인했다.
+
+| 탭 | 확인한 행 | 결과 |
+| --- | --- | --- |
+| 예상한 만큼 | `월 12,500원` / `월 -2,500원` / `월 10,000원` | 각 1건 |
+| 예상한 만큼 | `적용된 차감 없음` / `이 영역에는 적용 한도가 없습니다.` | 2건 / 1건 |
+| 더 많이 | `월 15,000원` / `월 -5,000원` / `월 10,000원` | 각 1건 |
+| 더 적게 | `적용된 차감 없음` (한도 미도달) | 1건 |
+| 375px | `scrollWidth === clientWidth === 375` | 가로 스크롤 없음 |
+
+### 함께 처리한 기록 정정
+
+스코어카드 `S` 축이 지적한 대로 `BASELINE_DIRTY`를 재기록했다. 코드 개선이 아니라 목표 문서 §2가
+요구하는 기준선 부기이고, 종료 방법 6)의 판정이 존재하지 않는 경로와 비교하지 않게 하려면 필요하다.
+Round 1 기록은 이력으로 남기고 Round 6 기준선을 함께 적었다.
+
+`NOTES`의 나머지(미조회 ViewModel 필드 3건, 미참조 `public/*.svg` 5개, `README.md`)는 이번 라운드에서
+손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 
 ### aztks-agent EVALUATE 결과
 
