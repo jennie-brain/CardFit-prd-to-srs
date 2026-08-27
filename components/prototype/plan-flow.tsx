@@ -46,7 +46,8 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
   const [step, setStep] = useState<PlanStep>("spend");
   const [items, setItems] = useState<FutureSpendItemViewModel[]>([]);
   const [nextItemNumber, setNextItemNumber] = useState(1);
-  const [exampleApplied, setExampleApplied] = useState(false);
+  /** 수정 중인 항목 id. null이면 새 항목 추가 모드다. (spec §8.9 추가·수정·삭제) */
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
   const [categoryId, setCategoryId] = useState<FutureSpendCategoryId>(
     plan.categories[0].id,
@@ -78,7 +79,36 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
   const selectedCategory =
     plan.categories.find((category) => category.id === categoryId) ?? plan.categories[0];
 
-  function addItem() {
+  // 예시 적용 상태는 목록에서 파생한다. 별도 state를 두면 수정·삭제 결과와 어긋날 수 있다.
+  const exampleApplied = items.some((item) => item.isExampleValue);
+
+  function resetDraft() {
+    setAmountRaw("");
+    setCustomLabel("");
+    setAmountError(null);
+    setCustomLabelError(null);
+    setEditingItemId(null);
+  }
+
+  /** 목록의 한 항목을 입력 폼으로 불러온다. 예시 값도 그대로 수정할 수 있다. (spec §8.1) */
+  function startEdit(id: string) {
+    const target = items.find((item) => item.id === id);
+    if (target === undefined) return;
+
+    setEditingItemId(target.id);
+    setCategoryId(target.categoryId);
+    setCustomLabel(target.customLabel ?? "");
+    setKind(target.kind);
+    setAmountRaw(String(target.amountWon / MANWON));
+    setYear(String(target.startYear));
+    setMonth(String(target.startMonth));
+    setAmountError(null);
+    setCustomLabelError(null);
+    setStepError(null);
+    amountRef.current?.focus();
+  }
+
+  function submitItem() {
     // 오류가 있으면 입력값과 선택 상태를 유지하고 첫 오류 필드로 focus를 옮긴다. (spec §8.6)
     let firstInvalid: "customLabel" | "amount" | null = null;
 
@@ -105,29 +135,42 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
       return;
     }
 
-    setItems((previous) => [
-      ...previous,
-      {
-        id: `item-${nextItemNumber}`,
-        categoryId,
-        customLabel: needsCustomLabel ? trimmedCustomLabel : null,
-        kind,
-        amountWon: parsedAmount.won,
-        startYear: Number(year),
-        startMonth: Number(month),
-        // 마이데이터를 연결하지 않으므로 사용자가 추가한 항목에는 비교 기준값이 없다.
-        pastMonthlyAverageWon: null,
-        isExampleValue: false,
-      },
-    ]);
-    setNextItemNumber((previous) => previous + 1);
-    setAmountRaw("");
-    setCustomLabel("");
+    const draft = {
+      categoryId,
+      customLabel: needsCustomLabel ? trimmedCustomLabel : null,
+      kind,
+      amountWon: parsedAmount.won,
+      startYear: Number(year),
+      startMonth: Number(month),
+    };
+
+    if (editingItemId !== null) {
+      // 수정은 항목 id와 비교 기준값·예시 표시를 보존한다. 과거 월평균이 남아 있으면
+      // 바뀐 미래 금액으로 방향·차액이 다시 표시된다. (spec §8.9)
+      setItems((previous) =>
+        previous.map((item) => (item.id === editingItemId ? { ...item, ...draft } : item)),
+      );
+    } else {
+      setItems((previous) => [
+        ...previous,
+        {
+          id: `item-${nextItemNumber}`,
+          ...draft,
+          // 마이데이터를 연결하지 않으므로 사용자가 추가한 항목에는 비교 기준값이 없다.
+          pastMonthlyAverageWon: null,
+          isExampleValue: false,
+        },
+      ]);
+      setNextItemNumber((previous) => previous + 1);
+    }
+
+    resetDraft();
     setStepError(null);
   }
 
   function removeItem(id: string) {
     setItems((previous) => previous.filter((item) => item.id !== id));
+    if (editingItemId === id) resetDraft();
   }
 
   function applyExampleAmounts() {
@@ -135,13 +178,13 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
       ...previous.filter((item) => !item.isExampleValue),
       ...plan.exampleItems,
     ]);
-    setExampleApplied(true);
+    resetDraft();
     setStepError(null);
   }
 
   function clearExampleAmounts() {
     setItems((previous) => previous.filter((item) => !item.isExampleValue));
-    setExampleApplied(false);
+    resetDraft();
   }
 
   function goToConstraints() {
@@ -288,7 +331,9 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
                 key={item.id}
                 item={item}
                 categories={plan.categories}
+                onEdit={startEdit}
                 onRemove={removeItem}
+                isEditing={item.id === editingItemId}
               />
             ))}
           </ul>
@@ -297,7 +342,7 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
 
       <section aria-labelledby="spend-form-title" className="flex flex-col gap-4">
         <h2 id="spend-form-title" className="text-lg font-semibold">
-          미래지출 추가
+          {editingItemId === null ? "미래지출 추가" : "미래지출 수정"}
         </h2>
 
         <div className="flex flex-col gap-2 rounded-lg border border-dashed px-3 py-3">
@@ -425,9 +470,19 @@ export function PlanFlow({ plan }: { plan: PlanInputViewModel }) {
           </div>
         </fieldset>
 
-        <Button type="button" className="h-11 w-full text-base" onClick={addItem}>
-          미래지출 추가하기
+        <Button type="button" className="h-11 w-full text-base" onClick={submitItem}>
+          {editingItemId === null ? "미래지출 추가하기" : "수정 내용 저장하기"}
         </Button>
+        {editingItemId === null ? null : (
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 w-full text-base"
+            onClick={resetDraft}
+          >
+            수정 취소하기
+          </Button>
+        )}
       </section>
 
       <section aria-labelledby="next-step-title" className="flex flex-col gap-2">

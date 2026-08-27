@@ -16,7 +16,10 @@ import type {
 interface FutureSpendItemCardProps {
   item: FutureSpendItemViewModel;
   categories: FutureSpendCategoryViewModel[];
+  onEdit?: (id: string) => void;
   onRemove?: (id: string) => void;
+  /** 이 항목이 입력 폼에 불러와져 수정 중인지. 색상 외에 텍스트로도 알린다. */
+  isEditing?: boolean;
 }
 
 function Row({ term, children }: { term: string; children: React.ReactNode }) {
@@ -35,7 +38,9 @@ function Row({ term, children }: { term: string; children: React.ReactNode }) {
 export function FutureSpendItemCard({
   item,
   categories,
+  onEdit,
   onRemove,
+  isEditing = false,
 }: FutureSpendItemCardProps) {
   const change = describeSpendChange(item);
 
@@ -43,7 +48,10 @@ export function FutureSpendItemCard({
     <li className="rounded-lg border bg-card px-3 py-2.5 text-sm">
       <div className="flex items-start justify-between gap-2">
         <p className="font-medium">{categoryDisplayLabel(item, categories)}</p>
-        {item.isExampleValue ? <Badge variant="outline">예시 금액</Badge> : null}
+        <div className="flex shrink-0 flex-wrap justify-end gap-1">
+          {isEditing ? <Badge variant="secondary">수정 중</Badge> : null}
+          {item.isExampleValue ? <Badge variant="outline">예시 금액</Badge> : null}
+        </div>
       </div>
 
       <dl className="mt-1.5 tabular-nums">
@@ -68,16 +76,29 @@ export function FutureSpendItemCard({
         </Row>
       </dl>
 
-      {onRemove ? (
-        <div className="mt-2 flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            className="h-10"
-            onClick={() => onRemove(item.id)}
-          >
-            삭제하기
-          </Button>
+      {onEdit || onRemove ? (
+        <div className="mt-2 flex flex-wrap justify-end gap-2">
+          {onEdit ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="h-10"
+              disabled={isEditing}
+              onClick={() => onEdit(item.id)}
+            >
+              {isEditing ? "수정 중" : "수정하기"}
+            </Button>
+          ) : null}
+          {onRemove ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="h-10"
+              onClick={() => onRemove(item.id)}
+            >
+              삭제하기
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </li>
