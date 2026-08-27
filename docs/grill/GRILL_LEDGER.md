@@ -11,7 +11,7 @@
 
 ## 토픽 원장
 
-RESOLVED: 13 / TOTAL: 17
+RESOLVED: 15 / TOTAL: 17
 
 - [x] T1 | CORE  | 실행 슬라이스 확정 | status:RESOLVED | decision:11건 로컬 시각안 + 최소 ViewModel 타입 스케치 | superseded-by:T17
 - [x] T2 | CORE  | 프로토타입 코드 거처와 실행 방식 | status:RESOLVED | decision:저장소 루트 Next.js App Router 앱 + npm run dev | applied:prototype-visual-spec.md §2, .agents/rules/006
@@ -26,8 +26,8 @@ RESOLVED: 13 / TOTAL: 17
 - [x] T14 | CORE  | 미래지출 항목 구조 — 다건·시점 단위·증가/감소·confidence 노출 | status:RESOLVED | decision:다건 + ONE_TIME/MONTHLY + 연·월 + 비교 가능한 경우 방향·차액 자동 표시 + confidence 제외 | applied:PRD F-01·US-F AC2·FutureSpendPlan, SRS REQ-FUNC-001A/B·FutureSpendPlan, prototype-visual-spec.md §8.9, 정책 로그 DECISION-006, UX-002·UI-003 Decision Log, .agents/rules/006
 - [x] T15 | CORE  | 수치 미정 입력 상한의 프로토타입 표시·검증 방식 | status:RESOLVED | decision:프로토타입 임의 상한·상한 오류 미구현, 실제 상한은 DECISION-007 Open | applied:prototype-visual-spec.md §8.10, 정책 로그 DECISION-007, UX-002·UI-003 Decision Log, .agents/rules/006
 - [x] T17 | CORE | 계획 정본과 최초 실행 경량화 | status:RESOLVED | decision:19건 계획 정본 + P-VIS-01~03 + `/plan`·`/result` | applied:prototype-suggestion.md, prototype-visual-spec.md §1·3, prototype-suggestion-local-visual.md 대체 표기, .agents/rules/006
-- [ ] T10 | MINOR | 시나리오 탭 라벨 카피와 유지·동률 결론의 시각 위계                    | depends:T3  | status:UNRESOLVED
-- [ ] T11 | MINOR | 근거 패널 기본 펼침 수준과 AI 설명 영역의 프로토타입 노출 여부        | depends:T3  | status:UNRESOLVED
+- [x] T10 | MINOR | 시나리오 탭 라벨 카피와 유지·동률 결론의 시각 위계 | status:RESOLVED | decision:`더 적게/예상한 만큼/더 많이` + BASE 기본 + 현재 대비 동률은 유지 + 다중 후보 동률 순위 미구현 | applied:prototype-visual-spec.md §9, prototype-suggestion.md Decision Log, UX-003·UI-005 Decision Log, .agents/rules/006
+- [x] T11 | MINOR | 근거 패널 기본 펼침 수준과 AI 설명 영역의 프로토타입 노출 여부 | status:RESOLVED | decision:예상 순혜택 대표 + 영역별 한도 요약 + 정형 근거 disclosure + AI 미노출 | applied:prototype-visual-spec.md §10, prototype-suggestion.md, UX-004·UI-006 Decision Log, .agents/rules/006
 - [ ] T12 | MINOR | 디자인 토큰 출발점(기존 랜딩 계승 여부)·breakpoint·플랫폼 브랜드 표기 | depends:T2  | status:UNRESOLVED
 - [ ] T13 | MINOR | 시각 검토 판정 기록 방식과 접근성 리뷰 포함 여부                      | depends:T1  | status:UNRESOLVED
 
@@ -110,3 +110,15 @@ RESOLVED: 13 / TOTAL: 17
 - 결정: `prototype-suggestion.md`의 19건을 계획 정본으로 유지하고 최초 실행은 `P-VIS-01~03`, `/plan`·`/result` 두 라우트로 제한한다.
 - 이유: 계약 기반 본 개발 연결성을 잃지 않으면서 입력→결과→핵심 근거의 시각 가설을 먼저 검증한다.
 - 반영: `prototype-suggestion.md` 실행 정책·Decision Log · `prototype-visual-spec.md` §1·3 · 11건 축약안 대체 표기 · `.agents/rules/006`
+
+### T10 — 시나리오 탭과 동률 위계 (MINOR)
+
+- 결정: 화면 탭은 `더 적게`·`예상한 만큼`·`더 많이`, 내부 값은 `LOW`·`BASE`·`HIGH`로 두고 `예상한 만큼`을 기본 선택한다. 현재 조합과 변경 조합의 결과가 같으면 `유지`로 분류한다. 여러 변경 후보끼리의 동률 순위는 최초 프로토타입에서 표시하지 않는다.
+- 이유: 사용자가 조건을 빠르게 이해하게 하면서 내부 계약의 안정성을 보존하고, 차이가 없는 결과를 억지 변경으로 유도하거나 미정 정렬 정책을 화면에서 먼저 확정하지 않기 위해서다.
+- 반영: `TASK/task1/prototype-visual-spec.md` §9 · `TASK/task1/prototype-suggestion.md` Decision Log · `TASK/task2/UX-003·UI-005` Decision Log · `.agents/rules/006`
+
+### T11 — 결과 요약·근거와 AI 영역 (MINOR)
+
+- 결정: 결과 대표값은 연회비를 반영한 예상 순혜택으로 두고 총 예상 혜택·연회비·적용 영역을 명시한 핵심 한도·기준일을 기본 노출한다. 계산식·한도 전후·조건·제외 항목·버전은 접근 가능한 disclosure에 제공하며 최초 프로토타입에는 AI 영역을 만들지 않는다.
+- 이유: 카드마다 다른 한도 구조를 포괄 라벨로 왜곡하지 않고, 사용자가 비용까지 반영한 결과를 먼저 이해하면서 필요할 때 계산을 검증하게 하기 위해서다. AI 없이도 정형 근거만으로 화면이 완전해야 한다.
+- 반영: `TASK/task1/prototype-visual-spec.md` §10 · `TASK/task1/prototype-suggestion.md` 결정 과정·Decision Log · `TASK/task2/UX-004·UI-006` Decision Log · `.agents/rules/006`

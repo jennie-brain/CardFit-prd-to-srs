@@ -82,4 +82,5 @@ assignees: ''
 
 ## Decision Log
 - 2026-08-26: Step 5 배분·AI 설명 UI는 근거 참조 ID만 렌더링하도록 고정.
+- 2026-08-27: 최초 시각 프로토타입은 연회비를 반영한 예상 순혜택을 대표값으로 사용하고, 혜택 한도에 적용 영역·기간을 명시한다. 계산 상세는 disclosure로 제공하며 AI 설명과 placeholder는 M2까지 제외한다.
 - `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`

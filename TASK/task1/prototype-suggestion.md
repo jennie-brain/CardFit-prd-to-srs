@@ -60,35 +60,35 @@ CardFit 54개 TASK 중에서 **"화면으로 가치를 눈으로 확인하는 �
 
 | TASK | Issue | 왜 필요한가 |
 |---|---|---|
-| `COMMAND-008` | [#9](https://github.com/jennie-brain/prd-to-srs/issues/9) | 스코프 고지·금지어 정책. **선행이 없어 첫날 착수 가능**하고, UI-002·UI-007의 법적 문구 근거다 |
-| `DATA-001` | [#1](https://github.com/jennie-brain/prd-to-srs/issues/1) | 입력·플랫폼·Rule 엔터티. 모든 화면 데이터의 뿌리 |
-| `DATA-002` | [#2](https://github.com/jennie-brain/prd-to-srs/issues/2) | 계산·후보·배분 엔터티. 결과·근거 화면의 데이터 |
-| `API-001` | [#3](https://github.com/jennie-brain/prd-to-srs/issues/3) | Platform Adapter 계약. UI-002가 표시할 연동 상태(부분·오래됨·동의만료)의 정의 |
-| `API-002` | [#4](https://github.com/jennie-brain/prd-to-srs/issues/4) | 입력·선택 Server Action 계약. UI-003·UI-007이 호출할 형태 |
-| `API-003` | [#5](https://github.com/jennie-brain/prd-to-srs/issues/5) | 계산·근거 HTTP 계약. UI-004·UI-005·UI-006이 호출할 형태 |
-| `SPEC-001` | [#12](https://github.com/jennie-brain/prd-to-srs/issues/12) | **읽기 ViewModel·오류·상태 계약. 이 프로토타입의 핵심** — UI가 실제로 바인딩하는 대상 |
-| `MOCK-001` | [#14](https://github.com/jennie-brain/prd-to-srs/issues/14) | 비식별 Fixture. **백엔드 없이 화면을 실제로 돌리는 수단** |
+| `COMMAND-008` | [#9](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/9) | 스코프 고지·금지어 정책. **선행이 없어 첫날 착수 가능**하고, UI-002·UI-007의 법적 문구 근거다 |
+| `DATA-001` | [#1](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/1) | 입력·플랫폼·Rule 엔터티. 모든 화면 데이터의 뿌리 |
+| `DATA-002` | [#2](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/2) | 계산·후보·배분 엔터티. 결과·근거 화면의 데이터 |
+| `API-001` | [#3](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/3) | Platform Adapter 계약. UI-002가 표시할 연동 상태(부분·오래됨·동의만료)의 정의 |
+| `API-002` | [#4](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/4) | 입력·선택 Server Action 계약. UI-003·UI-007이 호출할 형태 |
+| `API-003` | [#5](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/5) | 계산·근거 HTTP 계약. UI-004·UI-005·UI-006이 호출할 형태 |
+| `SPEC-001` | [#12](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/12) | **읽기 ViewModel·오류·상태 계약. 이 프로토타입의 핵심** — UI가 실제로 바인딩하는 대상 |
+| `MOCK-001` | [#14](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/14) | 비식별 Fixture. **백엔드 없이 화면을 실제로 돌리는 수단** |
 
 ### UX 설계 — 4건
 
 | TASK | Issue | 산출물 |
 |---|---|---|
-| `UX-001` | [#37](https://github.com/jennie-brain/prd-to-srs/issues/37) | 공통 정보구조·상태 언어·접근성 기준 |
-| `UX-002` | [#38](https://github.com/jennie-brain/prd-to-srs/issues/38) | 온보딩·미래지출 입력 흐름 |
-| `UX-003` | [#39](https://github.com/jennie-brain/prd-to-srs/issues/39) | 계산 상태·세 시나리오 결과 구조 |
-| `UX-004` | [#40](https://github.com/jennie-brain/prd-to-srs/issues/40) | 결과 근거·조합 선택·외부 이동 흐름 |
+| `UX-001` | [#37](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/37) | 공통 정보구조·상태 언어·접근성 기준 |
+| `UX-002` | [#38](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/38) | 온보딩·미래지출 입력 흐름 |
+| `UX-003` | [#39](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/39) | 계산 상태·세 시나리오 결과 구조 |
+| `UX-004` | [#40](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/40) | 결과 근거·조합 선택·외부 이동 흐름 |
 
 ### UI 구현 — 7건
 
 | TASK | Issue | 화면 |
 |---|---|---|
-| `UI-001` | [#42](https://github.com/jennie-brain/prd-to-srs/issues/42) | 디자인 시스템·접근성 기반 (Tailwind + shadcn/ui) |
-| `UI-002` | [#43](https://github.com/jennie-brain/prd-to-srs/issues/43) | 온보딩·플랫폼 상태·스코프 고지 |
-| `UI-003` | [#44](https://github.com/jennie-brain/prd-to-srs/issues/44) | 미래지출·카드 제약 입력 |
-| `UI-004` | [#45](https://github.com/jennie-brain/prd-to-srs/issues/45) | 계산 진행·오류·데이터 품질 상태 |
-| `UI-005` | [#46](https://github.com/jennie-brain/prd-to-srs/issues/46) | 세 시나리오·유지/변경 결과 |
-| `UI-006` | [#51](https://github.com/jennie-brain/prd-to-srs/issues/51) | 배분·근거 (**M1 정적 근거까지만. AI 설명 확장은 제외**) |
-| `UI-007` | [#52](https://github.com/jennie-brain/prd-to-srs/issues/52) | 조합 선택·카드사 외부 이동 경계 |
+| `UI-001` | [#42](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/42) | 디자인 시스템·접근성 기반 (Tailwind + shadcn/ui) |
+| `UI-002` | [#43](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/43) | 온보딩·플랫폼 상태·스코프 고지 |
+| `UI-003` | [#44](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/44) | 미래지출·카드 제약 입력 |
+| `UI-004` | [#45](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/45) | 계산 진행·오류·데이터 품질 상태 |
+| `UI-005` | [#46](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/46) | 세 시나리오·유지/변경 결과 |
+| `UI-006` | [#51](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/51) | 배분·근거 (**M1 정적 근거까지만. AI 설명 확장은 제외**) |
+| `UI-007` | [#52](https://github.com/jennie-brain/CardFit-prd-to-srs/issues/52) | 조합 선택·카드사 외부 이동 경계 |
 
 ## 3. UI만 따로 뽑을 수 없는 이유
 
@@ -298,12 +298,13 @@ CardFit의 예상 지출은 일상 이체보다 큰 금액을 다루므로 **만
 아래 사항은 최초 체크포인트의 구현을 막지 않으므로 임의로 확정하지 않는다.
 
 - 변경 후보끼리 계산 결과가 같은 경우의 정렬 규칙
-- 근거 패널의 기본 펼침 수준과 AI 설명 영역 노출
 - 세부 디자인 토큰, breakpoint, 플랫폼 브랜드 표기
 - 시각 검토 판정 기록과 접근성 리뷰 방식
 - 할부의 월별 실적·혜택 귀속 정책과 실제 입력 상한
 
 현재 조합과 변경 조합의 값이 같으면 `유지`로 분류할 수 있지만, **여러 변경 후보끼리의 동률 순서**는 별도 정책이다. 최초 체크포인트에서는 다중 변경 후보 정렬을 구현하지 않아 이 결정을 앞당기지 않는다.
+
+결과 근거는 전부 펼치거나 전부 숨기지 않는다. 예상 순혜택·총 예상 혜택·연회비·결과에 큰 영향을 준 영역별 한도·기준일을 먼저 보여주고, 세부 계산식과 조건은 `계산 근거 보기`에서 제공한다. 최초 체크포인트에는 AI 영역을 만들지 않아 정형 근거만으로 화면이 완전한지 검증한다.
 
 ## 13. Decision Log
 
@@ -320,4 +321,6 @@ CardFit의 예상 지출은 일상 이체보다 큰 금액을 다루므로 **만
 | 2026-08-27 | 미래지출 구조 | 다건 + `ONE_TIME`/`MONTHLY` + 연·월, 비교 가능할 때만 변화 방향 자동 계산 | 중복 입력을 줄이고 일회성 총액과 반복 월 금액의 의미를 구분하기 위해서 |
 | 2026-08-27 | 입력 상한 | 임의 상한과 상한 초과 상태를 구현하지 않음 | 근거 없는 임시 수치가 제품 계약으로 굳는 것을 막기 위해서 |
 | 2026-08-27 | 실행 범위 | 19건을 계획 정본으로 유지하고 최초 실행은 `P-VIS-01~03`과 `/plan`·`/result`로 제한 | 본 개발 연결성을 보존하면서 핵심 시각 가설을 먼저 저비용으로 검증하기 위해서 |
-| 2026-08-27 | 미확정 경계 | 다중 변경 후보 동률, 근거 펼침, AI, 세부 토큰, 리뷰 방식은 후속 결정으로 유지 | 최초 입력→결과→근거 검토를 막지 않는 사항을 임의로 제품 정책화하지 않기 위해서 |
+| 2026-08-27 | 시나리오와 동률 | `더 적게`·`예상한 만큼`·`더 많이`, BASE 기본, 현재 대비 동률은 `유지`; 다중 후보 동률 순위는 미구현 | 짧은 사용자 언어와 내부 계약을 함께 유지하고 차이가 없는 결과에서 변경을 유도하지 않기 위해서 |
+| 2026-08-27 | 결과 근거 | 예상 순혜택을 대표값으로 두고 영역별 혜택 한도를 요약하며 계산식·조건은 disclosure로 제공; AI 영역 제외 | 비용을 반영한 판단값과 카드별 한도 구조를 정확히 전달하고 정형 근거만으로 화면을 완성하기 위해서 |
+| 2026-08-27 | 미확정 경계 | 다중 변경 후보 동률 정렬, 세부 토큰, 리뷰 방식은 후속 결정으로 유지 | 최초 입력→결과→근거 검토를 막지 않는 사항을 임의로 제품 정책화하지 않기 위해서 |
