@@ -13,7 +13,11 @@
   2. `.agents/rules/006-prototype-visual-scope.md`, `AGENTS.md` — 착수 가능 범위와 금지 사항
   3. `TASK/task1/prototype-suggestion-local-visual.md` — 「프로토타입 완료 기준」 9항목과 「아직 확정하지 않은 사항」
   4. `PRD/PRD_CardFit_v1.3.md` 1~4장 — 목표 G1~G6, 고객 여정, 차별 가치, US-A/B/D/F의 AC, Guardrail GR1~GR5
-- **작업 대상**: 저장소 루트의 Next.js App Router 앱 — `app/`, `components/`, `lib/prototype/`, `fixtures/prototype/`, 부트스트랩이 생성하는 루트 설정 파일(`package.json`, `tsconfig.json`, `next.config.ts`, `components.json`, `eslint.config.mjs`, `postcss.config.mjs`).
+- **작업 대상**: 저장소 루트의 Next.js App Router 앱 — 아래 셋을 모두 포함한다.
+  - 직접 작성하는 코드: `app/`, `components/`, `lib/prototype/`, `fixtures/prototype/`
+  - 부트스트랩 산출물: `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts`, 그리고 사용 중인 템플릿이 생성하는 그 밖의 루트 설정 파일
+  - shadcn/ui 산출물: `components.json`, `components/ui/`, `lib/utils.ts`
+  - 기존 루트 `.gitignore`에는 **줄 추가만** 허용하고 기존 줄을 지우거나 바꾸지 않는다.
 - **구현 범위 — 라우트 2개** (`prototype-visual-spec.md` §3.1 확정안):
 
   | 라우트 | 사용자 목적 | 포함 화면·상태 |
@@ -44,11 +48,12 @@
 - **도구**: 패키지 매니저는 `npm`.
 - **부트스트랩 — 루트에 직접 실행하지 않는다**: 저장소 루트에는 `AGENTS.md`·`PRD/`·`TASK/`·`SRS-Drafts/`·`plans/`·`reports/`·`landing/` 등 문서 자산이 20개 넘게 있고, `create-next-app`은 대상 디렉터리에 화이트리스트 밖 파일이 있으면 "contains files that could conflict"로 **중단한다**(`--yes`는 프롬프트만 없앨 뿐 이 검사를 건너뛰지 않는다). 따라서 아래 순서로 진행한다.
   1. `npx create-next-app@latest ../cardfit-scaffold --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes` 를 실행한다. **대화형 프롬프트가 하나라도 뜨면 자율 루프가 첫 턴에 멈추므로 모든 선택지를 플래그로 넘긴다** — 사용 중인 버전이 Turbopack 등을 추가로 묻는다면 해당 플래그도 명시한다.
-  2. 생성물 중 `app/`, `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts` 만 저장소 루트로 옮긴다.
+  2. 생성물 중 `app/`, `public/`, `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `next-env.d.ts` 를 저장소 루트로 옮긴다. 생성물에 이 목록 밖의 설정 파일(`tailwind.config.ts`, `.npmrc` 등 템플릿 버전에 따라 달라지는 것)이 있으면 함께 옮긴다. **`node_modules/`는 옮기지 않는다.**
   3. 기존 파일을 **덮어쓰지 않는다.** 특히 루트 `README.md`와 `.gitignore`는 그대로 두고(현 `.gitignore`가 이미 `node_modules/`·`.next/`·`.vercel/`을 제외한다) 필요한 줄만 덧붙인다. 문서 디렉터리는 어떤 경우에도 건드리지 않는다.
   4. `../cardfit-scaffold`를 삭제한다.
-  5. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
-  6. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다.
+  5. 저장소 루트에서 `npm install` 을 실행해 `node_modules/`를 복원한다. **이 단계를 건너뛰면 `npx tsc --noEmit`·`npm run lint`·`npm run build`가 매 라운드 전부 실패한다.**
+  6. `app/page.tsx`를 삭제한다. `/` 라우트는 이번 범위 밖이고(spec §3.2), 종료 방법 5)의 "`page.tsx` 두 개" 기대값과 일치해야 한다. `/`를 대체하는 리다이렉트나 임시 랜딩을 만들지 않는다 — 프로토타입 진입 URL은 `/plan`이다.
+  7. shadcn/ui는 `npx shadcn@latest init` 이후 필요한 컴포넌트만 추가한다. 이때 생성되는 `components.json`·`components/ui/`·`lib/utils.ts`는 1)의 작업 대상에 포함된다.
 
 ## 3) 종료 조건 및 종료 방법
 
@@ -69,7 +74,7 @@
 
 - `master`에 푸시하지 않고, PR을 만들거나 머지하지 않으며, Vercel 등 배포를 유발하지 않는다.
 - **다음 파일·디렉터리를 수정하지 않는다** (다른 세션이 동시에 편집 중이다): `docs/grill/`, `TASK/`, `PRD/`, `SRS-Drafts/`, `plans/`, `.agents/`, `AGENTS.md`, `CLAUDE.md`, `.claude/`.
-- 위 1)의 작업 대상 밖 파일은 수정하지 않는다. 예외는 `docs/loop/PROTOTYPE_REVIEW_LOG.md`와 `docs/loop/PROTOTYPE_WALKTHROUGH.md` 두 개뿐이다.
+- 위 1)의 작업 대상 밖 파일은 수정하지 않는다. 예외는 `docs/loop/PROTOTYPE_REVIEW_LOG.md`, `docs/loop/PROTOTYPE_WALKTHROUGH.md`, 그리고 루트 `.gitignore`에 줄을 덧붙이는 것뿐이다. 1)의 작업 대상에는 부트스트랩·shadcn 산출물이 이미 포함돼 있으므로 종료 방법 6)의 `git status --porcelain` 판정도 이 기준으로 읽는다.
 - `.agents/rules/006`의 금지 사항을 그대로 지킨다 — Route Handler(`app/api/**`)·Server Action·Prisma·Supabase·인증·미들웨어·AI 호출·실제 카드 혜택 계산을 작성하지 않는다.
 - 1)의 "이번 범위에서 구현하지 않는 것"을 앞당겨 구현하지 않는다.
 - 실제 카드사·플랫폼의 로고와 실명, 검증되지 않은 사용자 수·절감액·추천 보장 문구를 화면에 넣지 않는다.
