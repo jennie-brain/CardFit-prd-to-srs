@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 16
+ROUND: 17
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -1225,6 +1225,72 @@ NOTES:
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 | Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:P S:P
+
+TOP_FIX: docs/reports/PROTOTYPE_WALKTHROUGH.md 에 2단계 CTA 차단 상태를 기록하라 — 화면 2 행동표의 "결과 확인하기 | /result로 이동한다"를 "연회비 한도 오류가 없을 때만 이동"으로 한정하고, 화면 3 오류표에 차단 행(문구 "결과를 확인할 수 없어요" / "카드 조건에 입력 오류가 있어요. 연회비 한도를 고치면 결과를 확인할 수 있습니다.", aria-disabled=true, focus → annual-fee-cap, 이동 차단)을 추가하라. 검증: grep -c "카드 조건에 입력 오류가 있어요" >= 1 + 실제 클릭으로 URL 미변경 확인.
+
+EVIDENCE:
+- plan-flow.tsx 의 guardResultNavigation 이 event.preventDefault() 로 /result 이동을 막고 전용 오류 문구를 세운다.
+- 워크스루 217·238·472행 — CTA는 무조건 이동으로만 적혀 있고 오류표·상호작용 실측표에 차단 상태가 없다. grep "결과를 확인할 수 없어요" 0건.
+- fixtures/result.ts 3시나리오 실효합×12 = 총혜택(57,000 / 162,000 / 240,000), 총−연회비 = 순혜택, delta = 후보−현재(0 / 93,000 / 147,000)로 워크스루 표와 일치. LOW은 조건문대로 생활 할인이 현재·후보 모두 월 4,000원.
+- PRD US-C AC8("온보딩 및 결과 화면") 문구가 실제로 존재. ScopeNotice 가 두 곳에서 같은 fixtures/scope-notice.ts 를 읽어 대행 미제공 경계를 전달.
+
+NOTES:
+- (T) 위 CTA 차단 미기록 1건. 완료 기준 1~9 자체는 코드·실측에서 모두 충족되며 누락·앞당김 없음(라우트 2개, RANGE·상태 7종·AI 설명·조합 선택 미구현, 근거 5번에 미반영 항목 명시).
+- (K) plan-flow.tsx submitItem 의 if (firstInvalid !== null || !parsedAmount.ok) 에서 후항은 도달 불가한 중복 조건이다. 미사용 export·중복 컴포넌트·인라인 데이터 타입은 없다(lib 20개 export 전부 참조).
+- (S) app/plan|result/page.tsx 가 Fixture만 주입하고 화면은 lib/view-model.ts 타입에만 의존해, Query 교체 시 화면 재작성이 필요 없다. 문서 경로·배치 표기 불일치는 지시대로 감점·TOP_FIX에서 제외했다.
+```
+
+**판정 해석**: `S`가 `P`로 올라와 **`T` 하나만 `C`로 남았다.** 그 `T`의 근거도 코드 결함이 아니라
+워크스루 기록 누락 1건이며, 이번에는 이 목표가 수정할 수 있는 대상(`docs/reports/`)이다.
+평가자가 "완료 기준 1~9 자체는 코드·실측에서 모두 충족되며 누락·앞당김 없음"을 명시했다.
+
+## Round 17
+
+### 처리한 TOP_FIX
+
+Round 9에서 구현한 2단계 CTA 차단 동작이 워크스루에 기록되지 않아, 브라우저를 볼 수 없는 검토자에게는
+"`결과 확인하기`는 무조건 `/result`로 이동한다"로 읽혔다. 네 곳을 고쳤다.
+
+| 위치 | 변경 |
+| --- | --- |
+| 화면 2 행동표 | `결과 확인하기`를 **연회비 한도에 입력 오류가 없을 때만** 이동으로 한정. `미래지출 다시 입력하기`에 단계 오류 문구 초기화 추가 |
+| 화면 3 오류표 | 차단 행 신규 — 문구 2종, `aria-disabled="true"`, `focus=annual-fee-cap`, 입력값·오류 문구 유지, 값 수정 시 해제 |
+| 화면 3 보충 설명 | 차단은 **흐름 CTA에만** 걸리고 `/result` 직접 접근은 spec §3.2대로 열린다는 점, `aria-disabled`는 권고 속성이고 실제 차단은 `preventDefault`가 한다는 점 명시 |
+| 상호작용 실측표 | `결과 확인하기` 한 줄을 4줄로 분리 — 오류 없음/오류 있음/수정 후/직접 접근 |
+
+### 실측 검증 (평가자 제시 검증 그대로)
+
+```
+grep -c "카드 조건에 입력 오류가 있어요" docs/reports/PROTOTYPE_WALKTHROUGH.md → 1
+[blocked-url] /plan (이동 차단됨)     ← 오류 상태에서 CTA 강제 클릭 후 URL 미변경
+SYNC_RESULT total=17 fail=0
+```
+
+전문 대조 검사에 차단 상태를 캡처하는 단계를 추가했다. 2단계에서 연회비 한도에 `-5`를 넣고 CTA를
+강제 클릭한 뒤 그 화면 텍스트를 수집해, 차단 문구 2종이 **렌더와 워크스루 양쪽에** 있는지 확인한다.
+claim은 15개 → **17개**가 됐고 URL 미변경도 같은 실행에서 확인한다.
+
+### 남긴 비차단 항목
+
+- `(K)` `submitItem`의 `if (firstInvalid !== null || !parsedAmount.ok)` 후항은 논리적으로 도달 불가다.
+  다만 이 절이 없으면 TypeScript가 `parsedAmount`를 성공 분기로 좁히지 못해 다음 줄의 `parsedAmount.won`
+  접근이 타입 오류가 된다. 즉 **타입 좁히기를 위해 필요한 절**이다. `K:P`를 받은 상태이므로 이번
+  라운드에서 구조를 바꾸지 않고, 다음에 `TOP_FIX`로 오면 이 사유를 밝히거나 분기를 재배치한다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| 전문 대조 검사 | 17/17 일치 (fail=0) + 차단 시 URL 미변경 |
 
 ### aztks-agent EVALUATE 결과
 
