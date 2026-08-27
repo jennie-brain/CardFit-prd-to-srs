@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CardFit 판정 20라운드</title>
+<meta name="description" content="AZTKS 5축 판정 20라운드에서 무엇이 불합격이었고 왜 그랬는지, 그리고 결함 유형마다 검사가 어떻게 생겨났는지 정리한 기록.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    /* Artifact 런타임이 제공하는 최소 reset을 독립 파일에도 동일하게 넣는다. */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; }
+    img, svg { max-width: 100%; height: auto; }
+    table { border-collapse: collapse; }
+  </style>
+<style>
+  :root {
+    --ink: #16191f;
+    --ink-soft: #5b6472;
+    --ink-faint: #8b95a4;
+    --ground: #f7f8fa;
+    --surface: #ffffff;
+    --surface-sunk: #eef1f5;
+    --rule: #dfe3ea;
+    --rule-strong: #c6cdd8;
+    --pass: #2f7d6b;
+    --pass-bg: #e4efeb;
+    --concern: #a8720f;
+    --concern-bg: #f7edd9;
+    --struct: #3a4a6b;
+
+    --serif: "Noto Serif KR", Georgia, "Batang", serif;
+    --sans: "IBM Plex Sans KR", -apple-system, "Malgun Gothic", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+    --measure: 66ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #e6e8ec;
+      --ink-soft: #9aa4b2;
+      --ink-faint: #6e7887;
+      --ground: #13161a;
+      --surface: #1b1f25;
+      --surface-sunk: #22262e;
+      --rule: #2c323b;
+      --rule-strong: #3d4550;
+      --pass: #5fb39c;
+      --pass-bg: #1c2f2a;
+      --concern: #d9a13b;
+      --concern-bg: #2f2617;
+      --struct: #93a7cf;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ink: #e6e8ec;
+    --ink-soft: #9aa4b2;
+    --ink-faint: #6e7887;
+    --ground: #13161a;
+    --surface: #1b1f25;
+    --surface-sunk: #22262e;
+    --rule: #2c323b;
+    --rule-strong: #3d4550;
+    --pass: #5fb39c;
+    --pass-bg: #1c2f2a;
+    --concern: #d9a13b;
+    --concern-bg: #2f2617;
+    --struct: #93a7cf;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead { border-bottom: 2px solid var(--ink); padding-bottom: 1.6rem; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--struct);
+    margin: 0 0 0.9rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(2rem, 5.4vw, 3.1rem);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0 0 0.7rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    margin: 0;
+  }
+
+  .tally {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 2.2rem 0 0;
+  }
+
+  .tally div { background: var(--surface); padding: 0.85rem 1rem; }
+
+  .tally dt {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .tally dd {
+    margin: 0.25rem 0 0;
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  .tally dd small {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- sections ---------- */
+
+  section { margin-top: 3.6rem; }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3vw, 1.85rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 0.4rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--rule-strong);
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 2rem 0 0.5rem;
+  }
+
+  p { max-width: var(--measure); margin: 0 0 1rem; }
+  p.lede { color: var(--ink-soft); }
+
+  strong { font-weight: 600; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.875em;
+    background: var(--surface-sunk);
+    padding: 0.1em 0.34em;
+    border-radius: 2px;
+  }
+
+  /* ---------- callout ---------- */
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--struct);
+    padding: 1.3rem 1.4rem;
+    margin: 1.6rem 0;
+  }
+
+  .callout p:last-child { margin-bottom: 0; }
+
+  .callout .verdict {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--pass);
+    margin: 0 0 0.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- axis matrix ---------- */
+
+  .matrix-scroll { overflow-x: auto; margin: 1.5rem 0 0.7rem; }
+
+  table.matrix {
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8rem;
+    min-width: 34rem;
+  }
+
+  table.matrix th, table.matrix td {
+    border: 1px solid var(--rule);
+    text-align: center;
+    padding: 0.32rem 0;
+    width: 2.1rem;
+  }
+
+  table.matrix th[scope="row"] {
+    text-align: left;
+    padding-left: 0.55rem;
+    padding-right: 0.7rem;
+    width: auto;
+    white-space: nowrap;
+    font-weight: 500;
+    background: var(--surface-sunk);
+  }
+
+  table.matrix thead th {
+    background: var(--surface-sunk);
+    font-weight: 500;
+    color: var(--ink-soft);
+    font-size: 0.72rem;
+  }
+
+  td.p { background: var(--pass-bg); color: var(--pass); font-weight: 600; }
+  td.c { background: var(--concern-bg); color: var(--concern); font-weight: 600; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+    margin: 0 0 1.4rem;
+  }
+
+  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+  .swatch {
+    width: 0.85rem; height: 0.85rem;
+    border: 1px solid var(--rule-strong);
+    display: inline-block;
+  }
+  .swatch.p { background: var(--pass-bg); }
+  .swatch.c { background: var(--concern-bg); }
+
+  /* ---------- data table ---------- */
+
+  .table-scroll { overflow-x: auto; min-width: 0; margin: 1.4rem 0; }
+
+  table.data {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 32rem;
+    font-size: 0.93rem;
+  }
+
+  table.data th, table.data td {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.62rem 0.8rem 0.62rem 0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  table.data thead th {
+    border-bottom: 1.5px solid var(--rule-strong);
+    font-family: var(--mono);
+    font-size: 0.71rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    padding-bottom: 0.45rem;
+  }
+
+  table.data td.num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* ---------- ledger ---------- */
+
+  .ledger { margin: 1.8rem 0 0; padding: 0; list-style: none; }
+
+  .ledger > li {
+    display: grid;
+    grid-template-columns: 4.6rem 1fr;
+    gap: 0 1.3rem;
+    padding: 1.35rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .ledger > li:first-child { border-top: 1.5px solid var(--rule-strong); }
+
+  .rail {
+    /* grid 항목의 암묵적 min-width:auto 를 끊는다. 없으면 아래 .entry 안의 pre 가
+       트랙을 넓혀 문서 자체가 가로로 스크롤된다. */
+    min-width: 0;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    padding-top: 0.22rem;
+  }
+
+  .rail b {
+    display: block;
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--struct);
+    letter-spacing: 0;
+  }
+
+  .entry { min-width: 0; }
+
+  .entry h4 {
+    font-family: var(--sans);
+    font-size: 1.01rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    text-wrap: balance;
+  }
+
+  .entry p { margin: 0 0 0.55rem; font-size: 0.95rem; }
+  .entry p:last-child { margin-bottom: 0; }
+
+  .axis-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0 0 0.55rem;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 0.12rem 0.45rem;
+    border: 1px solid currentColor;
+    color: var(--concern);
+  }
+
+  .tag.silent { color: var(--struct); }
+
+  blockquote {
+    margin: 0.7rem 0 0.8rem;
+    padding: 0.15rem 0 0.15rem 1rem;
+    border-left: 2px solid var(--rule-strong);
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+
+  blockquote p { margin: 0; }
+
+  pre {
+    min-width: 0;
+    font-family: var(--mono);
+    font-size: 0.79rem;
+    line-height: 1.6;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    margin: 0.8rem 0;
+  }
+
+  ul.plain { max-width: var(--measure); padding-left: 1.15rem; margin: 0 0 1rem; }
+  ul.plain li { margin-bottom: 0.4rem; }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.3rem;
+    border-top: 2px solid var(--ink);
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    line-height: 1.9;
+  }
+
+  a { color: var(--struct); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--struct);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ledger > li { transition: background-color 120ms ease; }
+  }
+
+  @media (max-width: 34rem) {
+    .ledger > li { grid-template-columns: 1fr; gap: 0.5rem; }
+    .rail { padding-top: 0; }
+    .rail b { display: inline; margin-right: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<!--
+  CardFit 경량 시각 체크포인트 — 판정 20라운드 기록
+  같은 내용의 공유용 페이지: https://claude.ai/code/artifact/2598350f-7f88-482c-88ed-fa4eb5286373
+  기준 커밋: 3e78b60
+  원천 기록: docs/reports/PROTOTYPE_REVIEW_LOG.md · docs/reports/PROTOTYPE_WALKTHROUGH.md
+-->
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">CardFit 경량 시각 체크포인트 · 2026-08-27 → 08-28</p>
+    <h1>판정 20라운드에서 무엇이 불합격이었나</h1>
+    <p class="standfirst">
+      <code>aztks-agent</code>가 매 라운드 코드와 증거 문서를 5축(A·Z·T·K·S)으로 채점했고,
+      그 결과가 <code>P</code>(통과) 또는 <code>C</code>(조건부)로 돌아왔다. 20라운드 만에 전 축
+      <code>P</code>에 도달했다. 이 기록은 그 사이 무엇이 왜 걸렸는지를 라운드 순서대로 정리한 것이다.
+    </p>
+
+    <dl class="tally">
+      <div><dt>평가 라운드</dt><dd>20 <small>/ 상한 30</small></dd></div>
+      <div><dt>NO-GO 판정</dt><dd>0 <small>건</small></dd></div>
+      <div><dt>최종 스코어카드</dt><dd style="font-size:1.05rem">A:P Z:P T:P K:P S:P</dd></div>
+      <div><dt>종료 사유</dt><dd style="font-size:0.95rem">AZTKS_FULL_PASS</dd></div>
+    </dl>
+  </header>
+
+  <section>
+    <h2>먼저 바로잡을 것: NO-GO는 한 번도 없었다</h2>
+    <p>
+      "NO-GO 판정으로 나왔던 상황"을 물으셨는데, 사실관계를 정확히 말하면
+      <strong><code>VERDICT: NO-GO</code>는 20라운드 동안 0건</strong>이었다. 매 라운드 판정문의 첫 줄은
+      언제나 <code>GO</code>였다.
+    </p>
+    <div class="callout">
+      <p class="verdict">VERDICT: GO &nbsp;—&nbsp; 20 / 20 라운드</p>
+      <p style="margin:0">
+        완수를 막은 것은 <code>VERDICT</code>가 아니라 <strong>스코어카드의 <code>C</code></strong>였다.
+        목표 문서는 "<code>GO</code>이지만 <code>C</code>가 하나라도 있으면 완수가 아니다"라고 정했고,
+        그래서 19라운드 동안 통과 문구를 받으면서도 끝나지 않았다.
+      </p>
+    </div>
+    <p>
+      즉 이 기록에서 "불합격"은 <strong>축 단위 조건부 판정</strong>을 뜻한다. 아래 행렬이 그 전체
+      이력이다.
+    </p>
+  </section>
+
+  <section>
+    <h2>축별 판정 이력</h2>
+    <p class="lede">
+      가로가 라운드, 세로가 다섯 축이다. 한 라운드에 <code>TOP_FIX</code> 하나만 처리하는 규칙이었으므로
+      나머지 <code>C</code>는 그대로 남고, 평가자는 매 라운드 더 깊이 파고들어 새 근거를 찾았다.
+    </p>
+
+    <div class="legend">
+      <span><i class="swatch p"></i> P — 통과</span>
+      <span><i class="swatch c"></i> C — 조건부 (완수 차단)</span>
+    </div>
+
+    <div class="matrix-scroll">
+      <table class="matrix">
+        <caption class="eyebrow" style="text-align:left;margin-bottom:0.6rem;color:var(--ink-faint)">라운드 1 → 20</caption>
+        <thead>
+          <tr>
+            <th scope="col">축</th>
+            <th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th>
+            <th scope="col">5</th><th scope="col">6</th><th scope="col">7</th><th scope="col">8</th>
+            <th scope="col">9</th><th scope="col">10</th><th scope="col">11</th><th scope="col">12</th>
+            <th scope="col">13</th><th scope="col">14</th><th scope="col">15</th><th scope="col">16</th>
+            <th scope="col">17</th><th scope="col">18</th><th scope="col">19</th><th scope="col">20</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">A 알아서</th>
+            <td class="c">C</td><td class="c">C</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="c">C</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+          </tr>
+          <tr>
+            <th scope="row">Z 잘</th>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+          </tr>
+          <tr>
+            <th scope="row">T 딱</th>
+            <td class="c">C</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="p">P</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="p">P</td><td class="p">P</td><td class="c">C</td>
+            <td class="p">P</td><td class="p">P</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="c">C</td><td class="c">C</td><td class="p">P</td>
+          </tr>
+          <tr>
+            <th scope="row">K 깔끔</th>
+            <td class="c">C</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="p">P</td><td class="p">P</td><td class="c">C</td>
+            <td class="c">C</td><td class="c">C</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="c">C</td><td class="p">P</td>
+          </tr>
+          <tr>
+            <th scope="row">S 센스</th>
+            <td class="p">P</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+            <td class="p">P</td><td class="c">C</td><td class="c">C</td><td class="c">C</td>
+            <td class="c">C</td><td class="c">C</td><td class="c">C</td><td class="p">P</td>
+            <td class="p">P</td><td class="p">P</td><td class="p">P</td><td class="p">P</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      행렬에서 읽히는 것이 셋 있다. <strong>Z(잘 동작하는가)는 20라운드 전부 <code>P</code></strong>였다 —
+      게이트 3종(<code>tsc</code>·<code>lint</code>·<code>build</code>)이 한 번도 깨지지 않았다.
+      <strong>T는 16라운드가 <code>C</code></strong>였고 그 근거가 매번 달랐다. 그리고 축이 서로
+      맞바꿔 오르내렸다 — 10라운드에 T·K가 통과하는 순간 A·S가 내려갔다.
+    </p>
+  </section>
+
+  <section>
+    <h2>불합격을 계층으로 나누면</h2>
+    <p class="lede">
+      스코어카드 이전에 이미 실패한 것들이 있었다. 성격이 다르므로 함께 세어야 전체가 보인다.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th scope="col">계층</th><th scope="col">건수</th><th scope="col">무엇이 판정했나</th><th scope="col">성격</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>검증 게이트 실패</td><td class="num">3</td><td>도구 종료 코드</td>
+            <td>프롬프트가 지정한 절차가 실제 도구 버전과 어긋남</td>
+          </tr>
+          <tr>
+            <td>도구 사용 실패</td><td class="num">1</td><td>셸 파서</td>
+            <td>대용량 heredoc 파싱 실패</td>
+          </tr>
+          <tr>
+            <td>환경·프로세스</td><td class="num">2</td><td>포트·캐시</td>
+            <td>좀비 dev 서버, Turbopack 캐시 손상</td>
+          </tr>
+          <tr>
+            <td>범위 규칙 위반</td><td class="num">1</td><td>목표 문서 §4</td>
+            <td>성공한 명령의 금지된 부수효과</td>
+          </tr>
+          <tr>
+            <td>평가 실행 실패</td><td class="num">2</td><td>API 사용 한도</td>
+            <td>판정 아님 — 카운터에 반영하지 않고 재실행</td>
+          </tr>
+          <tr>
+            <td>절차·기록 결함</td><td class="num">2</td><td>목표 문서 자체</td>
+            <td>낡은 기준선, 종료 절차의 자기모순</td>
+          </tr>
+          <tr>
+            <td><strong>게이트를 통과한 조용한 오류</strong></td><td class="num">3</td><td>실측</td>
+            <td><strong>exit 0인데 동작이 틀림</strong></td>
+          </tr>
+          <tr>
+            <td><strong>증거 문서 드리프트</strong></td><td class="num">4</td><td>스코어카드 T축</td>
+            <td><strong>코드는 맞고 기록이 틀림</strong></td>
+          </tr>
+          <tr>
+            <td>외부 세션 간섭</td><td class="num">9</td><td>—</td>
+            <td>그중 3건이 감사 기록·산출물 자체를 위협</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      굵게 표시한 두 계층이 이 작업에서 가장 값진 발견이다. 하나는 <strong>게이트가 초록불인데 동작이
+      틀린 경우</strong>, 다른 하나는 <strong>코드는 옳고 그것을 설명하는 문서가 틀린 경우</strong>다.
+      둘 다 <code>tsc</code>·<code>lint</code>·<code>build</code>로는 영원히 잡히지 않는다.
+    </p>
+  </section>
+
+  <section>
+    <h2>라운드별로 무엇이 걸렸나</h2>
+    <p class="lede">
+      각 항목의 <code>TOP_FIX</code>는 그 라운드에 실제로 처리한 것이다. 축 표시는 그 지적이 어느 축을
+      <code>C</code>로 묶어 두었는지를 뜻한다.
+    </p>
+
+    <ol class="ledger">
+
+      <li>
+        <div class="rail"><b>R1</b>A · T · K</div>
+        <div class="entry">
+          <h4>명세가 확정한 "추가·수정·삭제"를 문구로만 지켰다</h4>
+          <p class="axis-tags"><span class="tag">T</span></p>
+          <p>
+            화면에 "적용한 예시 금액은 자유롭게 수정·삭제할 수 있습니다"라고 써 놓고 항목 카드에는
+            삭제 버튼만 있었다. 기능 누락보다 나쁜 상태 — <strong>화면이 사용자에게 거짓 약속</strong>을
+            하고 있었다.
+          </p>
+          <p>문구를 약화시키는 대안 대신 수정 경로를 실제로 구현했다.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R2</b>A · T · K · S</div>
+        <div class="entry">
+          <h4>스코프 경계가 결과 화면에 없었다</h4>
+          <p class="axis-tags"><span class="tag">A</span></p>
+          <blockquote><p><code>curl /result | grep "카드 신청"</code> = 0건 vs <code>/plan</code> 2건</p></blockquote>
+          <p>
+            명세 §7.2의 절 제목이 "온보딩 고지"라서 입력 화면에만 배치했는데, PRD US-C AC8은
+            <strong>"온보딩 및 결과 화면"</strong> 모두를 전제한다. 사용자 관점에서도 경계가 가장 필요한
+            순간은 결과를 보고 카드를 바꾸려 마음먹는 지점이다.
+          </p>
+          <p>문구를 복사하지 않고 Fixture 한 곳에서 두 화면이 읽도록 구조를 만들었다.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R3</b>T · K · S</div>
+        <div class="entry">
+          <h4>탭 트리거가 자기 컨테이너를 8px 넘쳤다</h4>
+          <p class="axis-tags"><span class="tag silent">조용한 오류 ①</span></p>
+          <p>
+            shadcn <code>TabsList</code>의 기본 높이는 32px인데 터치 영역을 넓히려고 트리거에 40px를
+            줬다. 자식이 부모보다 큰 상태였고, 워크스루에는 그 40px를 정상으로 기록해 뒀다.
+          </p>
+          <p>
+            <strong>1차 수정이 조용히 실패했다.</strong> 리스트에 <code>h-12</code>를 줬으나
+            <code>cn()</code>의 tailwind-merge가 variant 접두사가 붙은 기본값과 충돌로 보지 않아 무시됐다.
+            리스트는 32px 그대로, 트리거만 25px로 눌렸다.
+          </p>
+          <pre>수정 전   리스트 343×32 · 트리거 112×40 → 넘침
+1차 수정  리스트 343×32 · 트리거 112×25 → 트리거가 눌림
+2차 수정  리스트 343×48 · 트리거 112×41 → 정상</pre>
+          <p>같은 접두사로 덮어써서 해결했다. <strong>측정하지 않았다면 1차 수정을 완료로 보고했을 것이다.</strong></p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R4</b>T · K · S</div>
+        <div class="entry">
+          <h4>명세 §8.5 천 단위 구분이 3라운드 이월됐다</h4>
+          <p class="axis-tags"><span class="tag">T</span><span class="tag silent">조용한 오류 ②</span></p>
+          <p>
+            입력 필드가 <code>1200</code>을 그대로 보여줬다. 구현할 때 함정이 있었다 — 가장 쉬운 방법
+            (숫자 외 문자를 지우고 포맷)은 명세 §8.10이 정한 <code>비숫자</code> 검증 대상에 영원히
+            도달할 수 없게 만든다.
+          </p>
+          <p><strong>caret 복원 로직이 문자 순서를 뒤집었다.</strong></p>
+          <pre>12만원 입력 → "12원만"        (caret이 숫자 뒤로 끌려감)
+-5 입력    → "5-"  · 오류 0건  (NEGATIVE가 NOT_NUMERIC으로 오분류)</pre>
+          <p>표시값이 입력 문자열과 같으면 caret을 건드리지 않도록 고쳤다.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R5–R9</b>T · K</div>
+        <div class="entry">
+          <h4>명세 준수 항목이 하나씩 드러났다</h4>
+          <p class="axis-tags"><span class="tag">T</span><span class="tag">K</span></p>
+          <ul class="plain">
+            <li><strong>§4.1 최소 필드 이탈</strong> — UI가 한 번도 읽지 않는 ViewModel 필드 4개. §4.2 스케치와 §4.1이 서로 반대를 가리켜, 근거를 남기고 §4.1을 따랐다.</li>
+            <li><strong>§6.2 상태 사전 편차 미기록</strong> — <code>/result</code>가 <code>success</code>인데 사전의 <code>결과 확인하기</code> CTA를 쓰지 않았다. 그 CTA는 결과 화면으로 <em>이동</em>하는 것이라 <code>/result</code>에서는 자기 자신을 가리킨다. 사유를 기록했다.</li>
+            <li><strong>스스로 선언한 규칙을 한 곳에서 우회</strong> — <code>format.ts</code> 상단에 "화면은 이 파일만 사용한다"고 써 놓고 한 곳에서 <code>toLocaleString</code>을 직접 호출했다. 출력이 우연히 같아 4라운드 동안 무증상이었다.</li>
+            <li><strong>서드파티 로고 자산</strong> — <code>create-next-app</code> 잔재 <code>next.svg</code>·<code>vercel.svg</code>가 tracked였다. 화면 렌더는 0건이어도 배포 시 공개 경로로 서빙되므로 완료 기준 8의 문자적 경계에 닿는다.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R8</b>T · Z</div>
+        <div class="entry">
+          <h4>1단계는 오류를 막는데 2단계는 통과시켰다</h4>
+          <p class="axis-tags"><span class="tag silent">조용한 오류 ③</span></p>
+          <div class="table-scroll">
+            <table class="data" style="min-width:22rem">
+              <thead><tr><th scope="col">단계</th><th scope="col">오류 상황</th><th scope="col">이동</th></tr></thead>
+              <tbody>
+                <tr><td class="num">1단계</td><td>미래지출 0건</td><td>차단 — Alert + focus 이동</td></tr>
+                <tr><td class="num">2단계</td><td>연회비 한도 <code>-5</code></td><td><strong>통과</strong> — 문구만 뜨고 이동</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            같은 화면 안에서 오류 처리가 갈렸다. 제 초기 측정 스크립트가 2단계에 정상 값만 넣고
+            이동을 확인했기 때문에 8라운드 동안 살아남았다.
+          </p>
+          <p>
+            가드를 넣으면서 두 가지를 의식적으로 지켰다 — <code>/result</code> <strong>라우트를 잠그지
+            않았다</strong>(명세 §3.2가 직접 접근을 요구한다), 그리고 <code>aria-disabled</code>는 권고
+            속성이므로 실제 차단은 <code>preventDefault</code>가 담당하게 했다.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R13–R14</b>A · T · K</div>
+        <div class="entry">
+          <h4>Fixture 근거가 스스로 모순됐다</h4>
+          <p class="axis-tags"><span class="tag">A</span></p>
+          <p>
+            두 라운드 연속으로 "사람이 근거를 꼼꼼히 읽어야 드러나는" 결함이 나왔다.
+          </p>
+          <ul class="plain">
+            <li><strong>귀속 오류</strong> — 온라인 쇼핑 할인은 변경 후보(A+B)에만 있는데 조건문은 "예시 카드 <em>A</em>의 온라인 쇼핑 할인"이라 단정했다. 유지 결론인 탭에서 근거가 A 단독 기준으로 표시되니 "A 단독인데 왜 이 조건이 있나"가 된다.</li>
+            <li><strong>산술 모순</strong> — 조건문은 "B의 생활 할인은 조건을 충족하지 않는다"인데 후보 조합의 생활 할인이 현재 조합보다 250원 컸다. B가 0이면 설명되지 않는 증분이다.</li>
+          </ul>
+          <p>
+            두 번째 건은 <strong>지금은 화면에 보이지 않는 결함</strong>이었다 — 유지 결론에서는 후보
+            내역을 렌더하지 않는다. 다음 체크포인트에서 터질 것을 미리 잡았다.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R12·16·17·18</b>T</div>
+        <div class="entry">
+          <h4>증거 문서가 코드와 어긋났다 — 형태를 네 번 갈아탔다</h4>
+          <p class="axis-tags"><span class="tag">T</span></p>
+          <p>
+            목표 문서 구조상 <strong>워크스루는 단순 기록이 아니라 판정 근거 자체</strong>였다. 평가자가
+            브라우저를 볼 수 없으므로, 그 전사가 틀리면 검토자는 존재하지 않는 화면을 판정한다.
+          </p>
+          <div class="table-scroll">
+            <table class="data" style="min-width:26rem">
+              <thead><tr><th scope="col">라운드</th><th scope="col">형태</th></tr></thead>
+              <tbody>
+                <tr><td class="num">12</td><td>코드를 고치고 <strong>낡은 문구</strong>를 그대로 둠</td></tr>
+                <tr><td class="num">16</td><td>구현한 동작을 <strong>아예 기록하지 않음</strong></td></tr>
+                <tr><td class="num">17</td><td>백틱으로 감싼 <strong>요약을 원문 인용으로 위장</strong></td></tr>
+                <tr><td class="num">18</td><td>표에 9행인데 요약은 "여덟 상태" — <strong>문서 내부 숫자 불일치</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            18번 건은 특히 오래 살아남았다. R4에 표를 만들 때 8로 잘못 세고, 그 숫자를
+            <strong>15라운드 동안 보고마다 복사</strong>했다. 정확한 수는 9다.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R15</b>T</div>
+        <div class="entry">
+          <h4>실행할 수 없는 TOP_FIX가 나왔다</h4>
+          <p class="axis-tags"><span class="tag">T</span></p>
+          <p>
+            평가자가 <code>.agents/rules/</code>와 <code>docs/tasks/</code>의 배치 표기를 고치라고 지시했다.
+            지적은 사실이었으나 두 경로는 <strong>목표 문서 §4가 명시적으로 수정 금지</strong>한 대상이었다
+            — 다른 세션이 동시에 편집 중인 파일이다.
+          </p>
+          <p>
+            원인은 제 실수였다. R10~R14 프롬프트에는 "배치 표기를 감점 사유로 삼지 말라"를 넣었는데
+            R15에서 그 문장을 빠뜨렸다. 사유를 기록하고 다음 프롬프트에 수정 가능 대상 목록을 명시했다.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <div class="rail"><b>R20</b>전 축 P</div>
+        <div class="entry">
+          <h4>마지막 판정이 직전 라운드의 지시를 뒤집었다</h4>
+          <p class="axis-tags"><span class="tag silent">FULL PASS</span></p>
+          <p>
+            R19는 <code>package.json</code>의 <code>shadcn</code>을 <code>devDependencies</code>로 옮기라고
+            지시했다. R20이 그 전제가 틀렸음을 밝혔다 — <code>shadcn</code>은 CLI 전용이 아니라
+            <code>globals.css</code>가 읽는 <strong>CSS 진입점</strong>이라 옮기면 빌드가 깨진다.
+          </p>
+          <pre>node_modules/shadcn/package.json
+  exports["./tailwind.css"] → ./dist/tailwind.css
+  files = ["dist"]</pre>
+          <p>
+            R19 평가자가 "lockfile 재생성이 필요하니 다음 라운드로 두라"고 권고해 미뤄 둔 덕분에
+            <strong>잘못된 이관을 실행하지 않았다.</strong> 남은 작업은 그 근거를 코드 주석으로 남기는
+            것이었고, 그것으로 5축 전부 <code>P</code>가 됐다.
+          </p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <section>
+    <h2>결함 유형마다 검사가 하나씩 생겼다</h2>
+    <p class="lede">
+      게이트 3종이 잡지 못하는 유형이 드러날 때마다 그에 맞는 검사를 붙였다. 네 검사 모두 저장소
+      의존성을 추가하지 않고 작업 디렉터리 밖에서만 돈다.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th scope="col">도입</th><th scope="col">검사</th><th scope="col">잡는 유형</th><th scope="col">규모</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">R4</td><td>375px 실브라우저 측정</td>
+            <td>레이아웃 넘침 · CTA 터치 크기</td><td class="num">9개 상태</td>
+          </tr>
+          <tr>
+            <td class="num">R13</td><td>전문 대조</td>
+            <td>증거 문서 ↔ 실제 렌더 드리프트</td><td class="num">20개 문구 / 7개 화면</td>
+          </tr>
+          <tr>
+            <td class="num">R15</td><td>Fixture 불변식</td>
+            <td>산술·귀속 모순, PRD GR2 임계 위반</td><td class="num">7종 × 3시나리오</td>
+          </tr>
+          <tr>
+            <td class="num">R19</td><td>문서 개수 일치</td>
+            <td>문서 내부 자기모순</td><td class="num">2종</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      검사를 만들 때마다 <strong>옛 값 사본에 돌려 FAIL이 나오는지 먼저 확인</strong>했다. 통과하는
+      가드는 무의미하기 때문이다. 실제로 R19 검사기는 이 대조 과정에서 자체 버그(헤더 행을 데이터
+      행으로 세어 10을 출력)가 드러나 고쳤다.
+    </p>
+  </section>
+
+  <section>
+    <h2>이 20라운드가 남긴 것</h2>
+
+    <h3>게이트 3종은 필요조건일 뿐이다</h3>
+    <p>
+      <code>tsc</code>·<code>lint</code>·<code>build</code>가 20라운드 전부 exit 0이었는데,
+      그 상태에서 <strong>동작이 틀린 경우가 3건</strong> 있었다. 셋 다 실제 브라우저에서 눌러 봐야
+      드러났다. 타입이 맞고 빌드가 되는 것은 "틀리지 않았다"의 증거가 아니다.
+    </p>
+
+    <h3>증거는 코드와 같은 무게로 관리해야 한다</h3>
+    <p>
+      T축이 16라운드 <code>C</code>였고 그중 4라운드는 <strong>코드가 옳고 문서가 틀린</strong> 경우였다.
+      브라우저를 볼 수 없는 검토자가 판정 근거로 쓰는 문서라면, 그 문서의 오류는 코드 오류와 같은
+      결과를 낸다.
+    </p>
+
+    <h3>절차 문서도 검증 대상이다</h3>
+    <p>
+      목표 문서 자체에서 결함 2건이 나왔다. 하나는 종료 방법이 <code>build</code>를 실행하라고 하면서
+      같은 절차에서 <code>git status</code> 청결을 요구했는데, 그 빌드가 tracked 파일을 매번 수정했다 —
+      <strong>정해진 절차를 그대로 따르면 반드시 실패하는 구조</strong>였다. 다른 하나는 다른 세션의
+      커밋으로 무의미해진 기준선을 갱신하지 않고 있던 것이다.
+    </p>
+
+    <h3>동시 편집 환경에서는 커밋이 유일한 안전망이다</h3>
+    <p>
+      다른 세션의 간섭이 9건 있었고 그중 3건이 감사 기록을 직접 위협했다 — 과거 판정 인용문의 일괄
+      치환, 문서 재구성 중 산출물 삭제, 그리고 <strong>"완료된 로그"로 판단해 커밋으로 삭제</strong>.
+      세 번 모두 매 라운드 로컬 커밋을 남기라는 규칙이 복구 근거가 됐다.
+    </p>
+  </section>
+
+  <footer>
+    최종 커밋 3e78b60 · 워킹트리 클린 · 보호 경로 변경 0건<br>
+    검토 로그 1,578줄 (라운드 기록 20건) · 화면 워크스루 553줄<br>
+    STOP REASON: AZTKS_FULL_PASS
+  </footer>
+
+</div>
+</body>
+</html>
