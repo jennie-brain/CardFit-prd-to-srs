@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 15
+ROUND: 16
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -153,6 +153,27 @@ Round 6 시점 `git status --porcelain`은 **이 목표가 방금 고친 파일�
 
   워크스루의 파일 경로 서술은 현재 트리 실제 위치로 맞췄다. 과거 스코어카드 인용문은 판정 원문이므로
   그대로 둔다.
+- `CONFLICT:` **Round 15 `TOP_FIX`는 이 목표가 실행할 수 없다.** 평가자는 코드 거처 표기 모순을
+  해소하라며 `.agents/rules/006-prototype-visual-scope.md:17`과
+  `docs/tasks/task1/prototype-visual-spec.md:84-89`의 루트 `components/`·`lib/`·`fixtures/` 표기를
+  `features/cardfit-prototype/...`로 고치라고 지시했다.
+
+  두 파일 모두 이 목표의 실행 프롬프트 §4가 명시적으로 수정 금지한 경로다 — "다음 파일·디렉터리를
+  수정하지 않는다(다른 세션이 동시에 편집 중이다): `docs/decisions/`, **`docs/tasks/`**,
+  `docs/product/`, `docs/technical/`, `docs/plans/`, **`.agents/`**, `AGENTS.md`, `CLAUDE.md`,
+  `.claude/`". 실제로 이 경로들은 다른 세션이 배치 마이그레이션을 진행하며 편집해 온 파일이다.
+
+  평가자 스스로도 `NOTES`에서 "위 경로 모순은 **문서 내부 모순**이며 코드는 더 구체적인 spec §4·§5
+  결정을 따른다. 구현 자체의 기준 9항목 누락은 확인되지 않았다"고 적어 비차단으로 분류했다.
+  즉 코드는 옳고 문서 두 곳의 표기만 뒤처진 상태이며, 그 문서는 이 목표의 소관이 아니다.
+
+  대응은 두 가지다.
+  - 이번 라운드에는 실행 가능한 `S` 항목(`scope-notice.tsx` JSDoc 사용처 표기)만 처리했다.
+  - 다음 라운드 디스패치에 "보호 경로(`docs/tasks/`·`.agents/`) 문서 표기는 이 목표가 수정할 수
+    없으므로 `TOP_FIX`로 내지 말고 코드 내용만 판정하라"를 다시 명시한다. Round 10~14에는 이 지시를
+    넣었고 Round 15 프롬프트에서 빠뜨려 이 항목이 `TOP_FIX`로 올라왔다 — 코디네이터 실수다.
+
+  배치 표기 정렬은 배치 마이그레이션을 진행한 세션의 후속 작업으로 남긴다.
 - `NOTE:` `next dev`가 루트 `AGENTS.md`에 자기 규칙 블록을 덧붙였다. 보호 대상 파일이므로
   `git checkout -- AGENTS.md`로 되돌리고 `next.config.ts`에 `agentRules: false`를 설정해 재발을 막았다.
   이후 재기동에서 `Generated AGENTS.md` 줄이 사라지고 `git status --porcelain AGENTS.md`가 비었음을 확인했다.
@@ -1156,6 +1177,54 @@ PASS 모든 불변식 통과
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 | Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
 | 전문 대조 검사 | 15/15 일치 (fail=0) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:P Z:P T:C K:P S:C
+
+TOP_FIX: 프로토타입 코드 거처 표기를 실제 배치로 정렬하라 — .agents/rules/006-prototype-visual-scope.md:17 과 docs/tasks/task1/prototype-visual-spec.md:84-89 의 루트 components/·lib/·fixtures/ 를 features/cardfit-prototype/{ui,components,lib,fixtures} 로 고친다. 검증: 루트에 그 세 디렉터리가 없고, components.json aliases·spec §5.1·§4·T4 결정이 이미 features/ 경로다.
+
+EVIDENCE:
+- rules 006:17 vs components.json aliases(@/features/cardfit-prototype/*)
+- 완료 기준 4·5 구현: scenario-result-panel.tsx(순혜택·총혜택·연회비·keyLimitNotice·기준일), evidence-disclosure.tsx(근거 1~6 · ruleVersion)
+- 기준 3·6·8: result-screen.tsx(탭 상태 ✓+underline+sr-only 맥락), screen-shell.tsx→fixture-example-notice.tsx, fixtures/scope-notice.ts(spec §7.2 문구 일치)
+
+NOTES:
+- T(비차단): 위 경로 모순은 문서 내부 모순이며 코드는 더 구체적인 spec §4·§5 결정을 따른다. 구현 자체의 기준 9항목 누락은 확인되지 않았다.
+- S: scope-notice.tsx JSDoc이 여전히 /plan 전용으로 읽히나 result-screen.tsx 도 사용 — Round 14 지적 유효, 국소·1행 수정.
+- K: Round 14의 AlertAction·tabsListVariants·badgeVariants 미사용은 CardFooter·CardAction·CardDescription 도 동일한 vendored shadcn 전반 패턴이다. 프로젝트 죽은 코드가 아니고 삭제 시 재생성과 갈리므로 기각 → K:P.
+- 미검증: 코디네이터 실측 재확인 안 함. GitHub Issue 체크포인트 코멘트 유무 미확인 — 기록 방식은 spec §12 미확정이라 워크스루 문서 기록으로 판단했다.
+```
+
+**판정 해석**: `A`와 `K`가 함께 `P`로 올라왔다. `A:P`는 Fixture 산술·귀속 정합이 맞아떨어진 결과이고,
+`K:P`는 평가자가 vendored shadcn 미사용 export를 "프로젝트 죽은 코드가 아니다"로 기각한 결과다
+(같은 파일군의 `CardFooter`·`CardAction`·`CardDescription`도 동일 패턴이고 삭제하면 재생성과 갈린다).
+남은 두 `C` 중 `T`는 **이 목표가 수정할 수 없는 보호 경로 문서 표기**이고 `S`는 1행 주석이다.
+
+## Round 16
+
+### 처리한 것 — 실행 가능한 `S` 항목만
+
+`TOP_FIX`가 수정 금지 경로를 가리켜 실행할 수 없었다(위 「CONFLICT / ASSUMPTION」의 Round 15 항목).
+대신 `S` 축 지적인 `scope-notice.tsx` JSDoc을 고쳤다.
+
+이전 주석은 "입력 전에 확인할 수 있도록 `/plan` 첫 단계 위에 둔다"로만 적혀, 다음 개발자에게
+사용처가 한 곳으로 읽혔다. 실제로는 Round 3부터 `/result`에서도 같은 컴포넌트를 쓴다. 현재는 두
+화면의 배치 이유를 각각 적고 문구 원천(`fixtures/scope-notice.ts` 한 곳)도 명시한다.
+
+- `/plan`: 입력 전 확인 (spec §7.6)
+- `/result`: 결과를 보고 실제 카드 행동을 판단하는 지점 (PRD US-C AC8)
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| Fixture 산술 검사 | 7개 불변식 × 3시나리오 PASS |
 
 ### aztks-agent EVALUATE 결과
 
