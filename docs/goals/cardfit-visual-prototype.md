@@ -45,7 +45,7 @@
   - `ROUND: N` — 라운드마다 +1
   - `NOGO_STREAK: N` — `NO-GO`면 +1, `GO`면 즉시 `0`으로 리셋
   - `FULL_PASS: 0|1` — 5축 전부 `P`인 `GO`를 받은 순간에만 `1`
-- **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다. **스테이징은 1)의 작업 대상 경로와 `docs/loop/`만 명시적으로 지정한다 — `git add -A`·`git add .`를 쓰지 않는다.** 착수 시점 워킹트리에는 다른 세션이 남긴 수정 파일이 이미 있고, 전체 스테이징은 그것들을 이 목표의 커밋에 섞는다.
+- **커밋**: 라운드마다 `feat(prototype): <라운드 요약>` 형식으로 로컬 커밋한다. 원격 푸시는 하지 않는다. **스테이징은 1)의 작업 대상 경로와 `docs/loop/`만 명시적으로 지정한다 — `git add -A`·`git add .`를 쓰지 않는다.** 부트스트랩 1단계에서 `.scaffold-tmp/` 줄을 더한 루트 `.gitignore`도 1)의 작업 대상이므로 첫 라운드 커밋에 함께 포함한다. 착수 시점 워킹트리에는 다른 세션이 남긴 수정 파일이 이미 있고, 전체 스테이징은 그것들을 이 목표의 커밋에 섞는다.
 - **기준선 기록**: 착수 첫 턴에 `git status --porcelain`을 한 번 실행해 그 출력을 `docs/loop/PROTOTYPE_REVIEW_LOG.md`에 `BASELINE_DIRTY:` 블록으로 기록한다. 종료 방법 6)의 판정은 이 기준선과의 차이만 본다.
 - **도구**: 패키지 매니저는 `npm`.
 - **부트스트랩 — 루트에 직접 실행하지 않는다**: 저장소 루트에는 `AGENTS.md`·`PRD/`·`TASK/`·`SRS-Drafts/`·`plans/`·`reports/`·`landing/` 등 문서 자산이 20개 넘게 있고, `create-next-app`은 대상 디렉터리에 화이트리스트 밖 파일이 있으면 "contains files that could conflict"로 **중단한다**(`--yes`는 프롬프트만 없앨 뿐 이 검사를 건너뛰지 않는다). 따라서 아래 순서로 진행한다.
@@ -64,7 +64,7 @@
   2. `NOGO_STREAK`이 3에 도달 → **STOP REASON: EVAL_STALLED**
   3. 동일한 `TOP_FIX`가 3라운드 연속 반환 → **STOP REASON: FIX_LOOP**
   4. 평가-진행 라운드(turn = `/goal` 평가자가 진행 상태를 한 번 점검하는 메인 에이전트 응답 사이클) 누적 30회 도달 → **STOP REASON: TURN_CAP** (= or stop after 30 turns)
-  5. 착수 첫 명령인 `node -v` 또는 `npm -v` 가 실패 → **STOP REASON: TOOLCHAIN_MISSING** — 이 경우 구현을 시작하지 않았으므로 종료 방법 2)·5)는 건너뛰고, 1)의 기록과 실패한 `node -v`·`npm -v` 출력만 대화에 남긴 뒤 사용자에게 Node.js LTS 설치를 요청한다.
+  5. 착수 첫 명령인 `node -v`·`npm -v`·`npm ping` 중 하나라도 실패 → **STOP REASON: TOOLCHAIN_MISSING** — 이 경우 구현을 시작하지 않았으므로 종료 방법 2)·5)는 건너뛰고, 1)의 기록과 실패한 `node -v`·`npm -v` 출력만 대화에 남긴 뒤 사용자에게 Node.js LTS 설치를 요청한다.
 - **종료 방법** (아래 명령은 **모두 Bash 도구로 실행한다** — 이 머신의 기본 셸은 PowerShell이라 `find` 등이 Windows 실행 파일로 잡혀 재현되지 않는다):
   1. `docs/loop/PROTOTYPE_REVIEW_LOG.md` 마지막 줄에 `STOP REASON: <코드>` 한 줄을 덧붙이고 상단 카운터 세 줄을 최종값으로 갱신한다.
   2. `npx tsc --noEmit`, `npm run lint`, `npm run build` 를 **각각 따로** 실행해 세 명령 모두 exit 0 인 출력을 대화에 남긴다.
@@ -77,7 +77,7 @@
 
 - `master`에 푸시하지 않고, PR을 만들거나 머지하지 않으며, Vercel 등 배포를 유발하지 않는다.
 - **다음 파일·디렉터리를 수정하지 않는다** (다른 세션이 동시에 편집 중이다): `docs/grill/`, `TASK/`, `PRD/`, `SRS-Drafts/`, `plans/`, `.agents/`, `AGENTS.md`, `CLAUDE.md`, `.claude/`.
-- 위 1)의 작업 대상 밖 파일은 수정하지 않는다. 예외는 `docs/loop/PROTOTYPE_REVIEW_LOG.md`, `docs/loop/PROTOTYPE_WALKTHROUGH.md`, 그리고 루트 `.gitignore`에 줄을 덧붙이는 것뿐이다. 1)의 작업 대상에는 부트스트랩·shadcn 산출물이 이미 포함돼 있으므로 종료 방법 6)의 `git status --porcelain` 판정도 이 기준으로 읽는다.
+- 위 1)의 작업 대상 밖 파일은 수정하지 않는다. 예외는 `docs/loop/PROTOTYPE_REVIEW_LOG.md`와 `docs/loop/PROTOTYPE_WALKTHROUGH.md` 두 개뿐이다. **루트 `.gitignore`는 예외가 아니라 1)의 작업 대상에 포함되며 줄 추가만 허용한다.** 1)의 작업 대상에는 부트스트랩·shadcn 산출물도 포함돼 있으므로 종료 방법 6)의 `git status --porcelain` 판정도 이 기준으로 읽는다.
 - `.agents/rules/006`의 금지 사항을 그대로 지킨다 — Route Handler(`app/api/**`)·Server Action·Prisma·Supabase·인증·미들웨어·AI 호출·실제 카드 혜택 계산을 작성하지 않는다.
 - 1)의 "이번 범위에서 구현하지 않는 것"을 앞당겨 구현하지 않는다.
 - 실제 카드사·플랫폼의 로고와 실명, 검증되지 않은 사용자 수·절감액·추천 보장 문구를 화면에 넣지 않는다.
