@@ -8,8 +8,12 @@ import { SCOPE_NOTICE_CANDIDATE } from "@/features/cardfit-prototype/fixtures/sc
 
 const COMPARISON_PERIOD = "2026.09 ~ 2027.08 (12개월)";
 const CURRENCY = "원(KRW)";
+/**
+ * 온라인 쇼핑 할인은 `예시 카드 B`에만 있다. 세 시나리오 모두 이 영역이 변경 후보(A + B)에서만
+ * 나타나고 현재 조합(A 단독)에는 없으므로, 조건문의 귀속도 B여야 근거 1·2와 어긋나지 않는다.
+ */
 const ONLINE_SHOPPING_CONDITION =
-  "예시 카드 A의 온라인 쇼핑 할인은 카드사 앱에서 사전 응모한 달에만 적용됩니다.";
+  "예시 카드 B의 온라인 쇼핑 할인은 카드사 앱에서 사전 응모한 달에만 적용됩니다.";
 
 export const RESULT_FIXTURE: ResultViewModel = {
   meta: {

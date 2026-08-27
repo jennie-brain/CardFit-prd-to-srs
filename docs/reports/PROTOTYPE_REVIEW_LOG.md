@@ -3,7 +3,7 @@
 목표 프롬프트: `docs/plans/cardfit-visual-prototype_run-20260827-1533.md`
 (원본 `docs/plans/cardfit-visual-prototype.md`에서 프롬프트 본문만 분리한 실행본)
 
-ROUND: 13
+ROUND: 14
 NOGO_STREAK: 0
 FULL_PASS: 0
 
@@ -990,6 +990,88 @@ SYNC_RESULT total=13 fail=0
 | `npm run lint` | exit 0 |
 | `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
 | 전문 대조 검사 | 13/13 일치 (fail=0) |
+
+### aztks-agent EVALUATE 결과
+
+```
+VERDICT: GO
+SCORECARD: A:C Z:P T:P K:C S:C
+
+TOP_FIX: fixtures/result.ts 의 ONLINE_SHOPPING_CONDITION 귀속을 "예시 카드 B"로 바꾸거나 currentCombination(예시 카드 A)에 온라인 쇼핑 영역을 추가해, LOW 탭 근거 1·2(A 단독엔 해당 영역 없음)와의 모순을 제거하라. 수정 후 워크스루 전문 대조 검사를 재실행해 동일 문구 1건이 갱신됐음을 확인한다.
+
+EVIDENCE:
+- 조건문은 "예시 카드 A의 온라인 쇼핑 할인"이라 단정하나 LOW currentCombination(예시 카드 A)의 benefitAreas 에는 생활 할인만 있고, 온라인 쇼핑 영역은 B 추가 시에만 등장.
+- 게이트: npx tsc --noEmit exit 0, npm run lint exit 0 (build는 미검증, NOTES 참조). Fixture는 타입 어노테이션으로 선언돼 tsc가 만족 여부를 검증.
+- 워크스루 대조 스팟체크 6건 전부 현재 코드 문구와 일치. Round 12 TOP_FIX 드리프트는 해소됨.
+- 완료 기준 대응 확인: 1·2·3·4·5·6·8 각 구현 지점 명시.
+
+NOTES:
+- K: ui/ 미사용 export 3건(tabsListVariants·badgeVariants·AlertAction) 외부 참조 0건 — shadcn 생성물이라 비차단이나 죽은 표면.
+- S: components/scope-notice.tsx 주석이 /plan 전용으로 적혀 있으나 result-screen.tsx 에서도 사용 — 주석만 어긋남.
+- 미검증: npm run build(코디네이터 중단 요청으로 미실행), 완료 기준 7(모바일 가로 스크롤) 실기 확인, 완료 기준 9(GitHub Issue Done 미변경) 원격 확인.
+```
+
+**판정 해석**: `T`가 다시 `P`가 됐다(워크스루 드리프트 해소). `A`의 `C` 근거가 Fixture 근거 모순
+한 건으로 좁혀졌다. 이번 라운드 평가는 31분을 넘겨 코디네이터가 마무리를 요청했고, 그 결과
+`npm run build`·기준 7·기준 9가 미검증으로 남았다 — **아래에서 직접 채웠다.**
+
+## Round 14
+
+### 처리한 TOP_FIX
+
+`ONLINE_SHOPPING_CONDITION`의 귀속을 `예시 카드 A` → `예시 카드 B`로 바꿨다.
+
+세 시나리오 모두 온라인 쇼핑 할인 영역이 **변경 후보(A + B)에만** 있고 현재 조합(A 단독)에는 없다.
+따라서 조건문이 A에 귀속되면 LOW 탭에서 "A 단독인데 왜 A의 온라인 쇼핑 조건이 적혀 있나"라는
+모순이 생긴다. 귀속을 B로 옮기면 근거 1·2와 일치하고, B의 생활 할인 조건과도 한 카드 안에서
+일관된다. `currentCombination`에 영역을 추가하는 대안은 6개 조합의 산술 전부를 다시 맞춰야 해서
+선택하지 않았다.
+
+워크스루 전문의 같은 문구도 함께 갱신했고, 전문 대조 검사에 이 문구와 B의 생활 할인 조건을
+claim으로 추가해 13개 → **15개**로 늘렸다.
+
+```
+SYNC_RESULT total=15 fail=0
+```
+
+### 평가자가 미검증으로 남긴 3건 — 직접 채운 결과
+
+| 미검증 항목 | 직접 확인 결과 |
+| --- | --- |
+| `npm run build` | **exit 0** (`/_not-found`·`/plan`·`/result` 정적 prerender) |
+| 완료 기준 7 (모바일 가로 스크롤) | 375×812 실브라우저 8개 상태 전부 `scrollWidth === clientWidth === 375`, 최우측 요소 `right=375`. CTA 4종 343×44px, 시나리오 탭 리스트 343×48px·트리거 112×41px, 넘침 없음 |
+| 완료 기준 9 (Issue Done 미변경) | `gh issue list --state closed` 빈 출력. 이 목표의 커밋 12건이 건드린 경로는 `app/`·`features/cardfit-prototype/`·(구 배치) `components/prototype`·`lib/prototype`·`fixtures/prototype`·`.gitignore`·`next-env.d.ts`·`public/*.svg`·`docs/reports/`(로그 2개)·분리 프롬프트뿐이다. `docs/tasks/`·`PRD/`·`.agents/`·`AGENTS.md`·`CLAUDE.md` 변경 0건 |
+
+탭 전환 실측도 함께 다시 확인했다.
+
+| 탭 | 결론 배지 | 대표 예상 순혜택 | 유지 대비 차액 |
+| --- | --- | --- | --- |
+| 더 적게 | 유지 | 연 48,000원 | 연 0원 |
+| 예상한 만큼 | 변경 | 연 153,000원 | 연 +93,000원 |
+| 더 많이 | 변경 | 연 231,000원 | 연 +147,000원 |
+
+근거 6종 각 1건, 금지 표현 두 화면 0건.
+
+### 라운드 진행 중 발생한 절차 문제
+
+- `NOTE:` 이번 평가가 31분을 넘겨(직전 라운드 5~8분) 코디네이터가 `SendMessage`로 마무리를 요청했다.
+  길어진 원인은 이번 프롬프트에 **워크스루 전문 대조를 T축 판정 항목으로 명시**해 500줄 넘는 문서와
+  실제 렌더를 문구 단위로 맞추게 한 것이다. 검사 범위를 넓힌 대가이므로 다음 라운드부터는 전문 대조를
+  코디네이터가 자동 검사로 수행하고 평가자에게는 그 결과만 넘긴다.
+- `NOTE:` 평가자가 남긴 dev 서버(포트 3123, PID 36844)를 반환 전에 정리하도록 요청해 해제를 확인했다.
+
+`NOTES`의 비차단 2건(`ui/` 미사용 export 3건, `scope-notice.tsx` 주석 사용처)은 이번 라운드에서
+손대지 않았다.
+
+### 검증
+
+| 명령 | 결과 |
+| --- | --- |
+| `npx tsc --noEmit` | exit 0 |
+| `npm run lint` | exit 0 |
+| `npm run build` | exit 0 (`/plan`·`/result` 정적 prerender) |
+| 전문 대조 검사 | 15/15 일치 (fail=0) |
+| 375px 실측 | 8개 상태 전부 가로 스크롤 없음 |
 
 ### aztks-agent EVALUATE 결과
 
