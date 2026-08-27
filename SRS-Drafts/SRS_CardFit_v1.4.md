@@ -7,14 +7,15 @@
 | 날짜 | 2026-08-25 |
 | 기준 서식 | 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷 |
 | 참고 표준 | ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용) |
-| 원천 문서 | `SRS_CardFit_v1.3.md`(직전 기준선), `PRD/archive/PRD_CardFit_v1.2.md`(제품 기준선), `team-project_2nd/master-deck`, C-TEC-001~007 |
+| 원천 문서 | `SRS_CardFit_v1.3.md`(직전 기준선), `PRD/PRD_CardFit_v1.2.md`(제품 기준선), `team-project_2nd/master-deck`, C-TEC-001~007 |
 
+> 📘 **HTML 버전**: `SRS-Drafts/SRS_CardFit_v1.4.html`
 
 ---
 
 ## 개요 (Summary)
 
-CardFit은 **뱅크샐러드 내부에서** 기존 인증·마이데이터·보유카드·소비·상품 데이터 역량을 재사용하고, 미래 지출 계획을 기준으로 카드 조합을 설계하는 역기획 MVP다. 독립 MVP는 비식별 Fixture와 Platform Adapter로 전체 흐름을 실행하며, 실제 통합에서는 Adapter 구현체만 뱅크샐러드 내부 인터페이스로 교체한다. 본 SRS는 `PRD/archive/PRD_CardFit_v1.2.md`를 제품 기준선으로 사용하며 뱅크샐러드 운영 인프라가 본 MVP 스택과 같다고 가정하지 않는다.
+CardFit은 **뱅크샐러드 내부에서** 기존 인증·마이데이터·보유카드·소비·상품 데이터 역량을 재사용하고, 미래 지출 계획을 기준으로 카드 조합을 설계하는 역기획 MVP다. 독립 MVP는 비식별 Fixture와 Platform Adapter로 전체 흐름을 실행하며, 실제 통합에서는 Adapter 구현체만 뱅크샐러드 내부 인터페이스로 교체한다. 본 SRS는 `PRD/PRD_CardFit_v1.2.md`를 제품 기준선으로 사용하며 뱅크샐러드 운영 인프라가 본 MVP 스택과 같다고 가정하지 않는다.
 
 - **기능 요구사항**: REQ-FUNC 13건(Must 8·Should 3·Could 2) — PRD 3장의 Given/When/Then 인수기준을 조건-결과 요약형으로 정리했으며, 문항별 출처는 [PRD]/[Derived]/[Design Decision]/[TBD]로 구분한다(4.1 서두 참조)
 - **비기능 요구사항**: REQ-NF 9건 — 성능(p95 5초)·신뢰성(오류율 0.1%, 가용성 99.5%)·보안(오조회 0건)·비용(호출당 과금 관리)
@@ -1299,15 +1300,15 @@ Mock Adapter 기준 12개 In-Scope 기능과 8개 UX 검증 시나리오가 모�
 
 ### 11.2 출처 목록
 
-- 원천 PRD: `PRD/archive/PRD_CardFit_v1.2.md`
+- 원천 PRD: `PRD/PRD_CardFit_v1.2.md`
 - 변경 실행 계획: `plans/PLAN_SRS_CardFit_v1.4_MVP_Stack_Alignment.md`
 - 인터뷰/실험: E0~E7b(PRD 8장), E2 Concierge Test 결과 로그
 - 로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계
 - 벤치마크: 경쟁사 유저플로우 실측 자료, E5 동일 스냅샷 n=20 비교표
-- 다이어그램: `PRD/archive/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
+- 다이어그램: `PRD/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
 - Master Deck 제품 흐름: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p21-23_To-Be_%EC%82%AC%EC%9A%A9%EC%9E%90%ED%9D%90%EB%A6%84_%ED%95%B5%EC%8B%AC%ED%99%94%EB%A9%B4.md>
 - Master Deck 데이터·시스템: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p24-25_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%8B%9C%EC%8A%A4%ED%85%9C_%EC%A0%95%EC%B1%85_%EC%83%81%ED%83%9C_%EC%98%88%EC%99%B8_%EC%9A%B4%EC%98%81%EC%97%AD%ED%95%A0.md>
-- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/PRD/archive/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
+- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/PRD/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
 - Next.js App Router·Route Handlers: <https://nextjs.org/docs/app/getting-started/route-handlers>
 - Next.js Server Actions·Backend for Frontend: <https://nextjs.org/docs/app/guides/backend-for-frontend>
 - Supabase 로컬 개발: <https://supabase.com/docs/guides/local-development/cli/getting-started>

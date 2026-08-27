@@ -2,7 +2,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 비교 기준 | 최초 확정본 `SRS-Drafts/archive/SRS_CardFit_v1.0.md` |
+| 비교 기준 | 최초 확정본 `SRS-Drafts/SRS_CardFit_v1.0.md` |
 | 최신 기준 | `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md` |
 | 검토 관점 | 기술 스택의 명확성, MVP 목표 및 가치 전달 조정, 기타 차이점 |
 | 검토일 | 2026-08-25 |
@@ -225,7 +225,7 @@ MVP의 핵심 가치도 훼손되지 않았다. 최신본은 미래지출에 따
 
 ## 8. 출처
 
-- 최초 비교 문서: `SRS-Drafts/archive/SRS_CardFit_v1.0.md`
+- 최초 비교 문서: `SRS-Drafts/SRS_CardFit_v1.0.md`
 - 최신 비교 문서: `SRS-Drafts/SRS_CardFit_v1.6_GPT-5.6-SOL.md`
 - 제품 기준선: `PRD/PRD_CardFit_v1.3.md`
 - 난이도·가능성·효율성 검토: `MVP-개발목표-적절성-종합-검토(난이도_가능성_효율성)-보고서.md`

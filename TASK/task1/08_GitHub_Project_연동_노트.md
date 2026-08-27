@@ -17,7 +17,7 @@
 
 ## 1. 등록 방식 요약
 
-- 이슈 생성은 `gh issue create -R jennie-brain/CardFit-prd-to-srs -t <title> -F <body-file> -l <labels> -m <milestone> --blocked-by <선행 이슈 번호>`로 처리했다. `--blocked-by`에 실제 선행 TASK의 이슈 번호를 넣으려면 **의존성 위상 순서(선행 TASK 먼저)로 이슈를 생성**해야 한다.
+- 이슈 생성은 `gh issue create -R jennie-brain/prd-to-srs -t <title> -F <body-file> -l <labels> -m <milestone> --blocked-by <선행 이슈 번호>`로 처리했다. `--blocked-by`에 실제 선행 TASK의 이슈 번호를 넣으려면 **의존성 위상 순서(선행 TASK 먼저)로 이슈를 생성**해야 한다.
 - 이슈 본문은 `TASK/task2/<TASK-ID>.md`의 원문에 `TASK/task1/03_병렬실행_Gantt_로드맵.md`(압축 수행 계획) 기준 트랙·레인·시작일·종료일·임계 경로 여부·선행/후행 TASK 표를 상단에 삽입해 생성했다.
 - 라벨·마일스톤(M1/M2)은 각 `task2` 파일의 frontmatter `labels` 값을 그대로 저장소 라벨로 만들어 사용했다.
 

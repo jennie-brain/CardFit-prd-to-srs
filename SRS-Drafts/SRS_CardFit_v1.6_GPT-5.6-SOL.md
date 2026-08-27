@@ -1497,10 +1497,10 @@ M1의 핵심 가치 필수 경로 7개와 UX 검증 시나리오는 구현 가�
 - 인터뷰/실험: E0~E7b(PRD 8장), E2 Concierge Test 결과 로그
 - 로그: 금감원 민원 통계(2022~2025), 여신금융협회 월간 카드 통계
 - 벤치마크: 경쟁사 유저플로우 실측 자료, E5 동일 스냅샷 n=20 비교표
-- 다이어그램: `PRD/archive/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
+- 다이어그램: `PRD/diagrams/usecase_diagram_cardfit_v0.1.svg` / `.png`
 - Master Deck 제품 흐름: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p21-23_To-Be_%EC%82%AC%EC%9A%A9%EC%9E%90%ED%9D%90%EB%A6%84_%ED%95%B5%EC%8B%AC%ED%99%94%EB%A9%B4.md>
 - Master Deck 데이터·시스템: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p24-25_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%8B%9C%EC%8A%A4%ED%85%9C_%EC%A0%95%EC%B1%85_%EC%83%81%ED%83%9C_%EC%98%88%EC%99%B8_%EC%9A%B4%EC%98%81%EC%97%AD%ED%95%A0.md>
-- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/PRD/archive/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
+- Master Deck PRD·KPI: <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/PRD/p26-29_PRD.md>, <https://github.com/jennie-brain/team-project_2nd/blob/main/master-deck/p30_KPI_%EA%B2%80%EC%A6%9D.md>
 - Next.js App Router·Route Handlers: <https://nextjs.org/docs/app/getting-started/route-handlers>
 - Next.js Server Actions·Backend for Frontend: <https://nextjs.org/docs/app/guides/backend-for-frontend>
 - Supabase 로컬 개발: <https://supabase.com/docs/guides/local-development/cli/getting-started>

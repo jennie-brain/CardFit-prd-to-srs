@@ -13,9 +13,8 @@
 | [05_GitHub_TASK_템플릿](05_GitHub_TASK_템플릿.md) | TASK 작성 양식과 필수 계약·검증 필드 |
 | [06_AI_TASK_추출_및_검토_방법론](06_AI_TASK_추출_및_검토_방법론.md) | Macro·Micro TASK 추출 및 품질 검토 방법 |
 | [08_GitHub_Project_연동_노트](08_GitHub_Project_연동_노트.md) | GitHub Issue/Project 연동 참고사항 |
-| [07_시각_프로토타입_전체_계획](07_시각_프로토타입_전체_계획.md) | UI/UX 프로토타입용 TASK 선별안 19건과 41영업일 일정 |
-| [09_시각_프로토타입_실행_요약](09_시각_프로토타입_실행_요약.md) | 최초 시각 검토 범위와 확정 결정을 요약한 실행 참고 문서 |
-| [10_시각_프로토타입_화면_명세](10_시각_프로토타입_화면_명세.md) | `/plan`·`/result` 화면, 상태, 카피, Fixture 상세 명세 |
+| [prototype-suggestion-local-visual](prototype-suggestion-local-visual.md) | 계약·백엔드 없이 로컬에서 빠르게 시각 검증하는 11건 축약안 |
+| [prototype-suggestion](prototype-suggestion.md) | UI/UX 프로토타입용 TASK 선별안 19건과 41영업일 일정 |
 
 ## 확정 기준선
 
@@ -58,3 +57,8 @@
 - 전체 목록: `01_전체_TASK_목록_및_기준선.md`
 - 실행계획: `02_총괄_개발_실행_계획.md`
 - 정책 결정: `04_정책_결정_로그.md`
+
+## 랜딩페이지 산출물
+
+- [`../../landing/CardFit_Landing_Codex.html`](../../landing/CardFit_Landing_Codex.html) — 현재 서비스 앞단 Hook 랜딩페이지 Codex 버전
+- [`../../reports/CardFit_랜딩페이지_최종_체크리스트_Codex.md`](../../reports/CardFit_랜딩페이지_최종_체크리스트_Codex.md) — 전략·체크리스트 기반 최종 평가 Codex 버전
