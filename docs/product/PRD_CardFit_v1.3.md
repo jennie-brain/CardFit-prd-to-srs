@@ -179,9 +179,9 @@ journey
 
 아래 4장(기능 요구사항)의 F-01~F-13과 3장 사용자 스토리(US-A~US-F)를 액터·유스케이스 관계로 정리한 다이어그램이다. UC4는 3개 지출 시나리오의 동시 계산, UC5는 시나리오별 독립 카드 조합·유지 결론과 탭 확인을 나타낸다. 실선은 액터-유스케이스 연관, 점선 화살표는 `<<include>>`/`<<extend>>` 관계를 의미한다.
 
-![CardFit Use Case Diagram](diagrams/usecase_diagram_cardfit_v1.3.png)
+![CardFit Use Case Diagram](diagrams/usecase_diagram_cardfit_v1.3.svg)
 
-> 이미지 파일: `diagrams/usecase_diagram_cardfit_v1.3.png` (수정용 벡터 원본: `diagrams/usecase_diagram_cardfit_v1.3.svg`)
+> 다이어그램 파일: `diagrams/usecase_diagram_cardfit_v1.3.svg`
 
 ### US-A (우선순위 1) — 미래지출 기반 계산
 

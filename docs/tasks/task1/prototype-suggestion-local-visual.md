@@ -179,7 +179,7 @@
 
 ## 아직 확정하지 않은 사항
 
-- 라이트 모드 색상 후보는 `docs/reports/CardFit_Lightmode_Color_Palette.html`에서만 검토하며 최종 token으로 확정하지 않았다.
+- 라이트 모드 색상 후보는 `docs/reports/CardFit_Lightmode_Color_Palette_V2_Soft_Mint_Sage.png`에서 검토하며 최종 token으로 확정하지 않았다.
 - breakpoint, 화면 최대 폭, 플랫폼·카드사 브랜드 표기 방식은 미확정이다.
 - 시각 검토 판정 기록과 접근성 리뷰 증거 방식은 미확정이다.
 - 여러 변경 후보끼리 동률일 때의 정렬·대표 후보 선택 규칙은 미확정이다.

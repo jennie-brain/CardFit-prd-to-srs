@@ -9,7 +9,7 @@
 | 날짜 | 2026-08-25 |
 | 기준 서식 | 예시 SRS 문서(AD-Core-Platform SRS)의 7섹션 포맷 |
 | 참고 표준 | ISO/IEC/IEEE 29148:2018 (예시 포맷을 벗어나는 내용에 한해 8·9·11장에서 인용) |
-| 원천 문서 | `SRS_CardFit_v1.5.md`(직전 기준선), `docs/product/PRD_CardFit_v1.3.md`(제품 기준선), `docs/reports/MVP-개발목표-적절성-종합-검토(난이도_가능성_효율성)-보고서.md`, `team-project_2nd/master-deck`, C-TEC-001~007 |
+| 원천 문서 | 직전 SRS v1.5(Git 이력), `docs/product/PRD_CardFit_v1.3.md`(제품 기준선), `docs/reports/MVP-개발목표-적절성-종합-검토(난이도_가능성_효율성)-보고서.md`, `team-project_2nd/master-deck`, C-TEC-001~007 |
 
 > 본 버전의 기준 문서는 Markdown 원본 `docs/technical/SRS_CardFit_v1.6_GPT-5.6-SOL.md`다.
 
